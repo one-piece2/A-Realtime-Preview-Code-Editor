@@ -1,10 +1,17 @@
-import { Button } from "@/components/ui/button"
 
+import {BrowserRouter,Route,Routes} from "react-router-dom"
+import Home from "@/pages/home"
+import EditorPage from "@/pages/EditorPage";
 function App() {
   
 
   return (
-    <Button variant="ghost">Button</Button>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/editor/:roomId" element={<EditorPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
