@@ -40,7 +40,9 @@ const Home = () => {
     };
 
     return (
-        <div className="flex items-center justify-center text-white h-screen bg-gray-900">
+        <div className="flex flex-col items-center justify-center text-white h-screen bg-gray-900 p-4">
+            <div className="text-4xl font-bold mb-6">Code with Friends</div>
+           
             {contextHolder}
             <div className="bg-gray-800 p-5 rounded-lg w-120 max-w-[90%] shadow-lg">
                 <img src="./onepiece.png" alt="one-piece-logo" className="h-40 w-40 mx-auto block" />
@@ -87,6 +89,7 @@ const Home = () => {
                 </h4>
             </footer>
         </div>
+        
     );
 };
 
