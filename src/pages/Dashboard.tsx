@@ -13,7 +13,7 @@ export default function Dashboard() {
     const handleCodeEditorClick = () => {
         setActiveButton('codeEditor');
         // 导航到适当的页面，这里使用 home 作为示例
-        navigate('/home');
+   
     };
 
     const handleEditorWithFriendsClick = () => {

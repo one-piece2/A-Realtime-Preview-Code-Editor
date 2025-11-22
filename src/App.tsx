@@ -1,9 +1,10 @@
 
 import {BrowserRouter,Route,Routes} from "react-router-dom"
 import Home from "@/pages/home"
-import EditorPage from "@/pages/EditorPage";
+import EditorSigelPage from "@/pages/EditorSigelPage";
 import Preview from "./pages/Preview";
 import Dashboard from "@/pages/Dashboard";
+
 
 function App() {
   
@@ -13,8 +14,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/editor/:roomId" element={<EditorPage />}>
-          <Route path="preview" element={<Preview />} />
+        <Route path="/editor/:roomId" element={<EditorSigelPage />}/>
+        <Route path="">
+           <Route path="preview" element={<Preview />} />
         </Route>
       </Routes>
     </BrowserRouter>
