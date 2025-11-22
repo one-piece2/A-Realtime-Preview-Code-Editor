@@ -3,15 +3,22 @@ import MonacoEditor, {
   type EditorProps,
 } from '@monaco-editor/react'
 import { editor } from "monaco-editor";
-import React from 'react';
+
 import { createATA } from '../utils/ata';
-
-export default function Editor() {
-
-  const code = `export default function App() {
-    return <div>xxx</div>
+ export interface EditorFile {
+    name: string
+    value: string
+    language: string
 }
-    `;
+interface Props {
+    file: EditorFile
+    onChange?: EditorProps['onChange'],
+    options?: editor.IStandaloneEditorConstructionOptions
+}
+export default function Editor(props: Props) {
+
+  const { file, onChange, options } = props;
+
   //设置支持jsx语法
   const handleEditorMount: OnMount = (editor, monaco: any) => {
     // 绑定 Ctrl+Q快捷键来格式化文档
@@ -51,9 +58,10 @@ export default function Editor() {
   return <MonacoEditor
     height='100%'
     path={'lyy.tsx'}
-    language={"typescript"}
+    language={file.language}
     onMount={handleEditorMount}
-    value={code}
+    value={file.value}
+    onChange={onChange}
     options={
       {
         fontSize: 14,

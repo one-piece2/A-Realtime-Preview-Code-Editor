@@ -1,13 +1,15 @@
-import Client from '@/components/Client';
+
 import Editor from '@/components/Editor';
-export interface Client {
-    socketid: string;
-    username: string;
-  }
+import Slider from '@/components/Slider';
+import { type Clienttype } from '@/types/types';
+import HeaderLC from '@/components/Header';
+import LeetCode from '@/components/LeetCode';
+import { Allotment } from "allotment";
+import 'allotment/dist/style.css';
 export default function EditorPage() {
-  
+
   //mock clients
-  const clients: Client[] = [
+  const clients: Clienttype[] = [
     { socketid: '1', username: 'user1' },
     { socketid: '2', username: 'user2' },
     { socketid: '3', username: 'user3' },
@@ -20,36 +22,42 @@ export default function EditorPage() {
   const leaveRoom = () => {
     console.log('leaveRoom');
   };
+  //mock file lyy.tsx
+  const file = {
+    name: 'lyy.tsx',
+    value: 'import lodash from "lodash";\n\nconst a = <div>lyy</div>',
+    language: 'typescript'
+  }
+  //mock onChange
+  const onChange = () => {
+    console.log('hhhh');
+  }
   return (
-    <div className="flex h-screen">
-      <div className="bg-[#1c1e29] p-4 text-white w-[240px] flex flex-col">
-        <div className="flex-1">
-          <div className="border-b border-[#424242] pb-2 mb-3">
-            <img src="/onepiece.png" alt="one-piece-logo" className="h-[100px] ml-6" width={120} ></img>
-          </div>
-          <h3 className="mb-4  font-bold text-center  text-xl"> Connected Users</h3>
-          <div className="flex items-center flex-wrap gap-5">
-            {clients.map((client) => (
-              <Client key={client.socketid + client.username} username={client.username} />
-            ))}
-          </div>
+    <div className="flex h-screen w-full bg-[#f5f5f5]">
+      {/* Slider组件 - 设置与主内容相同的高度和背景色 */}
+      <div className="h-full">
+        <Slider clients={clients} copyRoomId={copyRoomId} leaveRoom={leaveRoom} />
+      </div>
+      
+      {/* 主内容区域 */}
+      <div className="flex-1 flex flex-col h-full min-h-0">
+        {/* HeaderLC组件 - 移除固定高度，让组件自然高度，添加明显的底部边框 */}
+        <div className="bg-[#f5f5f5] dark:border-gray-700 ">
+          <HeaderLC word='LeetCode Together' photoUrl='/image.png' />
         </div>
-        <button 
-          className="border-none bg-white p-3 rounded-md text-base font-bold cursor-pointer transition-all duration-300  text-black mb-3 hover:bg-[#2b824c] focus:outline-none"
-          onClick={copyRoomId} 
-        >
-          Copy ROOM ID
-        </button>
-        <button 
-          className="border-none p-3 rounded-md text-base font-bold cursor-pointer transition-all duration-300 bg-[#4aed88] text-black w-full hover:bg-[#2b824c] focus:outline-none"
-          onClick={leaveRoom} 
-        >
-          Leave
-        </button>
+        
+        {/* 内容区域 - 占据剩余空间 */}
+        <Allotment className="flex-1 h-full" defaultSizes={[100, 100]}>
+          <Allotment.Pane minSize={0}>
+            <LeetCode />
+          </Allotment.Pane>
+          <Allotment.Pane minSize={800}>
+            <Editor file={file} onChange={onChange} />
+          </Allotment.Pane>
+        </Allotment>
+      
       </div>
-      <div className="flex-1 bg-[#f5f5f5]">
-        <Editor />
-      </div>
+
     </div>
   )
 }
