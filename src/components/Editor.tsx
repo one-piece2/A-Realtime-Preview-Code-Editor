@@ -3,6 +3,9 @@ import MonacoEditor, {
   type EditorProps,
 } from '@monaco-editor/react'
 import { editor } from "monaco-editor";
+import React from 'react';
+import { createATA } from '../utils/ata';
+
 export default function Editor() {
 
   const code = `export default function App() {
@@ -31,7 +34,17 @@ export default function Editor() {
       // 使用ES模块
       module: monaco.languages.typescript.ModuleKind.ESNext
     });
-
+    // 创建ATA实例
+    const ata = createATA((code, path) => {
+      // 处理自动下载的文件，例如将其保存到本地
+      monaco.languages.typescript.typescriptDefaults.addExtraLib(code, `file://${path}`)
+    });
+   // 监听编辑器内容变化，触发自动类型获取
+    editor.onDidChangeModelContent(() => {
+      ata(editor.getValue());
+    });
+   // 初始化时触发一次类型获取
+    ata(editor.getValue());
 
   };
 
@@ -42,17 +55,17 @@ export default function Editor() {
     onMount={handleEditorMount}
     value={code}
     options={
-        {
-            fontSize: 14,
-            scrollBeyondLastLine: false,
-            minimap: {
-              enabled: false,
-            },
-            scrollbar: {
-              verticalScrollbarSize: 6,
-              horizontalScrollbarSize: 6,
-            },
-        }
+      {
+        fontSize: 14,
+        scrollBeyondLastLine: false,
+        minimap: {
+          enabled: false,
+        },
+        scrollbar: {
+          verticalScrollbarSize: 6,
+          horizontalScrollbarSize: 6,
+        },
+      }
     }
   />
 }
