@@ -3,10 +3,19 @@ import { type Files } from '../types/types'
 import { ENTRY_FILE_NAME } from '../utils/files'
 
 import customResolver from './babelPlug'
-
-
+// 编译前处理代码，主要是添加 React 导入语句
+export const beforeTransformCode = (filename: string, code: string) => {
+    let _code = code
+    const regexReact = /import\s+React/g
+    if ((filename.endsWith('.jsx') || filename.endsWith('.tsx')) && !regexReact.test(code)) {
+      _code = `import React from 'react';\n${code}`
+    }
+    return _code
+}
 
 export const babelTransform = (filename: string, code: string, files: Files) => {
+    // 编译前处理代码，主要是添加 React 导入语句
+    code = beforeTransformCode(filename, code)
   let result = ''
   try {
     result = transform(code, {

@@ -20,8 +20,12 @@ export interface HeaderProps {
 
 export interface FileNameItemProps {
     value: string
+    readonly: boolean
     actived: boolean
     onClick: () => void
+    onEditComplete: (name: string) => void;
+  onRemove: () => void;
+  creating: boolean;
 }
 
  export interface EditorFile {
