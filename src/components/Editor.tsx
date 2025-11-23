@@ -3,20 +3,18 @@ import MonacoEditor, {
   type EditorProps,
 } from '@monaco-editor/react'
 import { editor } from "monaco-editor";
-
+import { type EditorFile } from '../types/types';
 import { createATA } from '../utils/ata';
- export interface EditorFile {
-    name: string
-    value: string
-    language: string
-}
+import { useEffect, useRef } from 'react';
+
 interface Props {
     file: EditorFile
     onChange?: EditorProps['onChange'],
     options?: editor.IStandaloneEditorConstructionOptions
 }
 export default function Editor(props: Props) {
-
+  const ataRef = useRef<((code: string) => void) | null>(null)
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
   const { file, onChange, options } = props;
 
   //设置支持jsx语法
@@ -36,28 +34,35 @@ export default function Editor(props: Props) {
       jsxFragmentFactory: 'React.Fragment',
       // 允许CommonJS模块和ES模块之间的互操作
       esModuleInterop: true,
-      // 编译目标为ES2020
-      target: monaco.languages.typescript.ScriptTarget.ES2020,
-      // 使用ES模块
-      module: monaco.languages.typescript.ModuleKind.ESNext
+
+     
     });
     // 创建ATA实例
-    const ata = createATA((code, path) => {
+      ataRef.current= createATA((code, path) => {
       // 处理自动下载的文件，例如将其保存到本地
       monaco.languages.typescript.typescriptDefaults.addExtraLib(code, `file://${path}`)
     });
    // 监听编辑器内容变化，触发自动类型获取
     editor.onDidChangeModelContent(() => {
-      ata(editor.getValue());
+      ataRef.current?.(editor.getValue());
     });
    // 初始化时触发一次类型获取
-    ata(editor.getValue());
+    ataRef.current?.(editor.getValue());
 
   };
+  useEffect(() => {
+    
+    if (editorRef.current) {
+      const current = editorRef.current.getValue()
+      if (current !== file.value) editorRef.current.setValue(file.value)
+    }
+    // 触发 ata 去检查并下载类型声明
+    ataRef.current?.(file.value)
+  }, [file?.name, file?.value])
 
   return <MonacoEditor
     height='100%'
-    path={'lyy.tsx'}
+    path={file.name}
     language={file.language}
     onMount={handleEditorMount}
     value={file.value}
