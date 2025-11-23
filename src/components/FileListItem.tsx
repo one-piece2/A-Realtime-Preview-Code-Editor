@@ -19,7 +19,7 @@ export const FileNameItem: React.FC<FileNameItemProps> = (props) => {
 
   const [name, setName] = useState(value);
   const [editing, setEditing] = useState(false)
-  const [editingCreating, setEditingCreating] = useState(creating)
+  const [editingCreating] = useState(creating)
   const inputRef = useRef<HTMLInputElement>(null)
   const handleDoubleClick = () => {
     setEditing(true)

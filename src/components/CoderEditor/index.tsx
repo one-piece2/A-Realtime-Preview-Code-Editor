@@ -7,9 +7,9 @@ import {debounce} from 'lodash-es'
 export default function CodeEditor() {
   const { 
     files, 
+    theme,
     setFiles, 
-    selectedFileName, 
-    setSelectedFileName
+    selectedFileName
 } = useContext(PlaygroundContext)
 const file = files[selectedFileName];
 // //mock data
@@ -21,7 +21,7 @@ const file = files[selectedFileName];
   return (
     <div className="flex flex-col h-full">
         <FileNameList/>
-        <Editor file={file} onChange={debounce((value?: string) => setFiles({...files, [selectedFileName]: { ...file, value: value || '' }}), 500)} />
+        <Editor options={{theme:`vs-${theme}`}} file={file} onChange={debounce((value?: string) => setFiles({...files, [selectedFileName]: { ...file, value: value || '' }}), 500)} />
     </div>
   )
 }

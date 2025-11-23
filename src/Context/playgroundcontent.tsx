@@ -1,10 +1,10 @@
-import React, { createContext, useEffect, useState, type PropsWithChildren } from 'react'
+import { createContext, useEffect, useState, type PropsWithChildren } from 'react'
 import { compress, uncompress } from '../utils/loadandcompress'
 import { fileName2Language } from '../utils/judgeLangyage'
 
 
 import { initFiles } from '../utils/files'
-import { type File, type Files } from '../types/types'
+import { type Files } from '../types/types'
 
 export interface PlaygroundContext {
   files: Files
@@ -37,7 +37,7 @@ const getFilesFromHash=()=>{
 }
 export const PlaygroundProvider = (props: PropsWithChildren) => {
   const { children } = props
-  const [files, setFiles] = useState<Files>(initFiles)
+  const [files, setFiles] = useState<Files>(getFilesFromHash())
   const [selectedFileName, setSelectedFileName] = useState('App.tsx');
   const [theme, setTheme] = useState<PlaygroundContext['theme']>('light')
   const addFile = (name: string) => {

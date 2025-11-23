@@ -6,8 +6,15 @@ import HeaderLC from '@/components/Header';
 import LeetCode from '@/components/LeetCode';
 import { Allotment } from "allotment";
 import 'allotment/dist/style.css';
+import { PlaygroundContext } from '@/Context/playgroundcontent';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import copy from 'copy-to-clipboard'
+import {message} from 'antd'
 export default function EditorPage() {
-
+   const [messageApi, contextHolder] = message.useMessage();
+  const { theme } = useContext(PlaygroundContext);
+  const navigate = useNavigate();
   //mock clients
   const clients: Clienttype[] = [
     { socketid: '1', username: 'user1' },
@@ -16,11 +23,12 @@ export default function EditorPage() {
   ];
   //mock copyRoomId
   const copyRoomId = () => {
-    console.log('copyRoomId');
+    copy(window.location.href.split('/').pop() || '');
+    messageApi.success('房间id复制成功');
   };
   //mock leaveRoom
   const leaveRoom = () => {
-    console.log('leaveRoom');
+    navigate('/');
   };
   //mock file lyy.tsx
   const file = {
@@ -38,7 +46,7 @@ export default function EditorPage() {
       <div className="h-full">
         <Slider clients={clients} copyRoomId={copyRoomId} leaveRoom={leaveRoom} />
       </div>
-      
+      {contextHolder}
       {/* 主内容区域 */}
       <div className="flex-1 flex flex-col h-full min-h-0">
         {/* HeaderLC组件 - 移除固定高度，让组件自然高度，添加明显的底部边框 */}
@@ -52,7 +60,7 @@ export default function EditorPage() {
             <LeetCode />
           </Allotment.Pane>
           <Allotment.Pane minSize={800}>
-            <Editor file={file} onChange={onChange} />
+            <Editor options={{theme:`vs-${theme}`}} file={file} onChange={onChange} />
           </Allotment.Pane>
         </Allotment>
       

@@ -1,5 +1,5 @@
 import { strFromU8, strToU8, unzlibSync, zlibSync } from "fflate"
-import { type Files, type File } from "../types/types"
+import { type Files } from "../types/types"
 // 引入JSZip库 作用：把文件压缩为zip文件
 import JSZip from 'jszip'
 // 引入file-saver库 作用：把文件下载到本地

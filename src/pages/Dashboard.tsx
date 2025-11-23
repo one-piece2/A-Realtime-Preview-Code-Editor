@@ -1,12 +1,11 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Button, Typography } from 'antd';
-import { HomeOutlined } from '@ant-design/icons';
+import { Layout, Typography } from 'antd';
 import { PlaygroundContext } from '../Context/playgroundcontent';
 import { MoonOutlined, SunOutlined } from '@ant-design/icons';
 
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 export default function Dashboard() {
@@ -26,9 +25,7 @@ export default function Dashboard() {
         navigate('/home');
     };
 
-    const handleHomeClick = () => {
-        navigate('/');
-    };
+;
 
     return (
         <Layout className={`h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} transition-colors duration-300`}>

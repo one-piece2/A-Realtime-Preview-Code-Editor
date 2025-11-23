@@ -89,21 +89,12 @@ export default function LeetCode() {
         color: theme === 'dark' ? '#f3f4f6' : '#111827',
         transition: 'background-color 0.3s, color 0.3s',
         height: '100vh',
-        overflow: 'hidden',
-        // 隐藏浏览器滚动条
-        scrollbarWidth: 'none', // Firefox
-        msOverflowStyle: 'none' // IE and Edge
+        overflow: 'hidden'
       },
       contentWrapper: {
         maxHeight: 'calc(100vh - 100px)',
-        overflowY: 'auto',
-        padding: '16px',
-        // 隐藏滚动条
-        scrollbarWidth: 'none', // Firefox
-        '&::-webkit-scrollbar': {
-          display: 'none' // Chrome, Safari, Edge
-        },
-        msOverflowStyle: 'none' // IE and Edge
+        overflowY: 'auto' as const,
+        padding: '16px'
       },
       header: {
         backgroundColor: theme === 'dark' ? '#1f2937' : '#ffffff',
@@ -152,13 +143,7 @@ export default function LeetCode() {
         color: theme === 'dark' ? '#93c5fd' : '#1e40af'
       },
       // 滚动条样式对象，供其他需要隐藏滚动条的元素使用
-      noScrollbar: {
-        scrollbarWidth: 'none',
-        '&::-webkit-scrollbar': {
-          display: 'none'
-        },
-        msOverflowStyle: 'none'
-      }
+      noScrollbar: {}
     };
   
   return (
@@ -172,7 +157,7 @@ export default function LeetCode() {
           zIndex: 100
         }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', '@media (min-width: 640px)': { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} className="md:flex-row md:items-center md:justify-between">
               <div>
                 <Title level={1} style={{
                   margin: 0,
@@ -255,8 +240,13 @@ export default function LeetCode() {
                       }
                     }}
                     size="large"
-                    style={themeStyles.button}
-                    hoverStyle={themeStyles.buttonHover}
+                    style={{...themeStyles.button, transition: 'background-color 0.3s'}}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = themeStyles.buttonHover.backgroundColor;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = themeStyles.button.backgroundColor;
+                    }}
                   >
                     计算最长无重复子串长度
                   </Button>

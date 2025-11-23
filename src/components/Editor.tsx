@@ -78,7 +78,9 @@ export default function Editor(props: Props) {
           verticalScrollbarSize: 6,
           horizontalScrollbarSize: 6,
         },
+        ...options
       }
+   
     }
   />
 }
