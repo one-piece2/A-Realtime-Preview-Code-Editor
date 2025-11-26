@@ -16,6 +16,8 @@ export interface PlaygroundContext {
   updateFileName: (oldFieldName: string, newFieldName: string) => void
   theme: 'dark' | 'light'
   setTheme: (theme: 'dark' | 'light') => void
+  leetCodes:string | undefined
+  setLeetCodes: (leetCodes: string|undefined) => void
 }
 
 export const PlaygroundContext = createContext<PlaygroundContext>({
@@ -48,6 +50,7 @@ export const PlaygroundProvider = (props: PropsWithChildren) => {
     }
     setFiles({ ...files })
   }
+  const [leetCodes, setLeetCodes] = useState<string|undefined>(undefined)
 
   const removeFile = (name: string) => {
     delete files[name]
@@ -79,6 +82,8 @@ export const PlaygroundProvider = (props: PropsWithChildren) => {
   return (
     <PlaygroundContext.Provider
       value={{
+        leetCodes,
+        setLeetCodes,
         theme,
         setTheme,
         files,

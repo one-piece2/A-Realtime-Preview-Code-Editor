@@ -10,7 +10,7 @@ import { downloadFiles } from '../utils/loadandcompress';
 
 import { PlaygroundContext } from '../Context/playgroundcontent';
 import { useContext, useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 export default function Header(props: HeaderProps) {
   const { word,photoUrl } = props;
@@ -20,7 +20,8 @@ export default function Header(props: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLImageElement>(null);
-  
+  const location = useLocation();
+ 
   // 处理点击外部关闭菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -67,8 +68,12 @@ export default function Header(props: HeaderProps) {
       <div className="flex items-center space-x-2">
         <img alt='logo' src={photoUrl} className="h-10 w-10 rounded" />
         <span className="font-bold text-lg">{word}</span>
+      
       </div>
+      
       <div className="flex items-center ">
+
+
           <CopyOutlined
           title='复制当前代码'
           style={{ marginLeft: '20px' }}

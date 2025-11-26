@@ -9,16 +9,17 @@ import { useEffect, useRef } from 'react';
 
 interface Props {
     file: EditorFile
-    onChange?: EditorProps['onChange'],
+    onChange?: (value: string|undefined) => void,
     options?: editor.IStandaloneEditorConstructionOptions
 }
 export default function Editor(props: Props) {
   const ataRef = useRef<((code: string) => void) | null>(null)
-  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
+
   const { file, onChange, options } = props;
 
-  //设置支持jsx语法
+ // 处理编辑器挂载事件
   const handleEditorMount: OnMount = (editor, monaco: any) => {
+      onChange?.(editor.getValue())
     // 绑定 Ctrl+Q快捷键来格式化文档
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyQ, () => {
       editor.getAction("editor.action.formatDocument")?.run();
@@ -51,11 +52,11 @@ export default function Editor(props: Props) {
 
   };
   useEffect(() => {
-    
-    if (editorRef.current) {
-      const current = editorRef.current.getValue()
-      if (current !== file.value) editorRef.current.setValue(file.value)
-    }
+
+    // if (editorRef.current) {
+    //   const current = editorRef.current.getValue()
+    //   if (current !== file.value) editorRef.current.setValue(file.value)
+    // }
     // 触发 ata 去检查并下载类型声明
     ataRef.current?.(file.value)
   }, [file?.name, file?.value])

@@ -1,0 +1,47 @@
+"filename", "language", "JSON", "HTML", "TypeScript", "JSON with Comments", "Markdown", "XML", "JavaScript", "TypeScript JSX", "CSS", "comment", "blank", "total"
+"c:\Users\Lenovo\Desktop\React——Editor\DEPLOYMENT_GUIDE.md", "Markdown", 0, 0, 0, 0, 134, 0, 0, 0, 0, 0, 61, 195
+"c:\Users\Lenovo\Desktop\React——Editor\README.md", "Markdown", 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 14, 74
+"c:\Users\Lenovo\Desktop\React——Editor\eslint.config.js", "JavaScript", 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 2, 24
+"c:\Users\Lenovo\Desktop\React——Editor\index.html", "HTML", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 1, 14
+"c:\Users\Lenovo\Desktop\React——Editor\package-lock.json", "JSON", 5466, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5467
+"c:\Users\Lenovo\Desktop\React——Editor\package.json", "JSON", 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 55
+"c:\Users\Lenovo\Desktop\React——Editor\public\vite.svg", "XML", 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"c:\Users\Lenovo\Desktop\React——Editor\src\App.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\Lenovo\Desktop\React——Editor\src\App.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 43, 0, 3, 8, 54
+"c:\Users\Lenovo\Desktop\React——Editor\src\Context\playgroundcontent.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 83, 0, 6, 8, 97
+"c:\Users\Lenovo\Desktop\React——Editor\src\assets\react.svg", "XML", 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\Client.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 3, 15
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\CoderEditor\index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 20, 0, 6, 1, 27
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\Editor.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 66, 0, 12, 8, 86
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\FileListItem.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 71, 0, 0, 8, 79
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\FileNameList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 57, 0, 0, 3, 60
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\Header.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 131, 0, 11, 11, 153
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\LeetCode.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 432, 0, 16, 29, 477
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\Message.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 5, 29
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\Slider.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 34, 0, 0, 2, 36
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\ifarm.html", "HTML", 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 1, 20
+"c:\Users\Lenovo\Desktop\React——Editor\src\index.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 133, 2, 9, 144
+"c:\Users\Lenovo\Desktop\React——Editor\src\lib\utils.ts", "TypeScript", 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 2, 7
+"c:\Users\Lenovo\Desktop\React——Editor\src\main.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 5, 11
+"c:\Users\Lenovo\Desktop\React——Editor\src\pages\Dashboard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 105, 0, 8, 13, 126
+"c:\Users\Lenovo\Desktop\React——Editor\src\pages\EditorFilesPage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 6, 26
+"c:\Users\Lenovo\Desktop\React——Editor\src\pages\EditorSigelPage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 58, 0, 9, 4, 71
+"c:\Users\Lenovo\Desktop\React——Editor\src\pages\Preview.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 83, 0, 3, 6, 92
+"c:\Users\Lenovo\Desktop\React——Editor\src\pages\home.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 89, 0, 0, 7, 96
+"c:\Users\Lenovo\Desktop\React——Editor\src\template\App.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 0, 57, 0, 8, 65
+"c:\Users\Lenovo\Desktop\React——Editor\src\template\App.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 3, 17
+"c:\Users\Lenovo\Desktop\React——Editor\src\template\import-map.json", "JSON", 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6
+"c:\Users\Lenovo\Desktop\React——Editor\src\template\main.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 2, 10
+"c:\Users\Lenovo\Desktop\React——Editor\src\types\types.ts", "TypeScript", 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 5, 35
+"c:\Users\Lenovo\Desktop\React——Editor\src\utils\ata.ts", "TypeScript", 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 2, 18
+"c:\Users\Lenovo\Desktop\React——Editor\src\utils\babelPlug.ts", "TypeScript", 0, 0, 64, 0, 0, 0, 0, 0, 0, 7, 4, 75
+"c:\Users\Lenovo\Desktop\React——Editor\src\utils\compiler.ts", "TypeScript", 0, 0, 31, 0, 0, 0, 0, 0, 0, 2, 4, 37
+"c:\Users\Lenovo\Desktop\React——Editor\src\utils\files.ts", "TypeScript", 0, 0, 31, 0, 0, 0, 0, 0, 0, 3, 2, 36
+"c:\Users\Lenovo\Desktop\React——Editor\src\utils\judgeLangyage.ts", "TypeScript", 0, 0, 8, 0, 0, 0, 0, 0, 0, 1, 0, 9
+"c:\Users\Lenovo\Desktop\React——Editor\src\utils\loadandcompress.ts", "TypeScript", 0, 0, 24, 0, 0, 0, 0, 0, 0, 11, 6, 41
+"c:\Users\Lenovo\Desktop\React——Editor\tsconfig.app.json", "JSON", 28, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 32
+"c:\Users\Lenovo\Desktop\React——Editor\tsconfig.json", "JSON with Comments", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 17
+"c:\Users\Lenovo\Desktop\React——Editor\tsconfig.node.json", "JSON", 22, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 27
+"c:\Users\Lenovo\Desktop\React——Editor\vite-env.d.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2
+"c:\Users\Lenovo\Desktop\React——Editor\vite.config.ts", "TypeScript", 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 1, 18
+"Total", "-", 5576, 32, 225, 17, 194, 2, 22, 1356, 190, 106, 263, 7983

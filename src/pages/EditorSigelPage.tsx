@@ -4,6 +4,7 @@ import Slider from '@/components/Slider';
 import { type Clienttype } from '@/types/types';
 import HeaderLC from '@/components/Header';
 import LeetCode from '@/components/LeetCode';
+import OutputBox from '@/components/OutputBox';
 import { Allotment } from "allotment";
 import 'allotment/dist/style.css';
 import { PlaygroundContext } from '@/Context/playgroundcontent';
@@ -13,7 +14,7 @@ import copy from 'copy-to-clipboard'
 import {message} from 'antd'
 export default function EditorPage() {
    const [messageApi, contextHolder] = message.useMessage();
-  const { theme } = useContext(PlaygroundContext);
+  const { theme ,setLeetCodes} = useContext(PlaygroundContext);
   const navigate = useNavigate();
   //mock clients
   const clients: Clienttype[] = [
@@ -32,18 +33,20 @@ export default function EditorPage() {
   };
   //mock file lyy.tsx
   const file = {
-    name: 'lyy.tsx',
-    value: 'import lodash from "lodash";\n\nconst a = <div>lyy</div>',
-    language: 'typescript'
+    name: 'lyy.js',
+    value: 'console.log("Hello World!");',
+    language: 'javascript'
   }
-  //mock onChange
-  const onChange = () => {
-    console.log('hhhh');
+
+  const onChange = (value: string|undefined) => {
+     setLeetCodes(value)
   }
+
   return (
     <div className="flex h-screen w-full bg-[#f5f5f5]">
       {/* Slider组件 - 设置与主内容相同的高度和背景色 */}
       <div className="h-full">
+
         <Slider clients={clients} copyRoomId={copyRoomId} leaveRoom={leaveRoom} />
       </div>
       {contextHolder}
@@ -55,15 +58,28 @@ export default function EditorPage() {
         </div>
         
         {/* 内容区域 - 占据剩余空间 */}
-        <Allotment className="flex-1 h-full" defaultSizes={[100, 100]}>
-          <Allotment.Pane minSize={0}>
-            <LeetCode />
+        <Allotment className="flex-1 h-full" vertical defaultSizes={[1, 1]}>
+          <Allotment.Pane minSize={100}>
+            <Allotment className="h-full" defaultSizes={[100, 100]}>
+              <Allotment.Pane minSize={0}>
+                <LeetCode />
+              </Allotment.Pane>
+              <Allotment.Pane minSize={800}>
+                <Editor options={{theme:`vs-${theme}`}} file={file} onChange={onChange} />
+              </Allotment.Pane>
+            </Allotment>
           </Allotment.Pane>
-          <Allotment.Pane minSize={800}>
-            <Editor options={{theme:`vs-${theme}`}} file={file} onChange={onChange} />
+          <Allotment.Pane minSize={0} maxSize={400} >
+            <OutputBox 
+            // 模拟输出内容
+             
+            
+              onRefresh={() => console.log('刷新输出')}
+              onClear={() => console.log('清除输出')}
+            />
           </Allotment.Pane>
         </Allotment>
-      
+        
       </div>
 
     </div>
