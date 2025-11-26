@@ -1,4 +1,4 @@
-import  { useState, useContext,  } from 'react';
+import  { useState, useContext, useCallback,  } from 'react';
 import { Card, Typography, Empty, Button, message, } from 'antd';
 import { CopyOutlined, ClearOutlined, ReloadOutlined } from '@ant-design/icons';
 import { PlaygroundContext } from '../Context/playgroundcontent';
@@ -25,6 +25,7 @@ export default function OutputBox({
   onRefresh,
  
 }: OutputBoxProps) {
+  console.log('Output重新渲染')
   const { theme} = useContext(PlaygroundContext);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -42,13 +43,13 @@ export default function OutputBox({
 
   
   // 复制输出内容到剪贴板
-  const handleCopy = () => {
+  const handleCopy = useCallback(() => {
     if (codeOutput.CodeOutput && copy(codeOutput.CodeOutput?.trim())) {
       messageApi.success('输出内容已复制到剪贴板');
     } else {
       messageApi.warning('无可复制内容');
     }
-  };
+  }, [messageApi]);
   
   // 清除输出内容
   const handleClear = () => {
