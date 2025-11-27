@@ -1,4 +1,4 @@
-"use client"
+
 
 import { useContext, useState } from "react"
 import { PlaygroundContext } from "../Context/playgroundcontent"
