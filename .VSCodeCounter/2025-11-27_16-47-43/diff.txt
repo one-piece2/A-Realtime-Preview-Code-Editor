@@ -1,0 +1,54 @@
+Date : 2025-11-27 16:47:43
+Directory : c:\Users\Lenovo\Desktop\React——Editor
+Total : 19 files,  790 codes, 25 comments, 98 blanks, all 913 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| TypeScript JSX |         14 |        593 |         17 |         85 |        695 |
+| JSON           |          4 |        145 |          0 |          1 |        146 |
+| TypeScript     |          1 |         52 |          8 |         12 |         72 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                       | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                          |         19 |        790 |         25 |         98 |        913 |
+| . (Files)                                                                  |          4 |        145 |          0 |          1 |        146 |
+| src                                                                        |         15 |        645 |         25 |         97 |        767 |
+| src\Context                                                                |          1 |          5 |          0 |          0 |          5 |
+| src\components                                                             |         10 |        408 |         18 |         69 |        495 |
+| src\components (Files)                                                     |          6 |        222 |         18 |         47 |        287 |
+| src\components\CoderEditor                                                 |          1 |          2 |          0 |          0 |          2 |
+| src\components\ui                                                          |          3 |        184 |          0 |         22 |        206 |
+| src\pages                                                                  |          3 |        180 |         -1 |         16 |        195 |
+| src\utils                                                                  |          1 |         52 |          8 |         12 |         72 |
++----------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                   | language       | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| c:\Users\Lenovo\Desktop\React——Editor\components.json                      | JSON           |         22 |          0 |          1 |         23 |
+| c:\Users\Lenovo\Desktop\React——Editor\package-lock.json                    | JSON           |        123 |          0 |          0 |        123 |
+| c:\Users\Lenovo\Desktop\React——Editor\package.json                         | JSON           |          1 |          0 |          0 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\Context\playgroundcontent.tsx    | TypeScript JSX |          5 |          0 |          0 |          5 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\CoderEditor\index.tsx | TypeScript JSX |          2 |          0 |          0 |          2 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\Editor.tsx            | TypeScript JSX |         -5 |          4 |          2 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\Header.tsx            | TypeScript JSX |        130 |          4 |         14 |        148 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\LeetCode.tsx          | TypeScript JSX |       -101 |         -5 |         -3 |       -109 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\OutputBox.tsx         | TypeScript JSX |         95 |          7 |         17 |        119 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\RunCoder.tsx          | TypeScript JSX |         63 |          5 |         10 |         78 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\Slider.tsx            | TypeScript JSX |         40 |          3 |          7 |         50 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\ui\avatar.tsx         | TypeScript JSX |         46 |          0 |          6 |         52 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\ui\button.tsx         | TypeScript JSX |         55 |          0 |          6 |         61 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\components\ui\card.tsx           | TypeScript JSX |         83 |          0 |         10 |         93 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\pages\Dashboard.tsx              | TypeScript JSX |        169 |         -1 |          4 |        172 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\pages\EditorFilesPage.tsx        | TypeScript JSX |          0 |          0 |          7 |          7 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\pages\EditorSigelPage.tsx        | TypeScript JSX |         11 |          0 |          5 |         16 |
+| c:\Users\Lenovo\Desktop\React——Editor\src\utils\codeWorker.ts              | TypeScript     |         52 |          8 |         12 |         72 |
+| c:\Users\Lenovo\Desktop\React——Editor\tsconfig.app.json                    | JSON           |         -1 |          0 |          0 |         -1 |
+| Total                                                                      |                |        790 |         25 |         98 |        913 |
++----------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

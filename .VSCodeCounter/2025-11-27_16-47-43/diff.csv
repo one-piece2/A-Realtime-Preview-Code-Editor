@@ -1,0 +1,21 @@
+"filename", "language", "JSON", "TypeScript JSX", "TypeScript", "comment", "blank", "total"
+"c:\Users\Lenovo\Desktop\React——Editor\components.json", "JSON", 22, 0, 0, 0, 1, 23
+"c:\Users\Lenovo\Desktop\React——Editor\package-lock.json", "JSON", 123, 0, 0, 0, 0, 123
+"c:\Users\Lenovo\Desktop\React——Editor\package.json", "JSON", 1, 0, 0, 0, 0, 1
+"c:\Users\Lenovo\Desktop\React——Editor\src\Context\playgroundcontent.tsx", "TypeScript JSX", 0, 5, 0, 0, 0, 5
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\CoderEditor\index.tsx", "TypeScript JSX", 0, 2, 0, 0, 0, 2
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\Editor.tsx", "TypeScript JSX", 0, -5, 0, 4, 2, 1
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\Header.tsx", "TypeScript JSX", 0, 130, 0, 4, 14, 148
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\LeetCode.tsx", "TypeScript JSX", 0, -101, 0, -5, -3, -109
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\OutputBox.tsx", "TypeScript JSX", 0, 95, 0, 7, 17, 119
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\RunCoder.tsx", "TypeScript JSX", 0, 63, 0, 5, 10, 78
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\Slider.tsx", "TypeScript JSX", 0, 40, 0, 3, 7, 50
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\ui\avatar.tsx", "TypeScript JSX", 0, 46, 0, 0, 6, 52
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\ui\button.tsx", "TypeScript JSX", 0, 55, 0, 0, 6, 61
+"c:\Users\Lenovo\Desktop\React——Editor\src\components\ui\card.tsx", "TypeScript JSX", 0, 83, 0, 0, 10, 93
+"c:\Users\Lenovo\Desktop\React——Editor\src\pages\Dashboard.tsx", "TypeScript JSX", 0, 169, 0, -1, 4, 172
+"c:\Users\Lenovo\Desktop\React——Editor\src\pages\EditorFilesPage.tsx", "TypeScript JSX", 0, 0, 0, 0, 7, 7
+"c:\Users\Lenovo\Desktop\React——Editor\src\pages\EditorSigelPage.tsx", "TypeScript JSX", 0, 11, 0, 0, 5, 16
+"c:\Users\Lenovo\Desktop\React——Editor\src\utils\codeWorker.ts", "TypeScript", 0, 0, 52, 8, 12, 72
+"c:\Users\Lenovo\Desktop\React——Editor\tsconfig.app.json", "JSON", -1, 0, 0, 0, 0, -1
+"Total", "-", 145, 593, 52, 25, 98, 913

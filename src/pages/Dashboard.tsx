@@ -23,7 +23,7 @@ export default function Dashboard() {
   const isDark = theme === "dark"
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 ${isDark ? "bg-[#0a0a0f]" : "bg-[#fafafa]"}`}>
+    <div className={`h-screen overflow-hidden transition-colors duration-500 flex flex-col ${isDark ? "bg-[#0a0a0f]" : "bg-[#fafafa]"}`}>
       {/* Header */}
       <header
         className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-300 ${
@@ -39,7 +39,7 @@ export default function Dashboard() {
                   : "bg-gradient-to-br from-emerald-600 to-cyan-600"
               }`}
             >
-            <img src="/onepiece.png" alt="logo" className="h-8 w-8" />
+              <img src="/onepiece.png" alt="logo" className="h-8 w-8" />
             </div>
             <div>
               <h1 className={`font-semibold text-lg tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
@@ -83,8 +83,9 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="flex min-h-[calc(100vh-64px)]">
-        {/* Sidebar */}
+      {/* 关键：Flex-1 占满剩余高度，不允许溢出 */}
+      <div className="flex-1 flex">
+        {/* Sidebar：固定宽度，内容不多无需滚动 */}
         <aside
           className={`w-72 border-r p-6 transition-colors duration-300 ${
             isDark ? "bg-[#0d0d12] border-white/5" : "bg-white border-gray-200"
@@ -146,32 +147,32 @@ export default function Dashboard() {
           </div>
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 p-8 overflow-auto">
-          <div className="max-w-4xl mx-auto">
+        {/* Main Content：Flex-1 占满剩余宽度，内容自适应高度 */}
+        <main className="flex-1 p-8 flex flex-col justify-between">
+          <div className="max-w-4xl mx-auto w-full">
             {/* Welcome Section */}
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <div
-                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6 ${
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-4 ${
                   isDark ? "bg-emerald-500/10 text-emerald-400" : "bg-emerald-50 text-emerald-600"
                 }`}
               >
                 <Sparkles className="h-3 w-3" />
                 Welcome back
               </div>
-              <h1 className={`text-4xl font-bold mb-4 tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
+              <h1 className={`text-3xl md:text-4xl font-bold mb-3 tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
                 Code Editor Dashboard
               </h1>
-              <p className={`text-lg max-w-2xl mx-auto leading-relaxed ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+              <p className={`text-base md:text-lg max-w-2xl mx-auto leading-relaxed ${isDark ? "text-gray-400" : "text-gray-600"}`}>
                 Choose an editor option from the left panel to get started. Create amazing code with our powerful
                 editors or collaborate with friends in real-time.
               </p>
             </div>
 
-            {/* Features Grid */}
-            <div className="grid md:grid-cols-2 gap-4 mb-8">
+            {/* Features Grid：自适应高度，不溢出 */}
+            <div className="grid md:grid-cols-2 gap-4 mb-8 flex-grow">
               <Card
-                className={`border transition-all duration-200 hover:scale-[1.02] ${
+                className={`border transition-all duration-200 hover:scale-[1.02] flex flex-col ${
                   isDark
                     ? "bg-white/5 border-white/10 hover:border-white/20"
                     : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
@@ -187,7 +188,7 @@ export default function Dashboard() {
                   </div>
                   <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Real-time Editing</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
                     Experience lightning-fast code editing with instant feedback and auto-save functionality.
                   </CardDescription>
@@ -195,7 +196,7 @@ export default function Dashboard() {
               </Card>
 
               <Card
-                className={`border transition-all duration-200 hover:scale-[1.02] ${
+                className={`border transition-all duration-200 hover:scale-[1.02] flex flex-col ${
                   isDark
                     ? "bg-white/5 border-white/10 hover:border-white/20"
                     : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
@@ -211,7 +212,7 @@ export default function Dashboard() {
                   </div>
                   <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Collaboration</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
                     Work together with your team in real-time with live cursors and instant sync.
                   </CardDescription>
@@ -219,7 +220,7 @@ export default function Dashboard() {
               </Card>
 
               <Card
-                className={`border transition-all duration-200 hover:scale-[1.02] ${
+                className={`border transition-all duration-200 hover:scale-[1.02] flex flex-col ${
                   isDark
                     ? "bg-white/5 border-white/10 hover:border-white/20"
                     : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
@@ -235,7 +236,7 @@ export default function Dashboard() {
                   </div>
                   <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Syntax Highlighting</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
                     Support for multiple programming languages with beautiful syntax highlighting.
                   </CardDescription>
@@ -243,7 +244,7 @@ export default function Dashboard() {
               </Card>
 
               <Card
-                className={`border transition-all duration-200 hover:scale-[1.02] ${
+                className={`border transition-all duration-200 hover:scale-[1.02] flex flex-col ${
                   isDark
                     ? "bg-white/5 border-white/10 hover:border-white/20"
                     : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
@@ -259,17 +260,19 @@ export default function Dashboard() {
                   </div>
                   <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Instant Preview</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-grow">
                   <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
                     See your changes come to life instantly with our built-in preview functionality.
                   </CardDescription>
                 </CardContent>
               </Card>
             </div>
+          </div>
 
-            {/* CTA Section */}
+          {/* CTA Section：固定在底部，不随内容滚动 */}
+          <div className="max-w-4xl mx-auto w-full mt-auto">
             <div
-              className={`rounded-2xl p-8 text-center ${
+              className={`rounded-2xl p-6 text-center ${
                 isDark
                   ? "bg-gradient-to-br from-emerald-500/10 via-cyan-500/10 to-transparent border border-white/10"
                   : "bg-gradient-to-br from-emerald-50 via-cyan-50 to-white border border-gray-200"
@@ -278,7 +281,7 @@ export default function Dashboard() {
               <h3 className={`text-xl font-semibold mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
                 Ready to start coding?
               </h3>
-              <p className={`mb-6 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+              <p className={`mb-4 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
                 Select an editor from the sidebar to begin your coding journey.
               </p>
               <Button
