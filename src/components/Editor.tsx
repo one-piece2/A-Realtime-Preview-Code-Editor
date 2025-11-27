@@ -1,6 +1,6 @@
 import MonacoEditor, {
   type OnMount,
-  type EditorProps,
+
 } from '@monaco-editor/react'
 import { editor } from "monaco-editor";
 import { type EditorFile } from '../types/types';
