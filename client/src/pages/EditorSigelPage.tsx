@@ -8,38 +8,75 @@ import OutputBox from '@/components/OutputBox';
 import { Allotment } from "allotment";
 import 'allotment/dist/style.css';
 import { PlaygroundContext } from '@/Context/playgroundcontent';
-import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useRef } from 'react';
+import { useNavigate ,useLocation,useParams } from 'react-router-dom';
 import copy from 'copy-to-clipboard'
-import {message} from 'antd'
+import { message } from 'antd'
+import { initSocket } from '@/socket';
+import type { Socket } from 'socket.io-client';
+import { ACTIONS } from '@/action';
+
 export default function EditorPage() {
-   const [messageApi, contextHolder] = message.useMessage();
-  const { theme ,setLeetCodes} = useContext(PlaygroundContext);
+  const [messageApi, contextHolder] = message.useMessage();
+  const { theme, setLeetCodes } = useContext(PlaygroundContext);
   const navigate = useNavigate();
+  const location = useLocation();
+const { roomId } = useParams();
+  const socketRef = useRef<Socket | null>(null);
+  useEffect(() => {
+    if (!location.state) return;
+    const init = async () => {
+      socketRef.current = await initSocket();
+      // 连接错误处理
+      socketRef.current.on('connect_error', (err) => {
+        handleErrors(err);
+      });
+      socketRef.current.on('connect_failed', (err) => {
+        handleErrors(err);
+      });
+       // emit是发送事件:JOIN
+      socketRef.current.emit(ACTIONS.JOIN, {
+        username: location.state?.username,
+        roomId,
+      });
+
+      socketRef.current.on('connect', () => {
+        console.log('socket connected');
+      });
+      init()
+    }
+
+
+
+  }, []);
   //mock clients
   const clients: Clienttype[] = [
     { socketid: '1', username: 'user1' },
     { socketid: '2', username: 'user2' },
     { socketid: '3', username: 'user3' },
   ];
-  //mock copyRoomId
+  const handleErrors = (err: any) => {
+    console.log('socket error', err);
+    messageApi.error(err.message);
+    navigate('/');
+  }
   const copyRoomId = () => {
     copy(window.location.href.split('/').pop() || '');
     messageApi.success('房间id复制成功');
   };
-  //mock leaveRoom
+
   const leaveRoom = () => {
     navigate('/');
   };
-  //mock file lyy.tsx
+
   const file = {
     name: 'lyy.js',
     value: 'console.log("Hello World!");',
     language: 'javascript'
   }
 
-  const onChange = (value: string|undefined) => {
-     setLeetCodes(value)
+  const onChange = (value: string | undefined) => {
+    setLeetCodes(value)
   }
 
   return (
@@ -56,7 +93,7 @@ export default function EditorPage() {
         <div className="bg-[#f5f5f5] dark:border-gray-700 z-9999">
           <HeaderLC word='LeetCode Together' photoUrl='/image.png' />
         </div>
-        
+
         {/* 内容区域 - 占据剩余空间 */}
         <Allotment className="flex-1 h-full" vertical defaultSizes={[1, 1]}>
           <Allotment.Pane minSize={100}>
@@ -65,21 +102,21 @@ export default function EditorPage() {
                 <LeetCode />
               </Allotment.Pane>
               <Allotment.Pane minSize={800}>
-                <Editor options={{theme:`vs-${theme}`}} file={file} onChange={onChange} />
+                <Editor options={{ theme: `vs-${theme}` }} file={file} onChange={onChange} />
               </Allotment.Pane>
             </Allotment>
           </Allotment.Pane>
           <Allotment.Pane minSize={100} maxSize={400} >
-            <OutputBox 
-            // 模拟输出内容
-             
-            
+            <OutputBox
+              // 模拟输出内容
+
+
               onRefresh={() => console.log('刷新输出')}
               onClear={() => console.log('清除输出')}
             />
           </Allotment.Pane>
         </Allotment>
-        
+
       </div>
 
     </div>
