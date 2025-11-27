@@ -19,9 +19,11 @@ const file = files[selectedFileName];
 //     language: 'typescript'
 //   }
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-[calc(100vh-64px)] w-full overflow-hidden">
         <FileNameList/>
-        <Editor options={{theme:`vs-${theme}`}} file={file} onChange={debounce((value?: string) => setFiles({...files, [selectedFileName]: { ...file, value: value || '' }}), 500)} />
+        <div className="flex-1 flex flex-col h-full overflow-hidden">
+          <Editor options={{theme:`vs-${theme}`}} file={file} onChange={debounce((value?: string) => setFiles({...files, [selectedFileName]: { ...file, value: value || '' }}), 500)} />
+        </div>
     </div>
   )
 }

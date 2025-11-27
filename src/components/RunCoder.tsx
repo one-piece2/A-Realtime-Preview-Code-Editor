@@ -30,7 +30,7 @@ export default function RunCoder(props:RunCoderProps) {
       else if(type === 'error'){
         setError(error);
       }
-      else{
+     else if (type === 'console'){
           setCodeOutput((prev) => [...prev, ...Output || []]); // 注意 Output 是数组
       }
     }

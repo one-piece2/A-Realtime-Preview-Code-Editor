@@ -1,126 +1,297 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Layout, Typography } from 'antd';
-import { PlaygroundContext } from '../Context/playgroundcontent';
-import { MoonOutlined, SunOutlined } from '@ant-design/icons';
-
-
-const { Content } = Layout;
-const { Title, Paragraph } = Typography;
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { Moon, Sun, Github, Code2, Users, Zap, Sparkles, Terminal, Eye } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function Dashboard() {
-    const { theme, setTheme } = useContext(PlaygroundContext);
-    const navigate = useNavigate();
-    const [activeButton, setActiveButton] = useState<string>('');
+  const [theme, setTheme] = useState<"light" | "dark">("dark")
+  const navigate = useNavigate()
+  const [activeButton, setActiveButton] = useState<string>("")
 
-    const handleCodeEditorClick = () => {
-        setActiveButton('codeEditor');
-        // 导航到适当的页面，这里使用 home 作为示例
-        navigate('/editor/files');
-    };
+  const handleCodeEditorClick = () => {
+    setActiveButton("codeEditor")
+    navigate("/editor/files")
+  }
 
-    const handleEditorWithFriendsClick = () => {
-        setActiveButton('editorWithFriends');
-        // 导航到编辑器页面，这里使用 home 作为示例
-        navigate('/home');
-    };
+  const handleEditorWithFriendsClick = () => {
+    setActiveButton("editorWithFriends")
+    navigate("/home")
+  }
 
-;
+  const isDark = theme === "dark"
 
-    return (
-        <Layout className={`h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} transition-colors duration-300`}>
-            {/* 顶部导航 */}
-            <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b flex items-center justify-between p-4 h-auto py-3 transition-colors duration-300`} style={{ height: '64px' }}>
-                <div className="flex items-center gap-3">
-                    <img
-                        src="/onepiece.png"
-                        alt="One Piece Logo"
-                        className="h-15 w-15 rounded-md object-contain"
-                    />
-                    <h1 className={`m-0 font-bold text-lg !important ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Code Editor Dashboard</h1>
-                </div>
-                <div className="flex items-center gap-4">
-                    {/* GitHub Logo with customizable link */}
-                    <a
-                        href="https://github.com" // 这里可以修改为任何GitHub地址
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="h-10 w-10 flex items-center justify-center bg-white rounded-md hover:bg-gray-200 transition-colors"
+  return (
+    <div className={`min-h-screen transition-colors duration-500 ${isDark ? "bg-[#0a0a0f]" : "bg-[#fafafa]"}`}>
+      {/* Header */}
+      <header
+        className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-300 ${
+          isDark ? "bg-[#0a0a0f]/80 border-white/10" : "bg-white/80 border-black/5"
+        }`}
+      >
+        <div className="flex items-center justify-between px-6 h-16">
+          <div className="flex items-center gap-3">
+            <div
+              className={`h-10 w-10 rounded-xl flex items-center justify-center ${
+                isDark
+                  ? "bg-gradient-to-br from-emerald-500 to-cyan-500"
+                  : "bg-gradient-to-br from-emerald-600 to-cyan-600"
+              }`}
+            >
+            <img src="/onepiece.png" alt="logo" className="h-8 w-8" />
+            </div>
+            <div>
+              <h1 className={`font-semibold text-lg tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
+                Code Editor
+              </h1>
+              <p className={`text-xs ${isDark ? "text-gray-500" : "text-gray-500"}`}>Dashboard</p>
+            </div>
+          </div>
 
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-6 w-6" style={{ fill: 'black' }}>
-                            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                        </svg>
-                    </a>
-              
-                    <img
-                        src='/1.png'
-                        alt="Avatar"
-                        className="h-8 w-8 rounded-full border-2 border-white"
-                    />
-                    {/* 主题切换按钮 */}
-                    <button
-                        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                        className={`p-2 rounded-full transition-colors duration-300 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'}`}
-                        aria-label={theme === 'light' ? '切换暗色主题' : '切换亮色主题'}
-                    >
-                        {theme === 'light' ?
-                            <MoonOutlined className="h-8 w-8" /> :
-                            <SunOutlined className="h-8 w-8" />
-                        }
-                    </button>
-                </div>
-          
+          <div className="flex items-center gap-3">
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`h-9 w-9 flex items-center justify-center rounded-lg transition-all duration-200 ${
+                isDark
+                  ? "bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white"
+                  : "bg-black/5 hover:bg-black/10 text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              <Github className="h-4 w-4" />
+            </a>
 
+            <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-offset-transparent ring-emerald-500/50">
+              <AvatarImage src="/1.png" alt="Avatar" />
+              <AvatarFallback className={isDark ? "bg-gray-800 text-white" : "bg-gray-200"}>U</AvatarFallback>
+            </Avatar>
+
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className={`h-9 w-9 flex items-center justify-center rounded-lg transition-all duration-200 ${
+                isDark
+                  ? "bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white"
+                  : "bg-black/5 hover:bg-black/10 text-gray-600 hover:text-gray-900"
+              }`}
+              aria-label={theme === "light" ? "切换暗色主题" : "切换亮色主题"}
+            >
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="flex min-h-[calc(100vh-64px)]">
+        {/* Sidebar */}
+        <aside
+          className={`w-72 border-r p-6 transition-colors duration-300 ${
+            isDark ? "bg-[#0d0d12] border-white/5" : "bg-white border-gray-200"
+          }`}
+        >
+          <div className="space-y-6">
+            <div>
+              <h2
+                className={`text-xs font-medium uppercase tracking-wider mb-4 ${
+                  isDark ? "text-gray-500" : "text-gray-400"
+                }`}
+              >
+                Editor Options
+              </h2>
+              <div className="space-y-2">
+                <button
+                  onClick={handleCodeEditorClick}
+                  className={`w-full h-14 rounded-xl font-medium transition-all duration-200 flex items-center gap-3 px-4 ${
+                    activeButton === "codeEditor"
+                      ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/25"
+                      : isDark
+                        ? "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                  }`}
+                >
+                  <Terminal className="h-5 w-5" />
+                  <span>Code Editor</span>
+                </button>
+                <button
+                  onClick={handleEditorWithFriendsClick}
+                  className={`w-full h-14 rounded-xl font-medium transition-all duration-200 flex items-center gap-3 px-4 ${
+                    activeButton === "editorWithFriends"
+                      ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/25"
+                      : isDark
+                        ? "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                  }`}
+                >
+                  <Users className="h-5 w-5" />
+                  <span>Editor with Friends</span>
+                </button>
+              </div>
             </div>
 
-            {/* 主要内容区域 */}
-            <Content className="p-0 flex flex-1">
-                <div className="flex h-full w-full">
-                    {/* 左侧按钮区域 */}
-                    <div className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-200 border-gray-300'} p-6 rounded-r-none shadow-lg w-64 flex flex-col gap-4 border-r transition-colors duration-300`}>
-                        <h1 className={`${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-4 mx-auto text-2xl font-bold`}>Editor Options</h1>
-                        <button
-                            onClick={handleCodeEditorClick}
-                            className={`h-16 text-base font-bold rounded-md transition-all duration-300 flex items-center justify-center cursor-pointer ${activeButton === 'codeEditor' ? 'bg-green-600 text-white' : theme === 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-                            style={{ border: 'none' }}
-                        >
-                            Code Editor
-                        </button>
-                        <button
-                            onClick={handleEditorWithFriendsClick}
-                            className={`h-16 text-base font-bold rounded-md transition-all duration-300 flex items-center justify-center cursor-pointer ${activeButton === 'editorWithFriends' ? 'bg-green-600 text-white' : theme === 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-                            style={{ border: 'none' }}
-                        >
-                            Editor with Friends
-                        </button>
-                    </div>
-
-                    {/* 右侧欢迎页面 */}
-                    <div className={`${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} p-8 rounded-l-none flex-1 flex flex-col items-center justify-center transition-colors duration-300`}>
-                        <img
-                            src="/logo.jpg"
-                            alt="One Piece Logo"
-                            className="h-80 w-200 rounded-lg object-contain mb-6"
-                        />
-                        <Title level={2} className={`${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-4 text-center`}>Welcome to Code Editor Dashboard</Title>
-                        <Paragraph className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} text-center max-w-2xl font-bold`} style={{ fontSize: '18px' }}>
-                            Choose an editor option from the left panel to get started.
-                            Create amazing code with our powerful editors or collaborate with friends in real-time.
-                        </Paragraph>
-                        <div className={`mt-8 ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} p-6 rounded-lg w-full max-w-2xl transition-colors duration-300`}>
-                            <Title level={2} className={`${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-2 text-2xl`}>Features</Title>
-                            <ul className={`list-disc pl-5 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} space-y-2 text-lg`}>
-                                <li>Real-time code editing</li>
-                                <li>Collaborative editing with friends</li>
-                                <li>Syntax highlighting for multiple languages</li>
-                                <li>Auto-completion and suggestions</li>
-                                <li>Instant preview of your code</li>
-                            </ul>
-                        </div>
-                    </div>
+            {/* Quick Stats */}
+            <div className={`rounded-xl p-4 ${isDark ? "bg-white/5" : "bg-gray-50"}`}>
+              <p className={`text-xs font-medium mb-3 ${isDark ? "text-gray-500" : "text-gray-400"}`}>Quick Stats</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>Projects</span>
+                  <span className={`text-sm font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>12</span>
                 </div>
-            </Content>
-        </Layout>
-    );
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>Collaborators</span>
+                  <span className={`text-sm font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>5</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-8 overflow-auto">
+          <div className="max-w-4xl mx-auto">
+            {/* Welcome Section */}
+            <div className="text-center mb-12">
+              <div
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6 ${
+                  isDark ? "bg-emerald-500/10 text-emerald-400" : "bg-emerald-50 text-emerald-600"
+                }`}
+              >
+                <Sparkles className="h-3 w-3" />
+                Welcome back
+              </div>
+              <h1 className={`text-4xl font-bold mb-4 tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
+                Code Editor Dashboard
+              </h1>
+              <p className={`text-lg max-w-2xl mx-auto leading-relaxed ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                Choose an editor option from the left panel to get started. Create amazing code with our powerful
+                editors or collaborate with friends in real-time.
+              </p>
+            </div>
+
+            {/* Features Grid */}
+            <div className="grid md:grid-cols-2 gap-4 mb-8">
+              <Card
+                className={`border transition-all duration-200 hover:scale-[1.02] ${
+                  isDark
+                    ? "bg-white/5 border-white/10 hover:border-white/20"
+                    : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
+                }`}
+              >
+                <CardHeader className="pb-2">
+                  <div
+                    className={`h-10 w-10 rounded-lg flex items-center justify-center mb-2 ${
+                      isDark ? "bg-emerald-500/20" : "bg-emerald-100"
+                    }`}
+                  >
+                    <Zap className={`h-5 w-5 ${isDark ? "text-emerald-400" : "text-emerald-600"}`} />
+                  </div>
+                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Real-time Editing</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
+                    Experience lightning-fast code editing with instant feedback and auto-save functionality.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card
+                className={`border transition-all duration-200 hover:scale-[1.02] ${
+                  isDark
+                    ? "bg-white/5 border-white/10 hover:border-white/20"
+                    : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
+                }`}
+              >
+                <CardHeader className="pb-2">
+                  <div
+                    className={`h-10 w-10 rounded-lg flex items-center justify-center mb-2 ${
+                      isDark ? "bg-cyan-500/20" : "bg-cyan-100"
+                    }`}
+                  >
+                    <Users className={`h-5 w-5 ${isDark ? "text-cyan-400" : "text-cyan-600"}`} />
+                  </div>
+                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Collaboration</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
+                    Work together with your team in real-time with live cursors and instant sync.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card
+                className={`border transition-all duration-200 hover:scale-[1.02] ${
+                  isDark
+                    ? "bg-white/5 border-white/10 hover:border-white/20"
+                    : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
+                }`}
+              >
+                <CardHeader className="pb-2">
+                  <div
+                    className={`h-10 w-10 rounded-lg flex items-center justify-center mb-2 ${
+                      isDark ? "bg-amber-500/20" : "bg-amber-100"
+                    }`}
+                  >
+                    <Code2 className={`h-5 w-5 ${isDark ? "text-amber-400" : "text-amber-600"}`} />
+                  </div>
+                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Syntax Highlighting</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
+                    Support for multiple programming languages with beautiful syntax highlighting.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card
+                className={`border transition-all duration-200 hover:scale-[1.02] ${
+                  isDark
+                    ? "bg-white/5 border-white/10 hover:border-white/20"
+                    : "bg-white border-gray-200 hover:border-gray-300 shadow-sm"
+                }`}
+              >
+                <CardHeader className="pb-2">
+                  <div
+                    className={`h-10 w-10 rounded-lg flex items-center justify-center mb-2 ${
+                      isDark ? "bg-rose-500/20" : "bg-rose-100"
+                    }`}
+                  >
+                    <Eye className={`h-5 w-5 ${isDark ? "text-rose-400" : "text-rose-600"}`} />
+                  </div>
+                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Instant Preview</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
+                    See your changes come to life instantly with our built-in preview functionality.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* CTA Section */}
+            <div
+              className={`rounded-2xl p-8 text-center ${
+                isDark
+                  ? "bg-gradient-to-br from-emerald-500/10 via-cyan-500/10 to-transparent border border-white/10"
+                  : "bg-gradient-to-br from-emerald-50 via-cyan-50 to-white border border-gray-200"
+              }`}
+            >
+              <h3 className={`text-xl font-semibold mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
+                Ready to start coding?
+              </h3>
+              <p className={`mb-6 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                Select an editor from the sidebar to begin your coding journey.
+              </p>
+              <Button
+                onClick={handleCodeEditorClick}
+                className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white shadow-lg shadow-emerald-500/25 h-11 px-6"
+              >
+                <Terminal className="h-4 w-4 mr-2" />
+                Open Code Editor
+              </Button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  )
 }

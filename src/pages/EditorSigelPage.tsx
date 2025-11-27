@@ -53,7 +53,7 @@ export default function EditorPage() {
       {/* 主内容区域 */}
       <div className="flex-1 flex flex-col h-full min-h-0">
         {/* HeaderLC组件 - 移除固定高度，让组件自然高度，添加明显的底部边框 */}
-        <div className="bg-[#f5f5f5] dark:border-gray-700 ">
+        <div className="bg-[#f5f5f5] dark:border-gray-700 z-9999">
           <HeaderLC word='LeetCode Together' photoUrl='/image.png' />
         </div>
         
@@ -69,7 +69,7 @@ export default function EditorPage() {
               </Allotment.Pane>
             </Allotment>
           </Allotment.Pane>
-          <Allotment.Pane minSize={0} maxSize={400} >
+          <Allotment.Pane minSize={100} maxSize={400} >
             <OutputBox 
             // 模拟输出内容
              

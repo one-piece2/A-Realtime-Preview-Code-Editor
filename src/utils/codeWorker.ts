@@ -20,7 +20,15 @@ self.onmessage = function (e: MessageEvent<Message>) {
            postMessage({ type: 'success', result: result === undefined ? 'undefined' : result });
         }
         catch (error) {
-            postMessage({ type: 'error', error: error instanceof Error ? error.message : String(error) });
+            // 发送完整的错误信息，包括堆栈跟踪
+            if (error instanceof Error) {
+                postMessage({ 
+                    type: 'error', 
+                    error: `${error.name}: ${error.message}\n${error.stack || ''}` 
+                });
+            } else {
+                postMessage({ type: 'error', error: String(error) });
+            }
         }
     }
       
