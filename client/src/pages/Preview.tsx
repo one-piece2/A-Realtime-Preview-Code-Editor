@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { PlaygroundContext } from "../Context/playgroundcontent"
 import { compile } from "../utils/compiler";
+//以字符串的形式编译代码
 import iframeRaw from "../components/ifarm.html?raw";
 import { IMPORT_MAP_FILE_NAME } from "@/utils/files";
 import { Message } from "../components/Message";

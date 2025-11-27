@@ -21,7 +21,9 @@ import { babelTransform } from './compiler'
                     } else if (file.name.endsWith('.json')) {
                         path.node.source.value = json2Js(file)
                     } else {
+                        
                         path.node.source.value = URL.createObjectURL(
+                            //递归调用babelTransform，将导入的模块代码中再递归调用babelTransform，直到所有模块都被解析
                             new Blob([babelTransform(file.name, file.value, files)], {
                                 type: 'application/javascript',
                             })
