@@ -8,8 +8,8 @@ import OutputBox from '@/components/OutputBox';
 import { Allotment } from "allotment";
 import 'allotment/dist/style.css';
 import { PlaygroundContext } from '@/Context/playgroundcontent';
-import { useContext, useEffect, useRef } from 'react';
-import { useNavigate ,useLocation,useParams } from 'react-router-dom';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate ,useLocation,useParams, Navigate } from 'react-router-dom';
 import copy from 'copy-to-clipboard'
 import { message } from 'antd'
 import { initSocket } from '@/socket';
@@ -22,8 +22,9 @@ export default function EditorPage() {
   const navigate = useNavigate();
   const location = useLocation();
 const { roomId } = useParams();
+const [clients, setClients] = useState<Clienttype[]>([]);
   const socketRef = useRef<Socket | null>(null);
-  useEffect(() => {
+useEffect(() => {
     if (!location.state) return;
     const init = async () => {
       socketRef.current = await initSocket();
@@ -43,18 +44,38 @@ const { roomId } = useParams();
       socketRef.current.on('connect', () => {
         console.log('socket connected');
       });
-      init()
-    }
 
+
+      
+      socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
+       if(username!==location.state?.username){
+         messageApi.open({
+                type: 'success',
+                content: `${username} joined the room`,
+            });
+       }
+         setClients(clients);
+      });
+
+      // 监听DISCONNECTED事件
+      socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketid, username }) => {
+        setClients((prev) => prev.filter((client) => client.socketid !== socketid));
+        messageApi.open({
+          type: 'info',
+          content: `${username} left the room`,
+        });
+      });
+    }
+ init()
 
 
   }, []);
   //mock clients
-  const clients: Clienttype[] = [
-    { socketid: '1', username: 'user1' },
-    { socketid: '2', username: 'user2' },
-    { socketid: '3', username: 'user3' },
-  ];
+  // const clients: Clienttype[] = [
+  //   { socketid: '1', username: 'user1' },
+  //   { socketid: '2', username: 'user2' },
+  //   { socketid: '3', username: 'user3' },
+  // ];
   const handleErrors = (err: any) => {
     console.log('socket error', err);
     messageApi.error(err.message);
@@ -77,6 +98,10 @@ const { roomId } = useParams();
 
   const onChange = (value: string | undefined) => {
     setLeetCodes(value)
+  }
+  //路由守卫 如果没有username 则跳转到首页
+  if (!location.state) {
+    return <Navigate to="/" />;
   }
 
   return (
