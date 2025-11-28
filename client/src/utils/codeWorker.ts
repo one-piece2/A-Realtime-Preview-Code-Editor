@@ -16,17 +16,19 @@ self.onmessage = function (e: MessageEvent<Message>) {
     if (type === 'run') {
         try{
            const result = eval(Code);
-
+          
            postMessage({ type: 'success', result: result === undefined ? 'undefined' : result });
         }
         catch (error) {
             // 发送完整的错误信息，包括堆栈跟踪
             if (error instanceof Error) {
+              
                 postMessage({ 
                     type: 'error', 
                     error: `${error.name}: ${error.message}\n${error.stack || ''}` 
                 });
             } else {
+              
                 postMessage({ type: 'error', error: String(error) });
             }
         }
@@ -43,6 +45,7 @@ function safeArg(arg: unknown) {
   catch {}
   return `[Unserializable:${Object.prototype.toString.call(arg)}]`;
 }
+
 type ConsoleMethod =
   | 'log' | 'error' | 'warn' | 'info'
   | 'dir' | 'table' | 'trace' | 'assert'

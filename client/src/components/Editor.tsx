@@ -6,20 +6,22 @@ import { editor } from "monaco-editor";
 import { type EditorFile } from '../types/types';
 import { createATA } from '../utils/ata';
 import { useEffect, useRef } from 'react';
-
+import { type Socket } from 'socket.io-client';
 interface Props {
     file: EditorFile
     onChange?: (value: string|undefined) => void,
-    options?: editor.IStandaloneEditorConstructionOptions
+    options?: editor.IStandaloneEditorConstructionOptions,
+    socketRef?: Socket | null
 }
 export default function Editor(props: Props) {
   const ataRef = useRef<((code: string) => void) | null>(null)
 
-  const { file, onChange, options } = props;
+  const { file, onChange, options, socketRef } = props;
 
  // 处理编辑器挂载事件
   const handleEditorMount: OnMount = (editor, monaco: any) => {
       onChange?.(editor.getValue())
+      
     // 绑定 Ctrl+Q快捷键来格式化文档
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyQ, () => {
       editor.getAction("editor.action.formatDocument")?.run();

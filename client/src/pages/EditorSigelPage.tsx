@@ -12,7 +12,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate ,useLocation,useParams, Navigate } from 'react-router-dom';
 import copy from 'copy-to-clipboard'
 import { message } from 'antd'
-import { initSocket } from '@/socket';
+import { initSocket, } from '@/socket';
 import type { Socket } from 'socket.io-client';
 import { ACTIONS } from '@/action';
 
@@ -23,11 +23,40 @@ export default function EditorPage() {
   const location = useLocation();
 const { roomId } = useParams();
 const [clients, setClients] = useState<Clienttype[]>([]);
+
   const socketRef = useRef<Socket | null>(null);
+
+
 useEffect(() => {
-    if (!location.state) return;
+    if (!location.state) {
+       // 如果 location.state 不存在，断开连接
+      if (socketRef.current?.connected) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+      return;
+    };
+  
+
     const init = async () => {
+      // 检查是否已经连接
+      if (socketRef.current?.connected) {
+        socketRef.current.emit(ACTIONS.JOIN, {
+          username: location.state?.username,
+          roomId,
+        });
+        return;
+      }
+
       socketRef.current = await initSocket();
+      
+      // 移除之前的监听器再添加新的，防止重复
+      socketRef.current.off('connect_error');
+      socketRef.current.off('connect_failed');
+      socketRef.current.off('connect');
+      socketRef.current.off(ACTIONS.JOINED);
+      socketRef.current.off(ACTIONS.DISCONNECTED);
+
       // 连接错误处理
       socketRef.current.on('connect_error', (err) => {
         handleErrors(err);
@@ -45,21 +74,23 @@ useEffect(() => {
         console.log('socket connected');
       });
 
-
-      
       socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
-       if(username!==location.state?.username){
+       // 只有当加入的用户不是自己时，才显示提示
+       if(username !== location.state?.username){
          messageApi.open({
                 type: 'success',
                 content: `${username} joined the room`,
             });
        }
-         setClients(clients);
+       // 总是更新客户端列表
+       setClients(clients);
       });
 
       // 监听DISCONNECTED事件
-      socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketid, username }) => {
-        setClients((prev) => prev.filter((client) => client.socketid !== socketid));
+      socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username , allConernedClients}) => {
+        console.log('DISCONNECTED', socketId, username);
+        //@ts-ignore
+        setClients((prev) => prev.filter((client) => client.socketId !== socketId));
         messageApi.open({
           type: 'info',
           content: `${username} left the room`,
@@ -68,8 +99,19 @@ useEffect(() => {
     }
  init()
 
+  return () => {
+    // 组件卸载时只移除该页面的事件监听器，不断开连接
+    // 这样可以在页面间切换时保持连接
+    if (socketRef.current) {
+      socketRef.current.off(ACTIONS.JOINED);
+      socketRef.current.off(ACTIONS.DISCONNECTED);
+      socketRef.current.off('connect_error');
+      socketRef.current.off('connect_failed');
+      socketRef.current.off('connect');
+    }
+  }
 
-  }, []);
+  }, [location.state]);
   //mock clients
   // const clients: Clienttype[] = [
   //   { socketid: '1', username: 'user1' },
@@ -87,7 +129,16 @@ useEffect(() => {
   };
 
   const leaveRoom = () => {
-    navigate('/');
+
+    // 主动通知服务器离开房间
+    if (socketRef.current?.connected) {
+      socketRef.current.emit(ACTIONS.LEAVE, {
+        roomId,
+      });
+    }
+     setTimeout(() => {
+      navigate('/');
+    }, 100);
   };
 
   const file = {
@@ -98,6 +149,10 @@ useEffect(() => {
 
   const onChange = (value: string | undefined) => {
     setLeetCodes(value)
+    socketRef.current?.emit(ACTIONS.CODE_CHANGE, {
+      roomId,
+      code: value,
+    });
   }
   //路由守卫 如果没有username 则跳转到首页
   if (!location.state) {
@@ -127,7 +182,7 @@ useEffect(() => {
                 <LeetCode />
               </Allotment.Pane>
               <Allotment.Pane minSize={800}>
-                <Editor options={{ theme: `vs-${theme}` }} file={file} onChange={onChange} />
+                <Editor options={{ theme: `vs-${theme}` }} file={file} onChange={onChange} socketRef={socketRef.current} />
               </Allotment.Pane>
             </Allotment>
           </Allotment.Pane>
