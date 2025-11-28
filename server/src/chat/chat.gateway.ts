@@ -1,4 +1,5 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { ACTIONS } from 'src/action';
 
 @WebSocketGateway({
   cors: {
@@ -6,7 +7,7 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
   },
 })
 export class ChatGateway  {
-  @SubscribeMessage('message')
+  @SubscribeMessage(ACTIONS.JOIN)
   handleMessage(client: any, payload: any): string {
     return 'Hello world!';
   }
