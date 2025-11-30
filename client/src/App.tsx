@@ -7,7 +7,14 @@ import Dashboard from "@/pages/Dashboard";
 import { PlaygroundProvider, PlaygroundContext } from "./Context/playgroundcontent";
 import { useContext, useEffect } from 'react';
 import EditorFilesPage from "@/pages/EditorFilesPage";
-
+import { useLocation,Navigate } from "react-router-dom";
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  if (!location.state?.username) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
 // 主题切换器组件
 function ThemeSwitcher({ children }: { children: React.ReactNode }) {
   const { theme } = useContext(PlaygroundContext);
@@ -37,7 +44,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/home" element={<Home />} />
-              <Route path="/editor/:roomId" element={<EditorSigelPage />}/>
+              <Route path="/editor/:roomId" element={<ProtectedRoute><EditorSigelPage /></ProtectedRoute>}/>
               <Route path="">
                  <Route path="preview" element={<Preview />} />
               </Route>

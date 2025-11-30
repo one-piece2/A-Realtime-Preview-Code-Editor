@@ -139,4 +139,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.to(roomId).emit(ACTIONS.CODE_CHANGE, { code });
     }
   }
+
+  @SubscribeMessage(ACTIONS.SYNC_CODE)
+  handleSyncCode(client: Socket, payload: any): void {
+    const { code, socketId } = payload;
+    const codeValue = code || '';
+    console.log(`同步代码给 ${socketId}:`, codeValue);
+    // 只发送给指定的socketId
+    this.server.to(socketId).emit(ACTIONS.CODE_CHANGE, { code: codeValue });
+  }
 }

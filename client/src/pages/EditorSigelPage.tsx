@@ -17,8 +17,9 @@ import type { Socket } from 'socket.io-client';
 import { ACTIONS } from '@/action';
 
 export default function EditorPage() {
+
   const [messageApi, contextHolder] = message.useMessage();
-  const { theme, setLeetCodes } = useContext(PlaygroundContext);
+  const { theme,leetCodes} = useContext(PlaygroundContext);
   const navigate = useNavigate();
   const location = useLocation();
 const { roomId } = useParams();
@@ -26,9 +27,12 @@ const [clients, setClients] = useState<Clienttype[]>([]);
 
   const socketRef = useRef<Socket | null>(null);
 
-
+const codeRef = useRef<string>('');
 useEffect(() => {
+  
+  
     if (!location.state) {
+ 
        // 如果 location.state 不存在，断开连接
       if (socketRef.current?.connected) {
         socketRef.current.disconnect();
@@ -36,9 +40,9 @@ useEffect(() => {
       }
       return;
     };
-  
 
     const init = async () => {
+    
       // 检查是否已经连接
       if (socketRef.current?.connected) {
         socketRef.current.emit(ACTIONS.JOIN, {
@@ -48,7 +52,9 @@ useEffect(() => {
         return;
       }
 
-      socketRef.current = await initSocket();
+    if (!socketRef.current) {
+  socketRef.current = await initSocket();
+}
       
       // 移除之前的监听器再添加新的，防止重复
       socketRef.current.off('connect_error');
@@ -84,10 +90,16 @@ useEffect(() => {
        }
        // 总是更新客户端列表
        setClients(clients);
+       
+        socketRef.current?.emit(ACTIONS.SYNC_CODE, {
+          code: codeRef.current,
+          socketId,
+        });
+
       });
 
       // 监听DISCONNECTED事件
-      socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username , allConernedClients}) => {
+      socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
         console.log('DISCONNECTED', socketId, username);
         //@ts-ignore
         setClients((prev) => prev.filter((client) => client.socketId !== socketId));
@@ -100,6 +112,7 @@ useEffect(() => {
  init()
 
   return () => {
+
     // 组件卸载时只移除该页面的事件监听器，不断开连接
     // 这样可以在页面间切换时保持连接
     if (socketRef.current) {
@@ -113,7 +126,7 @@ useEffect(() => {
 
   }, [location.state]);
   //mock clients
-  // const clients: Clienttype[] = [
+  // const clients: Cl[] = [
   //   { socketid: '1', username: 'user1' },
   //   { socketid: '2', username: 'user2' },
   //   { socketid: '3', username: 'user3' },
@@ -147,18 +160,17 @@ useEffect(() => {
     language: 'javascript'
   }
 
-  const onChange = (value: string | undefined) => {
-    setLeetCodes(value)
-    socketRef.current?.emit(ACTIONS.CODE_CHANGE, {
-      roomId,
-      code: value,
-    });
-  }
+  // const onChange = (value: string | undefined) => {
+  //   setLeetCodes(value)
+  //   // socket事件发送逻辑已移至Editor组件内部处理
+  // }
   //路由守卫 如果没有username 则跳转到首页
+
   if (!location.state) {
+    
     return <Navigate to="/" />;
   }
-
+ 
   return (
     <div className="flex h-screen w-full bg-[#f5f5f5]">
       {/* Slider组件 - 设置与主内容相同的高度和背景色 */}
@@ -182,7 +194,7 @@ useEffect(() => {
                 <LeetCode />
               </Allotment.Pane>
               <Allotment.Pane minSize={800}>
-                <Editor options={{ theme: `vs-${theme}` }} file={file} onChange={onChange} socketRef={socketRef.current} />
+                <Editor options={{ theme: `vs-${theme}` }} file={file}  socketRef={socketRef} roomId={roomId} onchange={(code) => { codeRef.current = code; }} />
               </Allotment.Pane>
             </Allotment>
           </Allotment.Pane>
