@@ -1,9 +1,9 @@
-import Editor from "../Editor";
+
 import FileNameList from "../FileNameList";
 import { PlaygroundContext } from "../../Context/playgroundcontent";
 import { useContext } from "react";
 import {debounce} from 'lodash-es'
-
+import Editor from "./Editor";
 export default function CodeEditor() {
   const { 
     files, 

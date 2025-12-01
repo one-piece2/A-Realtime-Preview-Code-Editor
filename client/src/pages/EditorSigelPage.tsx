@@ -19,7 +19,7 @@ import { ACTIONS } from '@/action';
 export default function EditorPage() {
 
   const [messageApi, contextHolder] = message.useMessage();
-  const { theme,leetCodes} = useContext(PlaygroundContext);
+  const { theme} = useContext(PlaygroundContext);
   const navigate = useNavigate();
   const location = useLocation();
 const { roomId } = useParams();
@@ -48,6 +48,8 @@ useEffect(() => {
         socketRef.current.emit(ACTIONS.JOIN, {
           username: location.state?.username,
           roomId,
+          
+          initialCode: file.value,
         });
         return;
       }
@@ -74,6 +76,8 @@ useEffect(() => {
       socketRef.current.emit(ACTIONS.JOIN, {
         username: location.state?.username,
         roomId,
+        // 首次创建房间时用于初始化 Yjs 文档的模板代码
+        initialCode: file.value,
       });
 
       socketRef.current.on('connect', () => {
