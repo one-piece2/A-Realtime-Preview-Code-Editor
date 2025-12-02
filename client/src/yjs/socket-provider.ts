@@ -1,7 +1,11 @@
 import * as Y from 'yjs'; 
 import type { Socket } from 'socket.io-client'; 
 import { ACTIONS } from '../action'; 
-import { Awareness } from 'y-protocols/awareness'; // 引入 Awareness，用于后续共享光标等信息
+import {
+  Awareness,
+  encodeAwarenessUpdate,
+  applyAwarenessUpdate,
+} from 'y-protocols/awareness'; // 引入 Awareness 以及编码/应用工具，用于光标、选区等同步
 
 interface SocketIOProviderOptions {
   doc: Y.Doc; // 需要同步的 Y.Doc 实例
@@ -54,6 +58,18 @@ export class SocketIOProvider {
     Y.applyUpdate(this.doc, update, this); // 将其他客户端的增量更新应用到本地文档
   };
 
+  // 处理从服务器广播回来的 awareness 更新
+  private readonly handleAwarenessMessage = (payload: {
+    roomId: string;
+    update: ArrayBuffer | Uint8Array | number[];
+  }) => {
+    if (payload.roomId !== this.roomId) {
+      return;
+    }
+    const update = this.toUint8Array(payload.update);
+    applyAwarenessUpdate(this.awareness, update, this);
+  };
+
   constructor(options: SocketIOProviderOptions) {
     this.doc = options.doc;
     this.roomId = options.roomId;
@@ -63,7 +79,26 @@ export class SocketIOProvider {
     this.doc.on('update', this.handleDocUpdate); // 监听本地文档变更并上报给服务器
     this.socket.on(ACTIONS.Y_SYNC, this.handleSyncMessage); // 处理服务器返回的缺失更新
     this.socket.on(ACTIONS.Y_UPDATE, this.handleUpdateMessage); // 处理其他客户端的实时增量
+    this.socket.on(ACTIONS.Y_AWARENESS, this.handleAwarenessMessage); // 处理其他客户端的光标/选区等协同状态
 
+    // 当本地 awareness 状态变化时（光标移动、选区变化、用户状态变化），编码并广播给房间内其他客户端
+    this.awareness.on('update', ({
+      added,
+      updated,
+      removed,
+    }: { added: number[]; updated: number[]; removed: number[] }, origin: unknown) => {
+      if (this.destroyed) return;
+    //作用：只有当origin不是当前provider时才广播，避免循环广播
+      if(origin !== this) {
+        const changedClients = added.concat(updated).concat(removed);
+        if (changedClients.length === 0) return;
+        const update = encodeAwarenessUpdate(this.awareness, changedClients);
+        this.socket.emit(ACTIONS.Y_AWARENESS, {
+          roomId: this.roomId,
+          update,
+        });
+      }
+    });
     this.requestInitialSync(); // 构造完成后立即请求一次状态同步
   }
 
@@ -89,6 +124,7 @@ export class SocketIOProvider {
     this.doc.off('update', this.handleDocUpdate);
     this.socket.off(ACTIONS.Y_SYNC, this.handleSyncMessage);
     this.socket.off(ACTIONS.Y_UPDATE, this.handleUpdateMessage);
+    this.socket.off(ACTIONS.Y_AWARENESS, this.handleAwarenessMessage);
     this.awareness.destroy();
   }
 

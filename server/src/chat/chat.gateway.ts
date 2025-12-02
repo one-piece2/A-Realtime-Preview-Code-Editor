@@ -26,9 +26,16 @@ interface YUpdatePayload {
   roomId: string; // 房间标识
   update: ArrayBuffer | Uint8Array | number[]; // 客户端产生的增量更新数据
 }
+
+interface YAwarenessPayload {
+  roomId: string; // 房间标识
+  update: ArrayBuffer | Uint8Array | number[]; // y-protocols/awareness 编码后的更新
+}
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL 
+      ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+      : 'http://localhost:5173',
     credentials: true,
     methods: ['GET', 'POST'],
   },
@@ -198,6 +205,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.to(roomId).emit(ACTIONS.Y_UPDATE, {
       roomId, // 广播时携带房间 ID
       update: normalizedUpdate, // 将增量发送给其它客户端
+    });
+  }
+
+  @SubscribeMessage(ACTIONS.Y_AWARENESS)
+  handleYAwareness(client: Socket, payload: YAwarenessPayload): void {
+    const { roomId, update } = payload;
+    // awareness 只需要广播，不需要在服务器端保存
+    const normalizedUpdate = this.toUint8Array(update);
+    //广播给同房间的其他用户（不包括发送者）
+    client.to(roomId).emit(ACTIONS.Y_AWARENESS, {
+      roomId,
+      update: normalizedUpdate,
     });
   }
 

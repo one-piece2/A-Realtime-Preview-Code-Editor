@@ -64,7 +64,11 @@ html::-webkit-scrollbar {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
-
+.remote-cursor {
+  border-left: 2px solid var(--user-color);
+  animation: blink 1.2s infinite step-end;
+  z-index: 100;
+}
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

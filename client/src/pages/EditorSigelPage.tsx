@@ -15,6 +15,7 @@ import { message } from 'antd'
 import { initSocket, } from '@/socket';
 import type { Socket } from 'socket.io-client';
 import { ACTIONS } from '@/action';
+import getDogAvatarUrl from '@/utils/dogAvataUrl';
 
 export default function EditorPage() {
 
@@ -24,6 +25,26 @@ export default function EditorPage() {
   const location = useLocation();
 const { roomId } = useParams();
 const [clients, setClients] = useState<Clienttype[]>([]);
+const [avatarUrl, setAvatarUrl] = useState<string>('');
+const awarenessUsersRef = useRef<Map<number, { name: string; avatarUrl: string; color: string }>>(new Map());
+  useEffect(() => {
+  
+    let active = true;
+    const init = async () => {
+      try {
+        const url = await getDogAvatarUrl();
+        if (active && url) {
+          setAvatarUrl(url);
+        }
+      } catch (error) {
+        console.error('获取头像失败', error);
+      }
+    }
+    init();
+    return () => {
+      active = false;
+    }
+  }, []);
 
   const socketRef = useRef<Socket | null>(null);
 
@@ -92,8 +113,21 @@ useEffect(() => {
                 content: `${username} joined the room`,
             });
        }
-       // 总是更新客户端列表
-       setClients(clients);
+       // 合并 awareness 用户信息到客户端列表
+       const enrichedClients = clients.map((client: Clienttype) => {
+         // 从 awareness 中查找匹配的用户信息
+         for (const [_, userInfo] of awarenessUsersRef.current) {
+           if (userInfo.name === client.username) {
+             return {
+               ...client,
+               avatarUrl: userInfo.avatarUrl,
+               color: userInfo.color,
+             };
+           }
+         }
+         return client;
+       });
+       setClients(enrichedClients);
        
         socketRef.current?.emit(ACTIONS.SYNC_CODE, {
           code: codeRef.current,
@@ -198,7 +232,33 @@ useEffect(() => {
                 <LeetCode />
               </Allotment.Pane>
               <Allotment.Pane minSize={800}>
-                <Editor options={{ theme: `vs-${theme}` }} file={file}  socketRef={socketRef} roomId={roomId} onchange={(code) => { codeRef.current = code; }} />
+                <Editor
+                  options={{ theme: `vs-${theme}` }}
+                  file={file}
+                  socketRef={socketRef}
+                  roomId={roomId}
+                  username={location.state?.username}
+                  avatarUrl={avatarUrl}
+                  onchange={(code) => { codeRef.current = code; }}
+                  onUsersChange={(usersMap) => {
+                    awarenessUsersRef.current = usersMap;
+                    // 更新客户端列表，合并用户信息
+                    setClients((prevClients) => {
+                      return prevClients.map((client) => {
+                        for (const [_, userInfo] of usersMap) {
+                          if (userInfo.name === client.username) {
+                            return {
+                              ...client,
+                              avatarUrl: userInfo.avatarUrl,
+                              color: userInfo.color,
+                            };
+                          }
+                        }
+                        return client;
+                      });
+                    });
+                  }}
+                />
               </Allotment.Pane>
             </Allotment>
           </Allotment.Pane>

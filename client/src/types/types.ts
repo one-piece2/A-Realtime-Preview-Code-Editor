@@ -11,6 +11,8 @@ export interface Files {
 export interface Clienttype {
   socketid: string;
   username: string;
+  avatarUrl?: string;
+  color?: string;
 }
 
 export interface HeaderProps {

@@ -13,4 +13,8 @@ export const ACTIONS = {
    * Yjs 更新消息
    */
   Y_UPDATE: 'y-update',
+  /**
+   * Yjs Awareness（光标、选区、用户状态）消息
+   */
+  Y_AWARENESS: 'y-awareness',
 };

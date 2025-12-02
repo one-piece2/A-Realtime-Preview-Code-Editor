@@ -4,8 +4,9 @@ import { io } from "socket.io-client";
 
 
 export const initSocket = async () => {
-
-
+  // 获取后端 URL，优先使用环境变量，否则使用默认值
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+  
   const options = {
     // 最大重连次数
     reconnectionAttempts: 5,
@@ -19,5 +20,5 @@ export const initSocket = async () => {
   };
   
 
-  return io(import.meta.env.VITE_BACKEND_URL, options);
+  return io(backendUrl, options);
 };

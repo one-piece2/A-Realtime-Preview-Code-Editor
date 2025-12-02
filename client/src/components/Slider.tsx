@@ -53,7 +53,12 @@ export default function Slider({
 
         <div className="grid grid-cols-2 gap-3">
           {clients.map((client) => (
-            <Client key={client.socketid + client.username} username={client.username} />
+            <Client 
+              key={client.socketid + client.username} 
+              username={client.username}
+              avatarUrl={client.avatarUrl}
+              color={client.color}
+            />
           ))}
         </div>
       </div>
