@@ -128,12 +128,11 @@ useEffect(() => {
          return client;
        });
        setClients(enrichedClients);
-       
-        socketRef.current?.emit(ACTIONS.SYNC_CODE, {
-          code: codeRef.current,
-          socketId,
-        });
-
+       //已迁移至yjs
+      //  socketRef.current?.emit(ACTIONS.SYNC_CODE, {
+      //    code: codeRef.current,
+      //    socketId,
+      //  });
       });
 
       // 监听DISCONNECTED事件

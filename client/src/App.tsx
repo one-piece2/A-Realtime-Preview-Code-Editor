@@ -7,6 +7,7 @@ import Dashboard from "@/pages/Dashboard";
 import { PlaygroundProvider, PlaygroundContext } from "./Context/playgroundcontent";
 import { useContext, useEffect } from 'react';
 import EditorFilesPage from "@/pages/EditorFilesPage";
+import FileTree from "@/components/FileTree/FileTree";
 import { useLocation,Navigate } from "react-router-dom";
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -53,6 +54,7 @@ function App() {
           </div>
         </BrowserRouter>
       </ThemeSwitcher>
+   
     </PlaygroundProvider>
   )
 }

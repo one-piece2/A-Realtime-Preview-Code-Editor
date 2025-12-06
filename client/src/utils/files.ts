@@ -16,21 +16,25 @@ export const initFiles: Files = {
   [ENTRY_FILE_NAME]: {
     name: ENTRY_FILE_NAME,
     language: fileName2Language(ENTRY_FILE_NAME),
+  
     value: main,
   },
   [APP_COMPONENT_FILE_NAME]: {
     name: APP_COMPONENT_FILE_NAME,
     language: fileName2Language(APP_COMPONENT_FILE_NAME),
+
     value: App,
   },
   'App.css': {
     name: 'App.css',
     language: 'css',
+  
     value: AppCss,
   },
   [IMPORT_MAP_FILE_NAME]: {
     name: IMPORT_MAP_FILE_NAME,
     language: fileName2Language(IMPORT_MAP_FILE_NAME),
+
     value: importMap,
   },
 }

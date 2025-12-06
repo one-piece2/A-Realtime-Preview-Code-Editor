@@ -2,6 +2,7 @@ export interface File {
   name: string;
   value: string;
   language: string;
+
 }
 
 export interface Files {
@@ -34,4 +35,14 @@ export interface FileNameItemProps {
     name: string
     value: string
     language: string
+}
+
+//文件树节点类型
+export interface TreeNode {
+  id: string;
+  name: string;
+  path: string;
+  type: 'file' | 'folder';
+  children?: TreeNode[];
+  isOpen?: boolean;
 }
