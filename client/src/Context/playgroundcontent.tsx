@@ -21,7 +21,7 @@ export interface PlaygroundContext {
 }
 
 export const PlaygroundContext = createContext<PlaygroundContext>({
-  selectedFileName: 'App.tsx',
+  selectedFileName: 'src/App.tsx',
 } as PlaygroundContext)
 // 从url中获取files
 const getFilesFromHash=()=>{
@@ -40,7 +40,7 @@ const getFilesFromHash=()=>{
 export const PlaygroundProvider = (props: PropsWithChildren) => {
   const { children } = props
   const [files, setFiles] = useState<Files>(getFilesFromHash())
-  const [selectedFileName, setSelectedFileName] = useState('App.tsx');
+  const [selectedFileName, setSelectedFileName] = useState('src/App.tsx');
   const [theme, setTheme] = useState<PlaygroundContext['theme']>('light')
   const addFile = (name: string) => {
     files[name] = {

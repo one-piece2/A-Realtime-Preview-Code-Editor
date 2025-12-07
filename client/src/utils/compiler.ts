@@ -21,7 +21,7 @@ export const babelTransform = (filename: string, code: string, files: Files) => 
     result = transform(code, {
       presets: ['react', 'typescript'],
       filename,
-      plugins: [customResolver(files)],
+      plugins: [customResolver(files, filename)],
       retainLines: true
     }).code!
   } catch (e) {

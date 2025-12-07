@@ -4,15 +4,17 @@ import { type PluginObj } from '@babel/core'
 import { type File } from '../types/types'
 import { babelTransform } from './compiler'
 // 自定义 Babel 插件，用于解析模块路径并替换为实际代码
- export default function customResolver(files: Files): PluginObj {
+ export default function customResolver(files: Files, currentFilename: string  ): PluginObj {
     return {
         visitor: {
             ImportDeclaration(path) {
                 const modulePath = path.node.source.value
                   //处理相对路径的导入
                 if(modulePath.startsWith('.')) {
+                    // 获取当前文件路径（从 state 或 filename 获取）
+                 
                      //getMiduleFile：根据模块路径获取对应的文件内容 如果是./App这种得话 还会帮忙补全后缀
-                    const file = getModuleFile(files, modulePath)
+                    const file = getModuleFile(files, modulePath, currentFilename)
                     if(!file) 
                         return
 
@@ -35,23 +37,32 @@ import { babelTransform } from './compiler'
     }
 }
 
-const getModuleFile = (files: Files, modulePath: string) => {
-    let moduleName = modulePath.split('./').pop() || ''
-      // 处理没有后缀名的模块导入情况，比如 import './App' 会自动补全为 import './App.tsx'
-    if (!moduleName.includes('.')) {
-        const realModuleName = Object.keys(files).filter(key => {
-            return key.endsWith('.ts') 
-                || key.endsWith('.tsx') 
-                || key.endsWith('.js')
-                || key.endsWith('.jsx')
-        }).find((key) => {
-            return key.split('.').includes(moduleName)
-        })
-        if (realModuleName) {
-            moduleName = realModuleName
+const getModuleFile = (files: Files, modulePath: string, currentFilename: string = '') => {
+    // 获取当前文件所在目录
+    const currentDir = currentFilename.includes('/') 
+        ? currentFilename.substring(0, currentFilename.lastIndexOf('/') + 1)
+        : ''
+    
+    // 构建完整路径：当前目录 + 相对路径
+    let fullPath = currentDir + modulePath.replace(/^\.\//, '')
+    
+    // 如果路径没有扩展名，尝试添加扩展名
+    if (!fullPath.includes('.')) {
+        const extensions = ['.tsx', '.ts', '.jsx', '.js']
+        for (const ext of extensions) {
+            if (files[fullPath + ext]) {
+                return files[fullPath + ext]
+            }
         }
-      }
-    return files[moduleName]
+    } else {
+        // 如果有扩展名，直接查找
+        if (files[fullPath]) {
+            return files[fullPath]
+        }
+    }
+    
+    // 如果找不到，返回 undefined
+    return undefined
 }
 const json2Js = (file: File) => {
     // 处理 JSON 文件，将其转换为 JS 模块

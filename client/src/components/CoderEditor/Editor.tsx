@@ -8,7 +8,7 @@ import { createATA } from '../../utils/ata';
 import { useEffect, useRef } from 'react';
 
 interface Props {
-    file: EditorFile
+    file: EditorFile | undefined
     onChange?: EditorProps['onChange'],
     options?: editor.IStandaloneEditorConstructionOptions
 }
@@ -51,6 +51,7 @@ export default function Editor(props: Props) {
 
   };
   useEffect(() => {
+    if (!file) return;
     
     if (editorRef.current) {
       const current = editorRef.current.getValue()
@@ -59,6 +60,11 @@ export default function Editor(props: Props) {
     // 触发 ata 去检查并下载类型声明
     ataRef.current?.(file.value)
   }, [file?.name, file?.value])
+
+  // 如果文件不存在，返回空内容
+  if (!file) {
+    return null;
+  }
 
   return <MonacoEditor
     height='100%'

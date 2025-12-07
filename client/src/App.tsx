@@ -7,7 +7,7 @@ import Dashboard from "@/pages/Dashboard";
 import { PlaygroundProvider, PlaygroundContext } from "./Context/playgroundcontent";
 import { useContext, useEffect } from 'react';
 import EditorFilesPage from "@/pages/EditorFilesPage";
-import FileTree from "@/components/FileTree/FileTree";
+import { Toaster } from "sonner";
 import { useLocation,Navigate } from "react-router-dom";
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -40,7 +40,9 @@ function App() {
   return (
     <PlaygroundProvider>
       <ThemeSwitcher>
+      
         <BrowserRouter>
+        <Toaster position="top-center"/>
           <div className={`min-h-screen transition-colors duration-300 ${'bg-background text-foreground'}`}>
             <Routes>
               <Route path="/" element={<Dashboard />} />

@@ -13,7 +13,7 @@ export default function EditorFilesPage() {
 
       <div className="flex-1 flex overflow-hidden">
         {/* FileTree 固定在左侧，固定宽度，不可拖动 */}
-        <div className="w-[180px] shrink-0 border-r border-border overflow-hidden  ">
+        <div className="w-[220px] shrink-0 overflow-hidden">
           <FileTree />
         </div>
 
