@@ -4,28 +4,30 @@ import { FitAddon } from 'xterm-addon-fit';
 import '@xterm/xterm/css/xterm.css';
 import { PlaygroundContext } from '../Context/playgroundcontent';
 
-// 主题配置
+// 主题配置 - 使用更现代、与黑色界面有明显区分的配色
 const getTheme = (isDark: boolean) => ({
-  background: isDark ? '#1e1e1e' : '#ffffff',
-  foreground: isDark ? '#d4d4d4' : '#000000',
-  cursor: isDark ? '#aeafad' : '#000000',
-  cursorAccent: isDark ? '#1e1e1e' : '#ffffff',
-  black: '#000000',
-  red: '#cd3131',
-  green: '#0dbc79',
-  yellow: '#e5e510',
-  blue: '#2472c8',
-  magenta: '#bc3fbc',
-  cyan: '#11a8cd',
-  white: '#e5e5e5',
-  brightBlack: '#666666',
-  brightRed: '#f14c4c',
-  brightGreen: '#23d18b',
-  brightYellow: '#f5f543',
-  brightBlue: '#3b8eea',
-  brightMagenta: '#d670d6',
-  brightCyan: '#29b8db',
-  brightWhite: '#e5e5e5',
+  // 使用深蓝灰色背景，与黑色界面有明显区分
+  background: isDark ? '#0d1117' : '#ffffff',
+  foreground: isDark ? '#c9d1d9' : '#24292e',
+  cursor: isDark ? '#58a6ff' : '#0366d6',
+  cursorAccent: isDark ? '#0d1117' : '#ffffff',
+  // 优化的颜色方案
+  black: '#484f58',
+  red: '#f85149',
+  green: '#3fb950',
+  yellow: '#d29922',
+  blue: '#58a6ff',
+  magenta: '#bc8cff',
+  cyan: '#39c5cf',
+  white: '#b1bac4',
+  brightBlack: '#6e7681',
+  brightRed: '#ff7b72',
+  brightGreen: '#56d364',
+  brightYellow: '#e3b341',
+  brightBlue: '#79c0ff',
+  brightMagenta: '#d2a8ff',
+  brightCyan: '#56d4dd',
+  brightWhite: '#f0f6fc',
 });
 
 // 按键码常量
@@ -191,10 +193,16 @@ export default function Terminal() {
     // 创建 xterm 实例
     const terminal = new XTerm({
       theme: getTheme(theme === 'dark'),
-      fontSize: 14,
-      fontFamily: 'Consolas, "Courier New", monospace',
+      fontSize: 13,
+      fontFamily: '"Fira Code", "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace',
+      fontWeight: '400',
+      lineHeight: 1.4,
+      letterSpacing: 0.3,
       cursorBlink: true,
       cursorStyle: 'block',
+      cursorWidth: 2,
+      // 优化滚动条
+      scrollback: 1000,
     });
 
     // 创建并加载 FitAddon
@@ -242,13 +250,60 @@ export default function Terminal() {
       style={{ 
         width: '100%', 
         height: '100%',
-        padding: '8px',
-        backgroundColor: theme === 'dark' ? '#1e1e1e' : '#ffffff',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: theme === 'dark' ? '#0d1117' : '#ffffff',
+        borderTop: theme === 'dark' 
+          ? '1px solid rgba(88, 166, 255, 0.2)' 
+          : '1px solid rgba(0, 0, 0, 0.1)',
+        boxShadow: theme === 'dark'
+          ? '0 -4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(88, 166, 255, 0.1)'
+          : '0 -2px 8px rgba(0, 0, 0, 0.1)',
       }}
     >
+      {/* 终端标题栏 */}
+      <div 
+        style={{
+          padding: '8px 16px',
+          backgroundColor: theme === 'dark' ? '#161b22' : '#f6f8fa',
+          borderBottom: theme === 'dark' 
+            ? '1px solid rgba(88, 166, 255, 0.15)' 
+            : '1px solid rgba(0, 0, 0, 0.08)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '12px',
+          fontWeight: 500,
+          color: theme === 'dark' ? '#c9d1d9' : '#24292e',
+        }}
+      >
+        <div 
+          style={{
+            width: '12px',
+            height: '12px',
+            borderRadius: '50%',
+            backgroundColor: theme === 'dark' ? '#3fb950' : '#28a745',
+            boxShadow: theme === 'dark' 
+              ? '0 0 8px rgba(63, 185, 80, 0.4)' 
+              : '0 0 4px rgba(40, 167, 69, 0.3)',
+          }}
+        />
+        <span>Terminal</span>
+        <span style={{ opacity: 0.5, marginLeft: 'auto', fontSize: '11px' }}>
+          Press Ctrl+` to toggle
+        </span>
+      </div>
+      
+      {/* 终端内容区域 */}
       <div 
         ref={terminalRef} 
-        style={{ width: '100%', height: '100%' }}
+        className="terminal-content"
+        style={{ 
+          width: '100%', 
+          flex: 1,
+          padding: '12px',
+          overflow: 'hidden',
+        }}
       />
     </div>
   );

@@ -16,39 +16,39 @@ export const IMPORT_MAP_FILE_NAME = 'import-map.json'
 // app 入口文件名
 export const ENTRY_FILE_NAME = 'src/index.tsx'
 
-// 创建 import-map.json 内容（基于 package.json 的依赖）
-const createImportMap = (): string => {
-  try {
-    const pkg = JSON.parse(packageJson)
-    const dependencies = pkg.dependencies || {}
+// // 创建 import-map.json 内容（基于 package.json 的依赖）
+// const createImportMap = (): string => {
+//   try {
+//     const pkg = JSON.parse(packageJson)
+//     const dependencies = pkg.dependencies || {}
     
-    // 创建 import map，使用 CDN 链接
-    const imports: Record<string, string> = {
-      'react': 'https://esm.sh/react@18',
-      'react-dom': 'https://esm.sh/react-dom@18',
-      'react-dom/client': 'https://esm.sh/react-dom@18/client'
-    }
+//     // 创建 import map，使用 CDN 链接
+//     const imports: Record<string, string> = {
+//       'react': 'https://esm.sh/react@18',
+//       'react-dom': 'https://esm.sh/react-dom@18',
+//       'react-dom/client': 'https://esm.sh/react-dom@18/client'
+//     }
     
-    // 添加其他依赖
-    Object.keys(dependencies).forEach(dep => {
-      if (!imports[dep]) {
-        imports[dep] = `https://esm.sh/${dep}@${dependencies[dep].replace(/[\^~]/g, '')}`
-      }
-    })
+//     // 添加其他依赖
+//     Object.keys(dependencies).forEach(dep => {
+//       if (!imports[dep]) {
+//         imports[dep] = `https://esm.sh/${dep}@${dependencies[dep].replace(/[\^~]/g, '')}`
+//       }
+//     })
 
-    return JSON.stringify({ imports }, null, 2)
+//     return JSON.stringify({ imports }, null, 2)
   
-  } catch (e) {
-    // 如果解析失败，返回默认的 import map
-    return JSON.stringify({
-      imports: {
-        'react': 'https://esm.sh/react@18',
-        'react-dom': 'https://esm.sh/react-dom@18',
-        'react-dom/client': 'https://esm.sh/react-dom@18/client'
-      }
-    }, null, 2)
-  }
-}
+//   } catch (e) {
+//     // 如果解析失败，返回默认的 import map
+//     return JSON.stringify({
+//       imports: {
+//         'react': 'https://esm.sh/react@18',
+//         'react-dom': 'https://esm.sh/react-dom@18',
+//         'react-dom/client': 'https://esm.sh/react-dom@18/client'
+//       }
+//     }, null, 2)
+//   }
+// }
 
 export const initFiles: Files = {
   // 入口文件
@@ -87,11 +87,11 @@ export const initFiles: Files = {
     language: 'json',
     value: tsconfigJson,
   },
-  // import-map.json（动态生成，初始为空依赖）
-  [IMPORT_MAP_FILE_NAME]: {
-    name: IMPORT_MAP_FILE_NAME,
-    language: fileName2Language(IMPORT_MAP_FILE_NAME),
-    value: createImportMap(),
-  },
+  // // import-map.json（动态生成，初始为空依赖）
+  // [IMPORT_MAP_FILE_NAME]: {
+  //   name: IMPORT_MAP_FILE_NAME,
+  //   language: fileName2Language(IMPORT_MAP_FILE_NAME),
+  //   value: createImportMap(),
+  // },
  
 }

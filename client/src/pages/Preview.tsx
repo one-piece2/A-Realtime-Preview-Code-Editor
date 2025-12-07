@@ -8,7 +8,7 @@ import { IMPORT_MAP_FILE_NAME } from "@/utils/files";
 import { Message } from "../components/Message";
 
 export default function Preview() {
-    const { files} = useContext(PlaygroundContext)
+    const { files,dependencies} = useContext(PlaygroundContext)
     const workerRef = useRef<Worker | null>(null);
     const [compiledCode, setCompiledCode] = useState<string>('')
     const [iframeUrl, setIframeUrl] = useState<string|null>(null)

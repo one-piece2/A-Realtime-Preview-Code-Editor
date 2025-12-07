@@ -31,8 +31,6 @@ export declare class ChatGateway implements OnGatewayConnection, OnGatewayDiscon
     handleDisconnect(client: Socket): void;
     handleJoin(client: Socket, payload: JoinPayload): void;
     handleLeave(client: Socket, payload: any): void;
-    handleCodeChange(client: Socket, payload: any): void;
-    handleSyncCode(client: Socket, payload: any): void;
     handleYSync(client: Socket, payload: YSyncPayload): void;
     handleYUpdate(client: Socket, payload: YUpdatePayload): void;
     handleYAwareness(client: Socket, payload: YAwarenessPayload): void;

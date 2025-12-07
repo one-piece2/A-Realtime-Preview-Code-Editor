@@ -13,7 +13,6 @@ import { YjsDocumentService } from './yjs-document.service'; // 引入 Yjs 文�
 interface JoinPayload {
   username: string;
   roomId: string;
-  // 可选：首个创建房间的用户可以把默认代码模板一起带过来
   initialCode?: string;
 }
 
@@ -23,7 +22,7 @@ interface YSyncPayload {
 }
 
 interface YUpdatePayload {
-  roomId: string; // 房间标识
+  roomId: string; 
   update: ArrayBuffer | Uint8Array | number[]; // 客户端产生的增量更新数据
 }
 
@@ -163,44 +162,47 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 
   }
-  @SubscribeMessage(ACTIONS.CODE_CHANGE)
-  handleCodeChange(client: Socket, payload: any): void {
+  //此处注释掉代码变更的处理，改为使用Yjs的同步机制
+  // @SubscribeMessage(ACTIONS.CODE_CHANGE)
+  // handleCodeChange(client: Socket, payload: any): void {
    
-    const { roomId, code } = payload;
-    // 广播给同房间的其他用户（不包括发送者）
-    //如果房间的人数大于1，才广播
-    if (this.getAllConnectedClients(roomId).length > 1) {
-      client.to(roomId).emit(ACTIONS.CODE_CHANGE, { code });
-    }
-  }
+  //   const { roomId, code } = payload;
+  //   // 广播给同房间的其他用户（不包括发送者）
+  //   //如果房间的人数大于1，才广播
+  //   if (this.getAllConnectedClients(roomId).length > 1) {
+  //     client.to(roomId).emit(ACTIONS.CODE_CHANGE, { code });
+  //   }
+  // }
 
-  @SubscribeMessage(ACTIONS.SYNC_CODE)
-  handleSyncCode(client: Socket, payload: any): void {
-    const { code, socketId } = payload;
-    const codeValue = code || '';
-    console.log(`同步代码给 ${socketId}:`, codeValue);
-    // 只发送给指定的socketId
-    this.server.to(socketId).emit(ACTIONS.CODE_CHANGE, { code: codeValue });
-  }
+  //迁移到Yjs同步机制
+  // @SubscribeMessage(ACTIONS.SYNC_CODE)
+  // handleSyncCode(client: Socket, payload: any): void {
+  //   const { code, socketId } = payload;
+  //   const codeValue = code || '';
+  //   console.log(`同步代码给 ${socketId}:`, codeValue);
+  //   // 只发送给指定的socketId
+  //   this.server.to(socketId).emit(ACTIONS.CODE_CHANGE, { code: codeValue });
+  // }
 
   @SubscribeMessage(ACTIONS.Y_SYNC)
   handleYSync(client: Socket, payload: YSyncPayload): void {
-    const { roomId, stateVector } = payload; // 从消息中解构房间 ID 与客户端现有的状态向量
+    const { roomId, stateVector } = payload;
     this.yDocService.registerClient(roomId, client.id); // 确保服务器已记录该 socket 对文档的引用
     const vector = stateVector ? this.toUint8Array(stateVector) : undefined; // 将可选的状态向量统一转换成 Uint8Array
     const update = this.yDocService.getStateAsUpdate(roomId, vector); // 计算客户端相较于服务器缺失的增量更新
     client.emit(ACTIONS.Y_SYNC, {
-      roomId, // 回传房间 ID 以便客户端路由该事件
-      update, // 返回所需的更新数据
+      roomId, 
+      update, 
       stateVector: this.yDocService.getStateVector(roomId), // 附带最新状态向量，便于客户端缓存
     });
   }
 
   @SubscribeMessage(ACTIONS.Y_UPDATE)
   handleYUpdate(client: Socket, payload: YUpdatePayload): void {
-    const { roomId, update } = payload; // 获取房间 ID 与客户端产生的增量
+    const { roomId, update } = payload; 
     const normalizedUpdate = this.toUint8Array(update); // 将增量转换为 Uint8Array 以供 Yjs 使用
-    this.yDocService.applyUpdate(roomId, normalizedUpdate); // 先更新服务器端文档以保持权威状态
+    
+    this.yDocService.applyUpdate(roomId, normalizedUpdate); // 先更新服务器端文档
     //广播给同房间的其他用户（不包括发送者）
     client.to(roomId).emit(ACTIONS.Y_UPDATE, {
       roomId, // 广播时携带房间 ID

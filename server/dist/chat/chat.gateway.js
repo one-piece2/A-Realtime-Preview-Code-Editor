@@ -89,18 +89,6 @@ let ChatGateway = class ChatGateway {
         });
         console.log(`已通知房间 ${roomId} 中的其他客户端，${username} 已离开`);
     }
-    handleCodeChange(client, payload) {
-        const { roomId, code } = payload;
-        if (this.getAllConnectedClients(roomId).length > 1) {
-            client.to(roomId).emit(action_1.ACTIONS.CODE_CHANGE, { code });
-        }
-    }
-    handleSyncCode(client, payload) {
-        const { code, socketId } = payload;
-        const codeValue = code || '';
-        console.log(`同步代码给 ${socketId}:`, codeValue);
-        this.server.to(socketId).emit(action_1.ACTIONS.CODE_CHANGE, { code: codeValue });
-    }
     handleYSync(client, payload) {
         const { roomId, stateVector } = payload;
         this.yDocService.registerClient(roomId, client.id);
@@ -160,18 +148,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "handleLeave", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)(action_1.ACTIONS.CODE_CHANGE),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
-], ChatGateway.prototype, "handleCodeChange", null);
-__decorate([
-    (0, websockets_1.SubscribeMessage)(action_1.ACTIONS.SYNC_CODE),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
-], ChatGateway.prototype, "handleSyncCode", null);
-__decorate([
     (0, websockets_1.SubscribeMessage)(action_1.ACTIONS.Y_SYNC),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
@@ -192,7 +168,9 @@ __decorate([
 exports.ChatGateway = ChatGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {
-            origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+            origin: process.env.FRONTEND_URL
+                ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+                : 'http://localhost:5173',
             credentials: true,
             methods: ['GET', 'POST'],
         },

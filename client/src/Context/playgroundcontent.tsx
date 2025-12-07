@@ -39,13 +39,28 @@ const getFilesFromHash=()=>{
     return initFiles
   }
 }
+  // 1. 解析 package.json 的初始内容
+  const getInitialDependencies = () => {
+    try {
+      const pkgStr = initFiles['package.json'].value;
+      const pkg = JSON.parse(pkgStr);
+      return pkg.dependencies || {};
+    } catch (e) {
+      // 兜底默认值
+      return {
+        "react": "18.2.0",
+        "react-dom": "18.2.0"
+      };
+    }
+  };
 
 export const PlaygroundProvider = (props: PropsWithChildren) => {
   const { children } = props
   const [files, setFiles] = useState<Files>(getFilesFromHash())
   const [selectedFileName, setSelectedFileName] = useState('src/App.tsx');
   const [theme, setTheme] = useState<PlaygroundContext['theme']>('light')
-  const [dependencies, setDependencies] = useState<Record<string, string>>({} as Record<string, string>);
+
+  const [dependencies, setDependencies] = useState<Record<string, string>>(getInitialDependencies());
   const addDependency = (name: string, version: string) => {
     setDependencies(prev => ({ ...prev, [name]: version }));
   };
