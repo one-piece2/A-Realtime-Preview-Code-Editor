@@ -146,3 +146,43 @@ html::-webkit-scrollbar {
     @apply bg-background text-foreground;
   }
 }
+
+/* 文件树滚动条样式 */
+.file-tree-scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+
+.file-tree-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.file-tree-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.file-tree-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(155, 155, 155, 0.5);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.file-tree-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 155, 155, 0.7);
+}
+
+/* 暗色模式下的滚动条 */
+.dark .file-tree-scrollbar {
+  scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+}
+
+.dark .file-tree-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.5);
+}
+
+.dark .file-tree-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.7);
+}

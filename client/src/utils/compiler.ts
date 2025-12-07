@@ -34,3 +34,15 @@ export const compile = (files: Files) => {
   const main = files[ENTRY_FILE_NAME]
   return babelTransform(ENTRY_FILE_NAME, main.value, files)
 }
+
+self.onmessage = (event: MessageEvent<any>) => {
+  const { type, files } = event.data;
+  if (type === 'compile') {
+    try{
+      const result = compile(files);
+      self.postMessage({ type: 'success', result: result });
+    }catch(e){
+      self.postMessage({ type: 'error', message: String(e) });
+    }
+  }
+}

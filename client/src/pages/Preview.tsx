@@ -1,6 +1,7 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState, useRef } from "react"
 import { PlaygroundContext } from "../Context/playgroundcontent"
 import { compile } from "../utils/compiler";
+import { debounce } from "lodash-es";
 //以字符串的形式编译代码
 import iframeRaw from "../components/ifarm.html?raw";
 import { IMPORT_MAP_FILE_NAME } from "@/utils/files";
@@ -8,9 +9,30 @@ import { Message } from "../components/Message";
 
 export default function Preview() {
     const { files} = useContext(PlaygroundContext)
+    const workerRef = useRef<Worker | null>(null);
     const [compiledCode, setCompiledCode] = useState<string>('')
     const [iframeUrl, setIframeUrl] = useState<string|null>(null)
-    
+    useEffect(() => {
+        if(!workerRef.current){
+            workerRef.current = new Worker(
+                new URL('../utils/compiler.ts', import.meta.url),
+                { type: 'module' }
+            );
+            workerRef.current.onmessage = (event: MessageEvent) => {
+                if(event.data.type === 'success'){
+                    setCompiledCode(event.data.result);
+                }else{
+                    setError(event.data.message);
+                }
+            }
+        }
+    }, [])
+    useEffect(debounce(() => {
+        setError('');
+        if(workerRef.current){
+            workerRef.current.postMessage({ type: 'compile', files });
+        }
+    }, 500), [files])
     const getIframeUrl = () => {
         try {
             if (!compiledCode) {

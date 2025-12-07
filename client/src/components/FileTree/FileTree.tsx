@@ -411,6 +411,15 @@ export function FileTree() {
   const { files, setSelectedFileName, removeFile, selectedFileName, updateFileName, addFile } = useContext(PlaygroundContext);
   const treeData = useMemo(() => buildFileTree(files), [files]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const treeContainerRef = useRef<HTMLDivElement>(null);
+  const editingInputRef = useRef<HTMLInputElement>(null);
+  // 正在编辑的节点ID和编辑值
+  const [editingNode, setEditingNode] = useState<{
+    id: string;
+    path: string;
+    name: string;
+    value: string;
+  } | null>(null);
   const [height, setHeight] = useState(600);
   const [renameDialog, setRenameDialog] = useState<{
     open: boolean;
@@ -427,16 +436,28 @@ export function FileTree() {
 
   useEffect(() => {
     const updateHeight = () => {
-      if (containerRef.current) {
-        setHeight(containerRef.current.clientHeight);
+      // 使用 treeContainerRef 来获取文件树容器的实际高度
+      // 这样可以排除添加文件按钮的高度
+      if (treeContainerRef.current) {
+        const containerHeight = treeContainerRef.current.clientHeight;
+        // 确保高度至少为 100，避免为 0 导致渲染问题
+        setHeight(Math.max(containerHeight, 100));
       }
     };
 
     updateHeight();
     window.addEventListener('resize', updateHeight);
 
-    // 使用 ResizeObserver 监听容器大小变化
-    const resizeObserver = new ResizeObserver(updateHeight);
+    // 使用 ResizeObserver 监听容器大小变化，更精确地跟踪高度变化
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeight();
+    });
+    
+    if (treeContainerRef.current) {
+      resizeObserver.observe(treeContainerRef.current);
+    }
+    
+    // 同时监听整个容器，以防布局变化
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
@@ -516,6 +537,83 @@ export function FileTree() {
     toast.success(`文件已重命名为 "${newFileName}"`);
   };
 
+  // 开始行内编辑
+  const handleStartEdit = (nodePath: string, nodeName: string) => {
+    setEditingNode({
+      id: nodePath,
+      path: nodePath,
+      name: nodeName,
+      value: nodeName,
+    });
+    // 延迟聚焦，确保 Input 已渲染
+    setTimeout(() => {
+      editingInputRef.current?.focus();
+      // 选中文件名（不含扩展名）
+      const lastDotIndex = nodeName.lastIndexOf('.');
+      if (lastDotIndex > 0) {
+        editingInputRef.current?.setSelectionRange(0, lastDotIndex);
+      } else {
+        editingInputRef.current?.select();
+      }
+    }, 0);
+  };
+
+  // 取消编辑
+  const handleCancelEdit = () => {
+    setEditingNode(null);
+  };
+
+  // 确认编辑
+  const handleConfirmEdit = () => {
+    if (!editingNode) return;
+
+    const trimmedName = editingNode.value.trim();
+    
+    // 如果名称未改变，直接取消编辑
+    if (trimmedName === editingNode.name) {
+      handleCancelEdit();
+      return;
+    }
+
+    // 验证文件名不能为空
+    if (!trimmedName) {
+      toast.error('文件名不能为空');
+      editingInputRef.current?.focus();
+      return;
+    }
+
+    // 验证文件名必须包含扩展名（对于文件）
+    const file = files[editingNode.path];
+    if (file && !trimmedName.includes('.')) {
+      toast.error('文件名必须包含扩展名（如 .tsx, .js, .css 等）');
+      editingInputRef.current?.focus();
+      return;
+    }
+
+    // 构建新路径
+    const pathParts = editingNode.path.split('/');
+    pathParts[pathParts.length - 1] = trimmedName;
+    const newPath = pathParts.join('/');
+
+    // 检查新路径是否已存在
+    if (files[newPath] && newPath !== editingNode.path) {
+      toast.error(`文件 "${trimmedName}" 已存在`);
+      editingInputRef.current?.focus();
+      return;
+    }
+
+    // 执行重命名
+    updateFileName(editingNode.path, newPath);
+    
+    // 如果重命名的是当前选中的文件，更新选中状态
+    if (editingNode.path === selectedFileName) {
+      setSelectedFileName(newPath);
+    }
+    
+    toast.success(`文件已重命名为 "${trimmedName}"`);
+    setEditingNode(null);
+  };
+
   // 打开添加文件对话框
   const handleAddFile = (folderPath?: string) => {
     setAddFileDialog({ 
@@ -561,17 +659,20 @@ export function FileTree() {
             <span>添加文件</span>
           </Button>
         </div>
-        {/* 文件树 */}
-        <div className="flex-1 overflow-hidden">
-        <Tree
-        data={treeData}
-        width="100%"
-        paddingTop={8}
-        paddingBottom={8}
-        rowHeight={32}
-        height={height}
-        indent={20}
-      >
+        {/* 文件树容器 - 使用 flex-1 占据剩余空间，并启用滚动 */}
+        <div 
+          ref={treeContainerRef}
+          className="flex-1 overflow-auto min-h-0 file-tree-scrollbar"
+        >
+          <Tree
+            data={treeData}
+            width="100%"
+            paddingTop={8}
+            paddingBottom={8}
+            rowHeight={32}
+            height={height}
+            indent={20}
+          >
         {({ node, style, dragHandle }) => {
           const isSelected = node.data.type === 'file' && node.data.path === selectedFileName;
           const isFolder = node.data.type === 'folder';
@@ -623,25 +724,68 @@ export function FileTree() {
               )}
               
               {/* 文件名 */}
-              <span 
-                className={cn(
-                  "flex-1 text-sm font-medium truncate",
-                  isSelected && "font-semibold"
-                )}
-              >
-                {node.data.name}
-              </span>
+              {editingNode?.id === node.data.path ? (
+                <Input
+                  ref={editingInputRef}
+                  value={editingNode.value}
+                  onChange={(e) => {
+                    setEditingNode({
+                      ...editingNode,
+                      value: e.target.value,
+                    });
+                  }}
+                  onBlur={() => {
+                    // 延迟执行，以便点击按钮时不会立即触发
+                    setTimeout(() => {
+                      // 检查焦点是否移到了菜单按钮上
+                      const activeElement = document.activeElement;
+                      if (!activeElement || !activeElement.closest('.group')) {
+                        handleConfirmEdit();
+                      }
+                    }, 200);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleConfirmEdit();
+                    } else if (e.key === 'Escape') {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleCancelEdit();
+                    }
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  className="flex-1 h-6 text-sm"
+                  style={{ minWidth: 0 }}
+                />
+              ) : (
+                <span 
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    handleStartEdit(node.data.path, node.data.name);
+                  }}
+                  className={cn(
+                    "flex-1 text-sm font-medium truncate",
+                    isSelected && "font-semibold"
+                  )}
+                >
+                  {node.data.name}
+                </span>
+              )}
               
-              {/* 文件菜单 - 仅对文件显示，hover 时显示 */}
-              {!isFolder && (
+              
+              {/* 文件菜单 - 仅对文件显示，hover 时显示，编辑时隐藏 */}
+              {!isFolder && editingNode?.id !== node.data.path && (
                 <FileMenu
                   onRename={() => handleRenameFile(node.data.path, node.data.name)}
                   onDelete={() => handleDeleteFile(node.data.path, node.data.name)}
                 />
               )}
               
-              {/* 文件夹菜单 - 仅对文件夹显示，hover 时显示 */}
-              {isFolder && (
+              {/* 文件夹菜单 - 仅对文件夹显示，hover 时显示，编辑时隐藏 */}
+              {isFolder && editingNode?.id !== node.data.path && (
                 <FolderMenu
                   onAddFile={() => handleAddFile(node.data.path)}
                 />
@@ -649,7 +793,7 @@ export function FileTree() {
             </div>
           );
         }}
-      </Tree>
+          </Tree>
         </div>
       </div>
     </>
