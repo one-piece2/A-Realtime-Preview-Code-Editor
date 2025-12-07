@@ -12,7 +12,7 @@ import { MonacoBinding } from 'y-monaco'
 import { SocketIOProvider } from '../yjs/socket-provider';
 
 interface Props {
-  file: EditorFile | undefined
+  file: EditorFile
   onchange?: (code: string) => void
   options?: editor.IStandaloneEditorConstructionOptions,
   socketRef?: React.MutableRefObject<Socket | null>,
@@ -64,7 +64,6 @@ export default function Editor(props: Props) {
   };
 
   useEffect(() => {
-    if (!file) return;
     ataRef.current?.(file.value)
   }, [file?.name, file?.value])
 
@@ -390,17 +389,6 @@ export default function Editor(props: Props) {
       ydoc.destroy();
     };
   }, [ydoc]);
-
-  // 如果文件不存在，返回空内容
-  if (!file) {
-    return (
-      <div style={{ position: 'relative', height: '100%', width: '100%' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-          <div style={{ color: 'var(--muted-foreground)' }}>文件不存在</div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{ position: 'relative', height: '100%', width: '100%' }}>

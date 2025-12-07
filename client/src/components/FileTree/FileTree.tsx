@@ -548,13 +548,7 @@ export function FileTree() {
     // 延迟聚焦，确保 Input 已渲染
     setTimeout(() => {
       editingInputRef.current?.focus();
-      // 选中文件名（不含扩展名）
-      const lastDotIndex = nodeName.lastIndexOf('.');
-      if (lastDotIndex > 0) {
-        editingInputRef.current?.setSelectionRange(0, lastDotIndex);
-      } else {
-        editingInputRef.current?.select();
-      }
+     
     }, 0);
   };
 

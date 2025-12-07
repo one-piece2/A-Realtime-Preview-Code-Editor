@@ -18,6 +18,8 @@ export interface PlaygroundContext {
   setTheme: (theme: 'dark' | 'light') => void
   leetCodes:string | undefined
   setLeetCodes: (leetCodes: string|undefined) => void
+  dependencies: Record<string, string>
+  addDependency: (name: string, version: string) => void
 }
 
 export const PlaygroundContext = createContext<PlaygroundContext>({
@@ -37,11 +39,16 @@ const getFilesFromHash=()=>{
     return initFiles
   }
 }
+
 export const PlaygroundProvider = (props: PropsWithChildren) => {
   const { children } = props
   const [files, setFiles] = useState<Files>(getFilesFromHash())
   const [selectedFileName, setSelectedFileName] = useState('src/App.tsx');
   const [theme, setTheme] = useState<PlaygroundContext['theme']>('light')
+  const [dependencies, setDependencies] = useState<Record<string, string>>({} as Record<string, string>);
+  const addDependency = (name: string, version: string) => {
+    setDependencies(prev => ({ ...prev, [name]: version }));
+  };
   const addFile = (name: string) => {
     files[name] = {
       name,
@@ -82,6 +89,8 @@ export const PlaygroundProvider = (props: PropsWithChildren) => {
   return (
     <PlaygroundContext.Provider
       value={{
+        dependencies,
+        addDependency,
         leetCodes,
         setLeetCodes,
         theme,
