@@ -105,7 +105,7 @@ export default function Terminal() {
       
       terminal.write(`Dependencies resolved.\r\n`);
       terminal.write(`Fetching ${pkgName} metadata...\r\n`);
-      
+      console.log(`%c🔨 [Terminal] 正在安装: ${pkgName}`, 'color: orange')
       try {
         const response = await fetch(`https://registry.npmjs.org/${pkgName}/latest`);
         if (!response.ok) {
@@ -142,6 +142,7 @@ export default function Terminal() {
     if (code === KEY_CODES.ENTER || data === '\r' || data === '\n') {
       const cmd = currentLineRef.current.trim();
       currentLineRef.current = '';
+
       runCommand(cmd);
       return;
     }

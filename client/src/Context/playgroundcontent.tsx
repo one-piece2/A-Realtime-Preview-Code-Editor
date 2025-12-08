@@ -60,7 +60,8 @@ export const PlaygroundProvider = (props: PropsWithChildren) => {
   const [selectedFileName, setSelectedFileName] = useState('src/App.tsx');
   const [theme, setTheme] = useState<PlaygroundContext['theme']>('light')
 
-  const [dependencies, setDependencies] = useState<Record<string, string>>(getInitialDependencies());
+  const [dependencies, setDependencies] = useState<Record<string, string>>(Object.assign(getInitialDependencies(),{ "react": "18.2.0",
+    "react-dom": "18.2.0"}));
   const addDependency = (name: string, version: string) => {
     setDependencies(prev => ({ ...prev, [name]: version }));
   };

@@ -4,6 +4,7 @@ export interface File {
   language: string;
 
 }
+export type Dependencies = Record<string, string>;
 
 export interface Files {
   [key: string]: File;

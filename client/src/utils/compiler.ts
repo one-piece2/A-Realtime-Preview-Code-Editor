@@ -1,7 +1,7 @@
 import { transform } from '@babel/standalone'
 import { type Files } from '../types/types'
 import { ENTRY_FILE_NAME } from '../utils/files'
-
+import { type Dependencies } from '../types/types'
 import customResolver from './babelPlug'
 // 编译前处理代码，主要是添加 React 导入语句
 export const beforeTransformCode = (filename: string, code: string) => {
@@ -13,7 +13,7 @@ export const beforeTransformCode = (filename: string, code: string) => {
     return _code
 }
 
-export const babelTransform = (filename: string, code: string, files: Files) => {
+export const babelTransform = (filename: string, code: string, files: Files,dependencies:Dependencies) => {
     // 编译前处理代码，主要是添加 React 导入语句
     code = beforeTransformCode(filename, code)
   let result = ''
@@ -21,7 +21,7 @@ export const babelTransform = (filename: string, code: string, files: Files) => 
     result = transform(code, {
       presets: ['react', 'typescript'],
       filename,
-      plugins: [customResolver(files, filename)],
+      plugins: [customResolver(files, filename,dependencies)],
       retainLines: true
     }).code!
   } catch (e) {
@@ -30,16 +30,16 @@ export const babelTransform = (filename: string, code: string, files: Files) => 
   return result
 }
 
-export const compile = (files: Files) => {
+export const compile = (files: Files,dependencies:Dependencies) => {
   const main = files[ENTRY_FILE_NAME]
-  return babelTransform(ENTRY_FILE_NAME, main.value, files)
+  return babelTransform(ENTRY_FILE_NAME, main.value, files,dependencies)
 }
 
 self.onmessage = (event: MessageEvent<any>) => {
-  const { type, files } = event.data;
+  const { type, files,dependencies } = event.data;
   if (type === 'compile') {
     try{
-      const result = compile(files);
+      const result = compile(files,dependencies);
       self.postMessage({ type: 'success', result: result });
     }catch(e){
       self.postMessage({ type: 'error', message: String(e) });

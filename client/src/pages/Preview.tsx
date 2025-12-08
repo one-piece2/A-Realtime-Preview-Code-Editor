@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useRef } from "react"
 import { PlaygroundContext } from "../Context/playgroundcontent"
-import { compile } from "../utils/compiler";
+// import { compile } from "../utils/compiler";
 import { debounce } from "lodash-es";
 //以字符串的形式编译代码
 import iframeRaw from "../components/ifarm.html?raw";
@@ -12,6 +12,7 @@ export default function Preview() {
     const workerRef = useRef<Worker | null>(null);
     const [compiledCode, setCompiledCode] = useState<string>('')
     const [iframeUrl, setIframeUrl] = useState<string|null>(null)
+    //引入工作者线程
     useEffect(() => {
         if(!workerRef.current){
             workerRef.current = new Worker(
@@ -30,7 +31,7 @@ export default function Preview() {
     useEffect(debounce(() => {
         setError('');
         if(workerRef.current){
-            workerRef.current.postMessage({ type: 'compile', files });
+            workerRef.current.postMessage({ type: 'compile', files,dependencies });
         }
     }, 500), [files])
     const getIframeUrl = () => {
@@ -54,14 +55,14 @@ export default function Preview() {
         }
     };
     
-    useEffect(() => {
-        try {
-            const res = compile(files);
-            setCompiledCode(res);
-        } catch (error) {
-            console.error('Compilation error:', error);
-        }
-    }, [files]);
+    // useEffect(() => {
+    //     try {
+    //         const res = compile(files);
+    //         setCompiledCode(res);
+    //     } catch (error) {
+    //         console.error('Compilation error:', error);
+    //     }
+    // }, [files]);
     
     useEffect(() => {
     //清理旧的URL
@@ -78,7 +79,7 @@ export default function Preview() {
                 URL.revokeObjectURL(newIframeUrl);
             }
         };
-    }, [compiledCode, files[IMPORT_MAP_FILE_NAME]?.value]);
+    }, [compiledCode]);
     const handleMessage = (event: MessageEvent) => {
         if (event.data.type === 'ERROR') {
                     setError(event.data.message);
