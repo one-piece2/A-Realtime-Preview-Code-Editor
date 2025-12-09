@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { Ship } from "lucide-react"
+import { setToken } from "@/utils/mannegerToken"
 
 function LoadingShip() {
   return (
@@ -24,7 +25,8 @@ export default function AuthCallback() {
     const token = searchParams.get("token")
 
     if (token) {
-      localStorage.setItem("accessToken", token)
+      // 使用 token 管理工具保存 token
+      setToken(token)
       navigate("/", { replace: true })
     } else {
       navigate("/login", { replace: true })
