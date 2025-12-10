@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, type FormEvent } from "react"
 import { useNavigate, Link } from "react-router-dom"
@@ -6,7 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Github, Mail, Lock, Loader2, Anchor, Skull } from "lucide-react"
-
+import { loginWithGitHub } from "@/api/auth/auth"
+import { useAuth } from "@/Context/AuthContext/useAuth"
 function PirateSkull() {
   return (
     <div className="relative w-16 h-16">
@@ -17,6 +17,7 @@ function PirateSkull() {
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login, authError, clearAuthError } = useAuth()
   const [formData, setFormData] = useState({ email: "", password: "" })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [globalError, setGlobalError] = useState("")
@@ -53,12 +54,10 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      // TODO: 调用登录接口 POST /auth/login/local
+      await login(formData.email, formData.password)
       navigate("/", { replace: true })
-    } catch {
+    } catch (error) {
       setGlobalError("登录失败，请稍后重试")
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -73,7 +72,7 @@ export default function Login() {
   }
 
   const handleGitHubLogin = () => {
-    window.location.href = "http://localhost:3000/auth/github"
+    loginWithGitHub()
   }
 
   return (
@@ -101,6 +100,23 @@ export default function Login() {
         {/* Card with glassmorphism effect */}
         <div className="bg-card/60 backdrop-blur-xl border border-border/30 rounded-2xl p-8 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* 显示认证错误（如 token 过期） */}
+            {authError && (
+              <div className="p-3 text-sm text-amber-500 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Skull className="w-4 h-4" />
+                  {authError}
+                </div>
+                <button 
+                  onClick={clearAuthError} 
+                  className="text-amber-500/70 hover:text-amber-500 text-xs"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
+            {/* 显示登录表单错误 */}
             {globalError && (
               <div className="p-3 text-sm text-accent bg-accent/10 border border-accent/30 rounded-lg flex items-center gap-2">
                 <Skull className="w-4 h-4" />

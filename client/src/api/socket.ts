@@ -19,6 +19,6 @@ export const initSocket = async () => {
     transports: ["websocket"],
   };
   
-
+//返回socket实例
   return io(backendUrl, options);
 };

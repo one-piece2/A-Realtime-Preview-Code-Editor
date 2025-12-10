@@ -1,14 +1,24 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Moon, Sun, Github, Code2, Users, Zap, Sparkles, Terminal, Eye } from "lucide-react"
+import { Moon, Sun, Github, Code2, Users, Zap, Sparkles, Terminal, Eye, LogOut, Settings, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAuth } from "@/Context/AuthContext/useAuth"
 
 export default function Dashboard() {
   const [theme, setTheme] = useState<"light" | "dark">("dark")
   const navigate = useNavigate()
   const [activeButton, setActiveButton] = useState<string>("")
+  const { user, logout } = useAuth()
 
   const handleCodeEditorClick = () => {
     setActiveButton("codeEditor")
@@ -18,6 +28,11 @@ export default function Dashboard() {
   const handleEditorWithFriendsClick = () => {
     setActiveButton("editorWithFriends")
     navigate("/home")
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate("/login", { replace: true })
   }
 
   const isDark = theme === "dark"
@@ -63,10 +78,54 @@ export default function Dashboard() {
               <Github className="h-4 w-4" />
             </a>
 
-            <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-offset-transparent ring-emerald-500/50">
-              <AvatarImage src="/1.png" alt="Avatar" />
-              <AvatarFallback className={isDark ? "bg-gray-800 text-white" : "bg-gray-200"}>U</AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="focus:outline-none">
+                  <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-offset-transparent ring-emerald-500/50 cursor-pointer hover:ring-emerald-400 transition-all">
+                    <AvatarImage src={user?.githubAvatar || "/1.png"} alt="Avatar" />
+                    <AvatarFallback className={isDark ? "bg-gray-800 text-white" : "bg-gray-200"}>
+                      {user?.username?.charAt(0).toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="end" 
+                className={`w-56 ${isDark ? "bg-[#1a1a1f] border-white/10" : "bg-white border-gray-200"}`}
+              >
+                <DropdownMenuLabel className={isDark ? "text-gray-300" : "text-gray-700"}>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">{user?.username || "用户"}</p>
+                    <p className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"}`}>
+                      {user?.email || "未设置邮箱"}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className={isDark ? "bg-white/10" : "bg-gray-200"} />
+                <DropdownMenuItem 
+                  className={`cursor-pointer ${isDark ? "text-gray-300 focus:bg-white/10 focus:text-white" : "text-gray-700 focus:bg-gray-100"}`}
+                  onClick={() => navigate("/profile")}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  <span>个人资料</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className={`cursor-pointer ${isDark ? "text-gray-300 focus:bg-white/10 focus:text-white" : "text-gray-700 focus:bg-gray-100"}`}
+                  onClick={() => navigate("/settings")}
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>设置</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className={isDark ? "bg-white/10" : "bg-gray-200"} />
+                <DropdownMenuItem 
+                  className="cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>退出登录</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <button
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}

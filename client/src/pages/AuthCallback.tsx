@@ -1,9 +1,8 @@
-"use client"
-
 import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { Ship } from "lucide-react"
-import { setToken } from "@/utils/mannegerToken"
+import { useAuth } from "@/Context/AuthContext/useAuth"
+import { type AuthResponse } from "@/api/auth/types"
 
 function LoadingShip() {
   return (
@@ -18,20 +17,35 @@ function LoadingShip() {
 }
 
 export default function AuthCallback() {
-  const navigate = useNavigate()
+  const navigate = useNavigate()  
+  const { setAuthState } = useAuth()
+  //获取url参数 token
   const [searchParams] = useSearchParams()
 
   useEffect(() => {
-    const token = searchParams.get("token")
+    const tokensParam = searchParams.get("tokens")
 
-    if (token) {
-      // 使用 token 管理工具保存 token
-      setToken(token)
-      navigate("/", { replace: true })
-    } else {
-      navigate("/login", { replace: true })
+    if (tokensParam) {
+      try {
+        const tokens = JSON.parse(decodeURIComponent(tokensParam)) as AuthResponse
+        const token = tokens?.accessToken
+        const user = tokens?.user
+        const refreshToken = tokens?.refreshToken
+
+        if (token && user && refreshToken) {
+          // 使用 AuthContext 的 setAuthState 同时更新 localStorage 和 Context 状态
+          setAuthState(token, user, refreshToken)
+          navigate("/", { replace: true })
+          return
+        }
+      } catch (error) {
+        console.error("Failed to parse tokens from callback:", error)
+      }
     }
-  }, [searchParams, navigate])
+
+    // 解析失败或缺少必要数据，回退到登录页
+    navigate("/login", { replace: true })
+  }, [searchParams, navigate, setAuthState])
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen relative overflow-hidden">
@@ -52,7 +66,7 @@ export default function AuthCallback() {
         </h1>
 
         <div className="space-y-2">
-          <p className="text-xl font-semibold text-foreground">正在登船...</p>
+          <p className="text-xl font-semibold text-foreground">正在登录...</p>
           <p className="text-sm text-muted-foreground">船长正在确认你的身份</p>
         </div>
 

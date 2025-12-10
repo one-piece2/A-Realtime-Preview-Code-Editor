@@ -5,12 +5,11 @@ import {
   getRefreshToken, 
   setToken, 
   setRefreshToken, 
-  removeToken, 
-  removeRefreshToken, 
+  
   clearAuth 
 } from '@/utils/mannegerToken';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -41,40 +40,32 @@ const processQueue = (error: AxiosError | null, token: string | null = null) => 
 };
 
 
- //刷新 Token
+ //刷新 Token（只负责刷新，不负责跳转）
 async function refreshAccessToken(): Promise<string | null> {
   const refreshToken = getRefreshToken();
   
   if (!refreshToken) {
-    // 没有 refreshToken，清除所有认证信息并跳转登录
-    clearAuth();
-    window.location.href = '/login';
+    // 没有 refreshToken，返回 null，让调用方处理
     return null;
   }
 
   try {
-    // TODO: 调用刷新 token 接口
-    // const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-    //   refreshToken: refreshToken
-    // });
-    // 
-    // const { accessToken, refreshToken: newRefreshToken } = response.data;
-    // 
-    // // 保存新的 token
-    // setToken(accessToken);
-    // if (newRefreshToken) {
-    //   setRefreshToken(newRefreshToken);
-    // }
-    // 
-    // return accessToken;
-
-    // 临时返回 null，等待后端实现
-    console.warn('Token refresh not implemented yet');
-    return null;
+    // 调用刷新 token 接口
+    const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+      refreshToken
+    });
+    
+    const { accessToken, refreshToken: newRefreshToken } = response.data;
+    
+    // 保存新的 token
+    setToken(accessToken);
+    if (newRefreshToken) {
+      setRefreshToken(newRefreshToken);
+    }
+    
+    return accessToken;
   } catch (error) {
-    // 刷新失败，清除所有认证信息并跳转登录
-    clearAuth();
-    window.location.href = '/login';
+    // 刷新失败，返回 null，让调用方处理
     return null;
   }
 }
@@ -101,6 +92,12 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     //原来的请求对象  给他添加一个 _retry 属性，用于记录是否重试过
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+
+    // 对于 /auth/me 验证请求，直接抛出错误，让调用方（AuthContext）处理
+    // 不触发 token 刷新逻辑，避免无限循环
+    if (originalRequest.url?.includes('/auth/me')) {
+      return Promise.reject(error);
+    }
 
     // 如果是 401 错误且不是刷新 token 的请求,且没有重试过
     if (error.response?.status === 401 && !originalRequest._retry) {

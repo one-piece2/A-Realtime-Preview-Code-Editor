@@ -12,7 +12,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate ,useLocation,useParams, Navigate } from 'react-router-dom';
 import copy from 'copy-to-clipboard'
 import { message } from 'antd'
-import { initSocket, } from '@/socket';
+import { initSocket, } from '@/api/socket';
 import type { Socket } from 'socket.io-client';
 import { ACTIONS } from '@/action';
 import getDogAvatarUrl from '@/utils/dogAvataUrl';

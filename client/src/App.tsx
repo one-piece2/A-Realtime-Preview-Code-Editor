@@ -63,7 +63,7 @@ function App() {
                 <Route element={<ProtectedRoute />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/home" element={<Home />} />
-                  <Route path="/editor/:roomId" element={<EditorSigelPage />} />
+                  <Route path="/editor/:roomId" element={<ProtectedRoute2> <EditorSigelPage /></ProtectedRoute2>} />
                   <Route path="/editor/files" element={<EditorFilesPage />} />
                 </Route>
                 {/* 404 */}

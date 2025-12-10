@@ -1,12 +1,12 @@
-"use client"
+
 
 import { useState, type FormEvent } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link,  } from "react-router-dom"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Github, Mail, Lock, User, Loader2, Ship, Skull } from "lucide-react"
-
+import { useAuth } from "@/Context/AuthContext/useAuth"
 function StrawHatLogo() {
   return (
     <div className="relative w-16 h-16">
@@ -17,6 +17,7 @@ function StrawHatLogo() {
 
 export default function Register() {
   const navigate = useNavigate()
+  const { register } = useAuth()
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -75,9 +76,10 @@ export default function Register() {
     setIsLoading(true)
 
     try {
-      // TODO: 调用注册接口 POST /auth/register/local
+      // 调用上下文的注册方法，内部已处理 token/user 写入
+      await register(formData.email, formData.username, formData.password)
       navigate("/", { replace: true })
-    } catch {
+    } catch (error) {
       setGlobalError("注册失败，请稍后重试")
     } finally {
       setIsLoading(false)
@@ -163,7 +165,7 @@ export default function Register() {
                 <Input
                   id="username"
                   type="text"
-                  placeholder="你的海贼名（2-50字符）"
+                  placeholder="你的用户名（2-50字符）"
                   value={formData.username}
                   onChange={(e) => handleChange("username", e.target.value)}
                   className={`pl-11 h-11 bg-secondary/50 border-border/50 text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:ring-primary/20 transition-all ${errors.username ? "border-accent focus:ring-accent/20" : ""}`}

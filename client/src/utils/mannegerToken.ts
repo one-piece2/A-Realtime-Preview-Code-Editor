@@ -1,7 +1,7 @@
 /**
  * Token 管理工具
  * 使用 localStorage 存储 accessToken、refreshToken 和用户信息
- * 支持双 Token 无感刷新策略
+ * 支持双 Token 无感刷新策略 + 过期时间判断
  */
 import { type User } from '@/types/users/type';
 const TOKEN_KEY = 'accessToken';
@@ -105,7 +105,7 @@ export function clearAuth(): void {
 
 
  //保存认证信息（AccessToken + RefreshToken + 用户信息）
-export function setAuth(token: string, user: User, refreshToken?: string): void {
+export function setAuth(token: string, user: User, refreshToken: string): void {
     setToken(token);
     if (refreshToken) {
         setRefreshToken(refreshToken);
