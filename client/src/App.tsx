@@ -11,6 +11,7 @@ import { useContext, useEffect } from 'react';
 import EditorFilesPage from "@/pages/EditorFilesPage";
 import AuthCallback from "@/pages/AuthCallback";
 import { Toaster } from "sonner";
+import { AuthProvider } from "./Context/AuthContext";
 import { useLocation, Navigate } from "react-router-dom";
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -42,6 +43,7 @@ function ThemeSwitcher({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <PlaygroundProvider>
+      <AuthProvider>
       <ThemeSwitcher>
         <BrowserRouter>
           <Toaster position="top-center" />
@@ -65,6 +67,7 @@ function App() {
           </div>
         </BrowserRouter>
       </ThemeSwitcher>
+      </AuthProvider>
     </PlaygroundProvider>
   )
 }
