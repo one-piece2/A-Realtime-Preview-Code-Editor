@@ -11,9 +11,12 @@ import { useContext, useEffect } from 'react';
 import EditorFilesPage from "@/pages/EditorFilesPage";
 import AuthCallback from "@/pages/AuthCallback";
 import { Toaster } from "sonner";
-import { AuthProvider } from "./Context/AuthContext";
+import { AuthProvider } from "./Context/AuthContext/AuthContext";
 import { useLocation, Navigate } from "react-router-dom";
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
+import { ProtectedRoute } from "./components/Control-Router/ProtectedRoute";
+import { PublicRoute } from "./components/Control-Router/PublicRoute";
+//单独的路由守卫组件
+function ProtectedRoute2({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   if (!location.state?.username) {
     return <Navigate to="/" replace />;
@@ -44,29 +47,31 @@ function App() {
   return (
     <PlaygroundProvider>
       <AuthProvider>
-      <ThemeSwitcher>
-        <BrowserRouter>
-          <Toaster position="top-center" />
-          <div className="min-h-screen transition-colors duration-300">
-            <Routes>
-             
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
-   
+        <ThemeSwitcher>
+          <BrowserRouter>
+            <Toaster position="top-center" />
+            <div className="min-h-screen transition-colors duration-300">
+              <Routes>
+                {/* 公开路由 */}
+                <Route element={<PublicRoute />}>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
 
-              {/* 受保护的路由 */}
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/editor/:roomId" element={<ProtectedRoute><EditorSigelPage /></ProtectedRoute>} />
-              <Route path="/editor/files" element={<EditorFilesPage />} />
-
-              {/* 404 */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </ThemeSwitcher>
+                </Route>
+                {/* 受保护的路由 */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/editor/:roomId" element={<EditorSigelPage />} />
+                  <Route path="/editor/files" element={<EditorFilesPage />} />
+                </Route>
+                {/* 404 */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </BrowserRouter>
+        </ThemeSwitcher>
       </AuthProvider>
     </PlaygroundProvider>
   )
