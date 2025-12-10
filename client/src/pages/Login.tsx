@@ -157,7 +157,7 @@ export default function Login() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-sm text-accent flex items-center gap-1 text-red-500">
+                <p className="text-sm  flex items-center gap-1 text-red-500">
                   <Skull className="w-3 h-3" />
                   {errors.password}
                 </p>

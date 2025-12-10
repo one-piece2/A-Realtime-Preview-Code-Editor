@@ -3,14 +3,14 @@ import axios, { AxiosError, type InternalAxiosRequestConfig, type AxiosResponse 
 import { 
   getToken, 
   getRefreshToken, 
-  setToken, // 在 refreshAccessToken 的 TODO 中使用（后端实现后启用）
-  setRefreshToken, // 在 refreshAccessToken 的 TODO 中使用（后端实现后启用）
-  removeToken, // 在 clearAuth 中使用
-  removeRefreshToken, // 在 clearAuth 中使用
+  setToken, 
+  setRefreshToken, 
+  removeToken, 
+  removeRefreshToken, 
   clearAuth 
 } from '@/utils/mannegerToken';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL 
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -28,11 +28,7 @@ let failedQueue: Array<{
   reject: (reason?: any) => void;
 }> = [];
 
-/**
- * 处理队列中的请求
- * @param error - 错误对象
- * @param token - 新的 accessToken
- */
+ //处理队列中的请求
 const processQueue = (error: AxiosError | null, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -44,10 +40,8 @@ const processQueue = (error: AxiosError | null, token: string | null = null) => 
   failedQueue = [];
 };
 
-/**
- * 刷新 Token
- * @returns 新的 accessToken 或 null
- */
+
+ //刷新 Token
 async function refreshAccessToken(): Promise<string | null> {
   const refreshToken = getRefreshToken();
   
@@ -105,11 +99,12 @@ api.interceptors.response.use(
   (response: AxiosResponse) => response,
   // 处理错误
   async (error: AxiosError) => {
+    //原来的请求对象  给他添加一个 _retry 属性，用于记录是否重试过
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-    // 如果是 401 错误且不是刷新 token 的请求
+    // 如果是 401 错误且不是刷新 token 的请求,且没有重试过
     if (error.response?.status === 401 && !originalRequest._retry) {
-      // 如果正在刷新 token，将当前请求加入队列
+      // 如果正在刷新 token，将当前请求加入队列,等待刷新成功后重试
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -136,7 +131,7 @@ api.interceptors.response.use(
       // 处理队列中的请求
       processQueue(null, newToken);
       isRefreshing = false;
-
+    //重新发起第一个失败的请求
       if (newToken) {
         // 使用新的 token 重试原始请求
         if (originalRequest.headers) {
