@@ -1,4 +1,4 @@
-import { Controller, Post, Get, UseGuards, Req, Res, Body, HttpCode, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Get, UseGuards, Req, Res, Body, HttpCode, HttpStatus, UsePipes, ValidationPipe, UnauthorizedException } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -90,40 +90,51 @@ export class AuthController {
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
     
     // 重定向到前端，携带 Token
-    res.redirect(
-      `${frontendUrl}/auth/callback?token=${tokens.accessToken}&refresh=${tokens.refreshToken || ''}`
-    );
+    //将tokens对象转换为字符串并编码
+    const payload = encodeURIComponent(JSON.stringify(tokens));
+    res.redirect(`${frontendUrl}/auth/callback?tokens=${payload}`);
   }
-}
-//   /**
-//    * 刷新 Access Token
-//    * POST /auth/refresh
-//    * Body: { refreshToken: "..." }
-//    * 
-//    * ⚠️ 注意：这个接口应该是公开的，因为用户可能只有 refreshToken
-//    */
-//   @Public()
-//   @Post('refresh')
-//   async refresh(@Body('refreshToken') refreshToken: string) {
-//     return this.authService.refreshToken(refreshToken);
-//   }
 
-//   /**
+
+  //   /**
 //    * 获取当前用户信息
 //    * GET /auth/me
 //    * 
 //    * ⚠️ 注意：这个接口需要 JWT 认证（默认保护，不需要 @Public()）
 //    * 需要在请求头中携带：Authorization: Bearer <accessToken>
 //    */
-//   @Get('me')
-//   async getProfile(@CurrentUser() user: User) {
-//     return {
-//       id: user.id,
-//       email: user.email,
-//       username: user.username,
-//       githubNickname: user.githubNickname,
-//       githubAvatar: user.githubAvatar,
-//       provider: user.provider,
-//     };
-//   }
-// }
+
+  @Get('me')
+  async getProfile(@CurrentUser() user: User) {
+    // 如果 user 为空（JWT 验证失败或用户不存在），返回 401
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      githubNickname: user.githubNickname,
+      githubAvatar: user.githubAvatar,
+      provider: user.provider,
+    };
+  }
+
+   /**
+   * 刷新 Access Token
+   * POST /auth/refresh
+   * Body: { refreshToken: "..." }
+   * 
+   * ⚠️ 注意：这个接口应该是公开的，因为用户可能只有 refreshToken
+   */
+  @Public()
+  @Post('refresh')
+  async refresh(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
+  }
+
+
+}
+ 
+
+

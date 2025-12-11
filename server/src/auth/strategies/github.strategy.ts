@@ -17,6 +17,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     }
     //验证github的OAuth 会自动注入这些参数：accessToken, refreshToken, profile
     async validate(accessToken: string, refreshToken: string, profile: Profile) {
+
         const user = await this.authService.validateOAuthUser(profile);
         //自动将user注入到request.user中
         return user;

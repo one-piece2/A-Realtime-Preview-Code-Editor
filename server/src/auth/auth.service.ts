@@ -77,14 +77,14 @@ export class AuthService {
         const accessToken = this.jwtService.sign(payload);
         
         // 生成 Refresh Token（长期有效）
-        // const refreshToken = this.jwtService.sign(payload, {
-        //     secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        //     expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d') as any,
-        // });
+        const refreshToken = this.jwtService.sign(payload, {
+            secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+            expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d') as any,
+        });
         
         return {
             accessToken,
-            // refreshToken,
+            refreshToken,
             user: {
                 id: user.id,
                 email: user.email,
@@ -149,28 +149,24 @@ export class AuthService {
         return await this.generateTokens(user);
     }
 
-    // /**
-    //  * 刷新 Access Token（使用 Refresh Token）
-    //  * @param refreshToken Refresh Token
-    //  * @returns 新的 Access Token 和 Refresh Token
-    //  */
-    // async refreshToken(refreshToken: string): Promise<AuthResponse> {
-    //     try {
-    //         // 验证 Refresh Token
-    //         const payload = this.jwtService.verify(refreshToken, {
-    //             secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-    //         }) as JwtPayload;
+  
+    async refreshToken(refreshToken: string): Promise<AuthResponse> {
+        try {
+            // 验证 Refresh Token
+            const payload = this.jwtService.verify(refreshToken, {
+                secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+            }) as JwtPayload;
 
-    //         // 查找用户
-    //         const user = await this.userService.findById(payload.sub);
-    //         if (!user) {
-    //             throw new UnauthorizedException('User not found');
-    //         }
+            // 查找用户
+            const user = await this.userService.findById(payload.sub);
+            if (!user) {
+                throw new UnauthorizedException('User not found');
+            }
 
-    //         // 生成新的 Token
-    //         return await this.generateTokens(user);
-    //     } catch (error) {
-    //         throw new UnauthorizedException('Invalid refresh token');
-    //     }
-    // }
+            // 生成新的 Token
+            return await this.generateTokens(user);
+        } catch (error) {
+            throw new UnauthorizedException('Invalid refresh token');
+        }
+    }
 }

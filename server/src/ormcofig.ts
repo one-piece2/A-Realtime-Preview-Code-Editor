@@ -12,8 +12,8 @@ const config: PostgresConnectionOptions = {
   entities: [User],
   // 作用：自动同步实体与数据库的结构（开发环境使用，生产环境建议关闭）
   synchronize: true,
-  // 显示 SQL 日志，方便调试
-  logging: true,
+  // 关闭 SQL 日志，避免在控制台打印 query/COMMIT 等信息
+  logging: false,
 };
 
 export default config;

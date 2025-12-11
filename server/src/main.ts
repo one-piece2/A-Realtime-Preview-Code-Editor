@@ -2,7 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // 临时开启日志用于调试
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn'],
+  });
 
   // 配置 CORS，允许前端跨域请求
   // 支持多个前端 URL（用逗号分隔）或单个 URL
