@@ -1,17 +1,14 @@
-/**
- * 重构后的 App.tsx
- * 使用 Zustand + Context 模块化架构
- */
+
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useEffect } from 'react';
-import { Toaster } from "sonner";
+
+import { Toaster, toast } from "sonner";
 
 // 全局配置
-import { GlobalConfigProvider, useTheme } from "@/core/config";
+import { GlobalConfigProvider } from "@/core/config";
 
 // 业务模块 hooks
-import { useAuthInitializer } from "@/modules/auth";
+import { useAuthInitializer,useAuthError } from "@/modules/auth";
 
 // 页面组件
 import Home from "@/pages/home";
@@ -31,33 +28,59 @@ import { useLocation, Navigate } from "react-router-dom";
 // 单独的路由守卫组件
 function ProtectedRoute2({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  if (!location.state?.username) {
+  const username = (location.state as any)?.username ?? localStorage.getItem("username");
+  if (!username) {
+    toast.error("请先登录或加入房间");
     return <Navigate to="/" replace />;
   }
   return children;
 }
 
-// 主题应用组件 - 使用新的 useTheme hook
-function ThemeApplier({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme();
+// // 主题应用组件 - 使用新的 useTheme hook
+// function ThemeApplier({ children }: { children: React.ReactNode }) {
+//   const { theme } = useTheme();
 
-  useEffect(() => {
-    // 主题切换逻辑已移至 GlobalConfigContext
-    // 这里可以添加额外的主题相关副作用
-  }, [theme]);
+//   useEffect(() => {
+//     // 主题切换逻辑已移至 GlobalConfigContext
+//     // 这里可以添加额外的主题相关副作用
+//   }, [theme]);
 
-  return <>{children}</>;
-}
+//   return <>{children}</>;
+// }
 
 // Auth 初始化组件
 function AuthInitializer({ children }: { children: React.ReactNode }) {
   const { isLoading } = useAuthInitializer();
+  const {authError,clearAuthError} = useAuthError();
 
-  // 可选：显示加载状态
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white">
+          Loading...
+        </div>
+      </div>
+    );
+  }
+
+  if (authError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div className="text-red-600 dark:text-red-400 font-semibold mb-3">初始化失败</div>
+          <div className="text-sm text-gray-700 dark:text-gray-300 break-words mb-4">{String(authError)}</div>
+          <div className="flex gap-2">
+            <button
+              className="px-3 py-2 rounded bg-blue-600 text-white"
+              onClick={() => {
+                location.reload();
+                clearAuthError();
+              }}
+            >
+              重试
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -101,7 +124,6 @@ function AppRoutes() {
 function App() {
   return (
     <GlobalConfigProvider>
-      <ThemeApplier>
         <AuthInitializer>
           <BrowserRouter>
             <Toaster position="top-center" />
@@ -110,7 +132,6 @@ function App() {
             </div>
           </BrowserRouter>
         </AuthInitializer>
-      </ThemeApplier>
     </GlobalConfigProvider>
   );
 }

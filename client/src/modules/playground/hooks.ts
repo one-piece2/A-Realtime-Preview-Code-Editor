@@ -1,14 +1,11 @@
-/**
- * Playground 模块 Hooks
- * UI 层通过这些 hooks 获取状态，禁止直接操作 store
- */
+// Playground 模块 Hooks
+// UI 层通过这些 hooks 获取状态，禁止直接操作 store
 
-import { usePlaygroundStore, playgroundSelectors } from './store';
-import { useShallow } from 'zustand/react/shallow';
+import { usePlaygroundStore, playgroundSelectors } from "./store";
+import { useShallow } from "zustand/react/shallow";
 
-/**
- * 主要的 Playground Hook - 提供完整的编辑器功能
- */
+// 主要的 Playground Hook - 提供完整的编辑器功能
+
 export function usePlayground() {
   return usePlaygroundStore(
     useShallow((state) => ({
@@ -28,32 +25,31 @@ export function usePlayground() {
   );
 }
 
-/**
- * 获取所有文件
- */
+//  获取所有文件
+
 export function useFiles() {
   return usePlaygroundStore(playgroundSelectors.files);
 }
 
-/**
- * 获取当前选中的文件名
- */
+// 获取当前选中的文件名
 export function useSelectedFileName() {
-  const selectedFileName = usePlaygroundStore(playgroundSelectors.selectedFileName);
-  const setSelectedFileName = usePlaygroundStore((state) => state.setSelectedFileName);
+  const selectedFileName = usePlaygroundStore(
+    playgroundSelectors.selectedFileName
+  );
+  const setSelectedFileName = usePlaygroundStore(
+    (state) => state.setSelectedFileName
+  );
   return { selectedFileName, setSelectedFileName };
 }
 
-/**
- * 获取当前选中的文件内容
- */
+// 获取当前选中的文件内容
+
 export function useSelectedFile() {
   return usePlaygroundStore(playgroundSelectors.selectedFile);
 }
 
-/**
- * 文件操作 Hook
- */
+// 文件操作 Hook
+
 export function useFileActions() {
   return usePlaygroundStore(
     useShallow((state) => ({
@@ -66,58 +62,63 @@ export function useFileActions() {
   );
 }
 
-/**
- * 依赖管理 Hook
- */
+// 依赖管理 Hook
+
 export function useDependencies() {
   const dependencies = usePlaygroundStore(playgroundSelectors.dependencies);
   const addDependency = usePlaygroundStore((state) => state.addDependency);
-  const removeDependency = usePlaygroundStore((state) => state.removeDependency);
+  const removeDependency = usePlaygroundStore(
+    (state) => state.removeDependency
+  );
   const setDependencies = usePlaygroundStore((state) => state.setDependencies);
-  
+
   return { dependencies, addDependency, removeDependency, setDependencies };
 }
 
-/**
- * LeetCode Hook
- */
+// LeetCode 管理 Hook
+
 export function useLeetCodes() {
   const leetCodes = usePlaygroundStore(playgroundSelectors.leetCodes);
   const setLeetCodes = usePlaygroundStore((state) => state.setLeetCodes);
   return { leetCodes, setLeetCodes };
 }
 
-/**
- * 编辑器内容 Hook - 用于代码编辑器组件
- */
+// 编辑器内容 Hook - 用于代码编辑器组件
 export function useEditorContent() {
   const files = usePlaygroundStore(playgroundSelectors.files);
-  const selectedFileName = usePlaygroundStore(playgroundSelectors.selectedFileName);
-  const updateFileContent = usePlaygroundStore((state) => state.updateFileContent);
-  
+  const selectedFileName = usePlaygroundStore(
+    playgroundSelectors.selectedFileName
+  );
+  const updateFileContent = usePlaygroundStore(
+    (state) => state.updateFileContent
+  );
+
   const currentFile = files[selectedFileName];
-  
+
   return {
     fileName: selectedFileName,
-    content: currentFile?.value || '',
-    language: currentFile?.language || 'typescript',
-    updateContent: (content: string) => updateFileContent(selectedFileName, content),
+    content: currentFile?.value || "",
+    language: currentFile?.language || "typescript",
+    updateContent: (content: string) =>
+      updateFileContent(selectedFileName, content),
   };
 }
 
-/**
- * 文件列表 Hook - 用于文件标签页组件
- */
+// 文件列表 Hook - 用于文件标签页组件
 export function useFileList() {
   const files = usePlaygroundStore(playgroundSelectors.files);
-  const selectedFileName = usePlaygroundStore(playgroundSelectors.selectedFileName);
-  const setSelectedFileName = usePlaygroundStore((state) => state.setSelectedFileName);
+  const selectedFileName = usePlaygroundStore(
+    playgroundSelectors.selectedFileName
+  );
+  const setSelectedFileName = usePlaygroundStore(
+    (state) => state.setSelectedFileName
+  );
   const removeFile = usePlaygroundStore((state) => state.removeFile);
   const updateFileName = usePlaygroundStore((state) => state.updateFileName);
   const addFile = usePlaygroundStore((state) => state.addFile);
-  
+
   const fileNames = Object.keys(files);
-  
+
   return {
     files,
     fileNames,
@@ -129,9 +130,8 @@ export function useFileList() {
   };
 }
 
-/**
- * 重置 Playground
- */
+// 重置 Playground
+
 export function useResetPlayground() {
   return usePlaygroundStore((state) => state.reset);
 }
