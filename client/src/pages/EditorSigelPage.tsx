@@ -7,8 +7,8 @@ import LeetCode from '@/components/LeetCode';
 import OutputBox from '@/components/OutputBox';
 import { Allotment } from "allotment";
 import 'allotment/dist/style.css';
-import { PlaygroundContext } from '@/Context/playgroundcontent';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useTheme } from '@/core/config';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate ,useLocation,useParams, Navigate } from 'react-router-dom';
 import copy from 'copy-to-clipboard'
 import { message } from 'antd'
@@ -20,7 +20,7 @@ import getDogAvatarUrl from '@/utils/dogAvataUrl';
 export default function EditorPage() {
 
   const [messageApi, contextHolder] = message.useMessage();
-  const { theme} = useContext(PlaygroundContext);
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 const { roomId } = useParams();
@@ -197,6 +197,25 @@ useEffect(() => {
     language: 'javascript'
   }
 
+  // 使用 useCallback 包装 onUsersChange，避免每次渲染创建新函数
+  const handleUsersChange = useCallback((usersMap: Map<number, { name: string; avatarUrl: string; color: string }>) => {
+    awarenessUsersRef.current = usersMap;
+    setClients((prevClients) => {
+      return prevClients.map((client) => {
+        for (const [_, userInfo] of usersMap) {
+          if (userInfo.name === client.username) {
+            return {
+              ...client,
+              avatarUrl: userInfo.avatarUrl,
+              color: userInfo.color,
+            };
+          }
+        }
+        return client;
+      });
+    });
+  }, []);
+
   // const onChange = (value: string | undefined) => {
   //   setLeetCodes(value)
   //   // socket事件发送逻辑已移至Editor组件内部处理
@@ -210,12 +229,11 @@ useEffect(() => {
  
   return (
     <div className="flex h-screen w-full bg-[#f5f5f5]">
+      {contextHolder}
       {/* Slider组件 - 设置与主内容相同的高度和背景色 */}
-      <div className="h-full">
-
+      <div className="h-full shrink-0 relative z-10">
         <Slider clients={clients} copyRoomId={copyRoomId} leaveRoom={leaveRoom} />
       </div>
-      {contextHolder}
       {/* 主内容区域 */}
       <div className="flex-1 flex flex-col h-full min-h-0">
         {/* HeaderLC组件 - 移除固定高度，让组件自然高度，添加明显的底部边框 */}
@@ -239,24 +257,7 @@ useEffect(() => {
                   username={location.state?.username}
                   avatarUrl={avatarUrl}
                   onchange={(code) => { codeRef.current = code; }}
-                  onUsersChange={(usersMap) => {
-                    awarenessUsersRef.current = usersMap;
-                    // 更新客户端列表，合并用户信息
-                    setClients((prevClients) => {
-                      return prevClients.map((client) => {
-                        for (const [_, userInfo] of usersMap) {
-                          if (userInfo.name === client.username) {
-                            return {
-                              ...client,
-                              avatarUrl: userInfo.avatarUrl,
-                              color: userInfo.color,
-                            };
-                          }
-                        }
-                        return client;
-                      });
-                    });
-                  }}
+                  onUsersChange={handleUsersChange}
                 />
               </Allotment.Pane>
             </Allotment>

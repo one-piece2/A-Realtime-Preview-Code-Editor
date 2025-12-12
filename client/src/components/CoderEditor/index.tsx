@@ -1,17 +1,16 @@
-
 // import FileNameList from "../FileNameList";
-import { PlaygroundContext } from "../../Context/playgroundcontent";
-import { useContext } from "react";
-import {debounce} from 'lodash-es'
+import { useFiles, useSelectedFileName, useFileActions } from "@/modules/playground";
+import { useTheme } from "@/core/config";
+import { debounce } from 'lodash-es'
 import Editor from "./Editor";
+
 export default function CodeEditor() {
-  const { 
-    files, 
-    theme,
-    setFiles, 
-    selectedFileName
-} = useContext(PlaygroundContext)
-const file = files[selectedFileName];
+  const files = useFiles()
+  const { theme } = useTheme()
+  const { setFiles } = useFileActions()
+  const { selectedFileName } = useSelectedFileName()
+  const file = files[selectedFileName];
+
 // //mock data
 //   const file = {
 //     name: 'lyy.tsx',

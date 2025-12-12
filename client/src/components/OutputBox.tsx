@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { PlaygroundContext } from '../Context/playgroundcontent';
+import { useState } from 'react';
+import { useTheme } from '@/core/config';
 import copy from 'copy-to-clipboard';
 import RunCoder from './RunCoder';
 import {message} from 'antd';
@@ -10,7 +10,7 @@ interface OutputBoxProps {
 }
 
 export default function OutputBox({ onClear, onRefresh }: OutputBoxProps) {
-  const { theme } = useContext(PlaygroundContext);
+  const { theme } = useTheme();
 
   const [codeOutput, setCodeOutput] = useState<any[]>([]);
   const [CodeResult, setCodeResult] = useState<any>('');

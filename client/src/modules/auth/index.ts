@@ -16,6 +16,7 @@ export {
   useLogin,
   useRegister,
   useLogout,
+  useSetAuthState,
 } from './hooks';
 
 // Types

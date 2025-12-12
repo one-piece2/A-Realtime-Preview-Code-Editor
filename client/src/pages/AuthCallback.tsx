@@ -1,9 +1,10 @@
 import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { Ship } from "lucide-react"
-import { useAuth } from "@/Context/AuthContext/useAuth"
+// import { useAuth } from "@/Context/AuthContext/useAuth"
 import { type AuthResponse } from "@/api/auth/types"
 
+import { useSetAuthState } from "@/modules/auth"
 function LoadingShip() {
   return (
     <div className="relative">
@@ -18,7 +19,8 @@ function LoadingShip() {
 
 export default function AuthCallback() {
   const navigate = useNavigate()  
-  const { setAuthState } = useAuth()
+  const setAuthState = useSetAuthState()
+
   //获取url参数 token
   const [searchParams] = useSearchParams()
 

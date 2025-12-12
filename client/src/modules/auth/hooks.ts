@@ -112,3 +112,8 @@ export function useRegister() {
 export function useLogout() {
   return useAuthStore((state) => state.logout);
 }
+
+//设置用户信息
+export function useSetAuthState() {
+  return useAuthStore((state) => state.setAuthState);
+}

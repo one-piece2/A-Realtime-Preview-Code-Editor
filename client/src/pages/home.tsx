@@ -1,4 +1,4 @@
-"use client"
+
 
 import type React from "react"
 
@@ -144,6 +144,7 @@ const Home = () => {
                   value={roomId}
                   onChange={(e) => setRoomId(e.target.value)}
                   type="text"
+                  autoComplete="off"
                   className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 font-mono text-sm"
                   placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
                 />
@@ -155,6 +156,7 @@ const Home = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   type="text"
+                  autoComplete="off"
                   className="w-full px-4 py-3 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm"
                   placeholder="Enter your username"
                   onKeyUp={handleInputEnter}

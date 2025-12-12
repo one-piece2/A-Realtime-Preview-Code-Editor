@@ -4,14 +4,16 @@ import type { HeaderProps } from "../types/types"
 import { Moon, Sun, Copy, Download, Settings, Home, LogOut, X, ChevronDown } from "lucide-react"
 import copy from "copy-to-clipboard"
 import { downloadFiles } from "../utils/loadandcompress"
-import { PlaygroundContext } from "../Context/playgroundcontent"
-import { useContext, useState, useEffect, useRef } from "react"
+import { useTheme } from "@/core/config"
+import { useFiles } from "@/modules/playground"
+import { useState, useEffect, useRef } from "react"
 import {  useNavigate } from "react-router-dom"
 import { message } from "antd"
 
 export default function Header(props: HeaderProps) {
   const { word, photoUrl } = props
-  const { theme, setTheme, files } = useContext(PlaygroundContext)
+  const { theme, setTheme } = useTheme()
+  const files = useFiles()
   // 注意：theme 只用于切换按钮的图标显示，样式使用 Tailwind 的 dark: 前缀
   const navigate = useNavigate()
   const [messageApi, contextHolder] = message.useMessage()

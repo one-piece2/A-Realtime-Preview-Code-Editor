@@ -3,9 +3,9 @@ import MonacoEditor from '@monaco-editor/react'
 import { editor } from "monaco-editor";
 import { type EditorFile } from '../types/types';
 import { createATA } from '../utils/ata';
-import { useEffect, useRef, useContext, useMemo, useState } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import { type Socket } from 'socket.io-client';
-import { PlaygroundContext } from '../Context/playgroundcontent';
+import { useLeetCodes } from '@/modules/playground';
 
 import * as Y from 'yjs'
 import { MonacoBinding } from 'y-monaco'
@@ -28,7 +28,7 @@ export default function Editor(props: Props) {
   const [cursors, setCursors] = useState<Record<string, any>>({});
   const bindingRef = useRef<MonacoBinding | null>(null)
   const providerRef = useRef<SocketIOProvider | null>(null)
-  const { setLeetCodes } = useContext(PlaygroundContext)
+  const { setLeetCodes } = useLeetCodes()
   const { file, options, socketRef, roomId, onchange, username, avatarUrl, onUsersChange } = props;
   const ydoc = useMemo(() => new Y.Doc(), [])
   const [editorReady, setEditorReady] = useState(false)

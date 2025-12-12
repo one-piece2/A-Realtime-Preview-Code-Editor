@@ -1,8 +1,9 @@
-import { useEffect, useRef, useContext, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Terminal as XTerm } from '@xterm/xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import '@xterm/xterm/css/xterm.css';
-import { PlaygroundContext } from '../Context/playgroundcontent';
+import { useTheme } from '@/core/config';
+import { useDependencies } from '@/modules/playground';
 
 // 主题配置 - 使用更现代、与黑色界面有明显区分的配色
 const getTheme = (isDark: boolean) => ({
@@ -55,7 +56,8 @@ export default function Terminal() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<XTerm | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
-  const { theme, addDependency } = useContext(PlaygroundContext);
+  const { theme } = useTheme();
+  const { addDependency } = useDependencies();
   const currentLineRef = useRef<string>('');
   
   // 使用 ref 存储最新的 addDependency，避免闭包问题

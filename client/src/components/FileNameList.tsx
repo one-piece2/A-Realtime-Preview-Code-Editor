@@ -1,17 +1,12 @@
-import { useContext } from "react"
-import { PlaygroundContext } from "../Context/playgroundcontent"
 import { useState, useEffect } from "react"
+import { useFiles, useSelectedFileName, useFileActions } from "@/modules/playground"
 import { FileNameItem } from "./FileListItem"
 import { APP_COMPONENT_FILE_NAME, ENTRY_FILE_NAME, IMPORT_MAP_FILE_NAME } from "@/utils/files"
+
 export default function FileNameList() {
-    const {
-        files,
-        removeFile,
-        addFile,
-        updateFileName,
-        selectedFileName,
-        setSelectedFileName,
-    } = useContext(PlaygroundContext)
+    const files = useFiles()
+    const { selectedFileName, setSelectedFileName } = useSelectedFileName()
+    const { removeFile, addFile, updateFileName } = useFileActions()
     const [creating, setCreating] = useState(false);
     const [tabs, setTabs] = useState([''])
 

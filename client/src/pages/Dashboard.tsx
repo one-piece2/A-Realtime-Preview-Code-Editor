@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTheme } from "@/core/config"
 import { useNavigate } from "react-router-dom"
 import { Moon, Sun, Github, Code2, Users, Zap, Sparkles, Terminal, Eye, LogOut, Settings, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -12,10 +13,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useAuth } from "@/Context/AuthContext/useAuth"
+import { useAuth } from "@/modules/auth"
 
 export default function Dashboard() {
-  const [theme, setTheme] = useState<"light" | "dark">("dark")
+  const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const [activeButton, setActiveButton] = useState<string>("")
   const { user, logout } = useAuth()
@@ -128,7 +129,7 @@ export default function Dashboard() {
             </DropdownMenu>
 
             <button
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              onClick={toggleTheme}
               className={`h-9 w-9 flex items-center justify-center rounded-lg transition-all duration-200 ${
                 isDark
                   ? "bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white"

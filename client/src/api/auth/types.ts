@@ -18,6 +18,7 @@ export interface LoginRequest {
   }
   
   export interface AuthResponse {
+    refreshToken: string;
     accessToken: string;
     user: User;
   }

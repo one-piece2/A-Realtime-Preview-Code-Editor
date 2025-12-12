@@ -6,9 +6,18 @@ import CodeEditor from "../components/CoderEditor";
 import Header from "@/components/Header";
 import { FileTree } from "@/components/FileTree/FileTree";
 import Terminal from "@/components/Terminal";
+import { usePlaygroundStore, saveFilesToHash } from "@/modules/playground";
 
 export default function EditorFilesPage() {
   const [showTerminal, setShowTerminal] = useState(false);
+
+  // 只在这个页面订阅 files 变化并同步到 URL hash
+  useEffect(() => {
+    const unsubscribe = usePlaygroundStore.subscribe((state) => {
+      saveFilesToHash(state.files);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // 监听 Ctrl+~ 快捷键（实际上是 Ctrl+`，因为 ~ 是通过 Shift+` 输入的）
   useEffect(() => {

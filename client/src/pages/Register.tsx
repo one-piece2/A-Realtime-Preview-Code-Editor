@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Github, Mail, Lock, User, Loader2, Ship, Skull } from "lucide-react"
-import { useAuth } from "@/Context/AuthContext/useAuth"
+import { useAuth, loginWithGitHub } from "@/modules/auth"
 function StrawHatLogo() {
   return (
     <div className="relative w-16 h-16">
@@ -97,7 +97,7 @@ export default function Register() {
   }
 
   const handleGitHubLogin = () => {
-    window.location.href = "http://localhost:3000/auth/github"
+    loginWithGitHub()
   }
 
   return (

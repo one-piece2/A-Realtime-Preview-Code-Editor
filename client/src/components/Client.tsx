@@ -1,6 +1,4 @@
-
-import { useContext } from 'react';
-import { PlaygroundContext } from '../Context/playgroundcontent';
+import { useTheme } from '@/core/config';
 
 interface ClientProps {
   username: string;
@@ -9,7 +7,7 @@ interface ClientProps {
 }
 
 const Client = ({ username, avatarUrl, color }: ClientProps) => {
-  const { theme } = useContext(PlaygroundContext);
+  const { theme } = useTheme();
   const isDark = theme === 'dark';
   
   // 如果没有提供颜色，生成一个基于用户名的稳定颜色

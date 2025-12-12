@@ -1,7 +1,7 @@
 
 
-import { useContext, useState } from "react"
-import { PlaygroundContext } from "../Context/playgroundcontent"
+import { useState } from "react"
+import { useTheme } from "@/core/config"
 import {
   Play,
   CheckCircle2,
@@ -75,7 +75,7 @@ function visualizeAlgorithm(s: string): { step: string; window: string; length: 
 }
 
 export default function LeetCode() {
-  const { theme } = useContext(PlaygroundContext)
+  const { theme } = useTheme()
   const [inputValue, setInputValue] = useState<string>("abcabcbb")
   const [result, setResult] = useState<number | null>(null)
   const [algorithmSteps, setAlgorithmSteps] = useState<any[]>([])

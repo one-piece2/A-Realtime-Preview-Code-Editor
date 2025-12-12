@@ -2,8 +2,7 @@
 
 import Client from "./Client"
 import type { Clienttype } from "../types/types"
-import { useContext } from "react"
-import { PlaygroundContext } from "../Context/playgroundcontent"
+import { useTheme } from "@/core/config"
 import { Copy, LogOut, Users } from "lucide-react"
 
 export default function Slider({
@@ -15,7 +14,7 @@ export default function Slider({
   copyRoomId: () => void
   leaveRoom: () => void
 }) {
-  const { theme } = useContext(PlaygroundContext)
+  const { theme } = useTheme()
   const isDark = theme === "dark"
 
   return (

@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Github, Mail, Lock, Loader2, Anchor, Skull } from "lucide-react"
-import { loginWithGitHub } from "@/api/auth/auth"
-import { useAuth } from "@/Context/AuthContext/useAuth"
+import { useAuth, loginWithGitHub } from "@/modules/auth"
 function PirateSkull() {
   return (
     <div className="relative w-16 h-16">

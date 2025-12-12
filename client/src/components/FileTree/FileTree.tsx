@@ -1,6 +1,6 @@
-import { useMemo, useContext, useRef, useEffect, useState } from 'react';
+import { useMemo, useRef, useEffect, useState } from 'react';
 import { Tree } from 'react-arborist';
-import { PlaygroundContext } from '@/Context/playgroundcontent';
+import { useFiles, useSelectedFileName, useFileActions } from '@/modules/playground';
 import buildFileTree from '@/utils/filetree';
 import { 
   FolderOpenIcon, 
@@ -408,7 +408,9 @@ function AddFileDialog({
 }
 
 export function FileTree() {
-  const { files, setSelectedFileName, removeFile, selectedFileName, updateFileName, addFile } = useContext(PlaygroundContext);
+  const files = useFiles();
+  const { selectedFileName, setSelectedFileName } = useSelectedFileName();
+  const { removeFile, updateFileName, addFile } = useFileActions();
   const treeData = useMemo(() => buildFileTree(files), [files]);
   const containerRef = useRef<HTMLDivElement>(null);
   const treeContainerRef = useRef<HTMLDivElement>(null);

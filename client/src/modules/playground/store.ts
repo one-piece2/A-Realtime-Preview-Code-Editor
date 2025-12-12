@@ -155,10 +155,7 @@ export const usePlaygroundStore = create<PlaygroundStore>()(
   )
 );
 
-// 自动同步到 URL hash
-usePlaygroundStore.subscribe((state) => {
-  saveFilesToHash(state.files);
-});
+
 
 // 注册到全局 store registry
 registerStore("playground", usePlaygroundStore);

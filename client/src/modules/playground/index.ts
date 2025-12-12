@@ -30,4 +30,4 @@ export type {
 } from './types';
 
 // Services (仅导出必要的)
-export { fileName2Language, initFiles } from './services';
+export { fileName2Language, initFiles, saveFilesToHash } from './services';

@@ -1,17 +1,24 @@
-import { useContext, useEffect, useState, useRef } from "react"
-import { PlaygroundContext } from "../Context/playgroundcontent"
+import { useEffect, useState, useRef, useMemo } from "react"
+import { useFiles, useDependencies } from "@/modules/playground"
 // import { compile } from "../utils/compiler";
 import { debounce } from "lodash-es";
 //以字符串的形式编译代码
 import iframeRaw from "../components/ifarm.html?raw";
-import { IMPORT_MAP_FILE_NAME } from "@/utils/files";
+
 import { Message } from "../components/Message";
 
 export default function Preview() {
-    const { files,dependencies} = useContext(PlaygroundContext)
+    const files = useFiles()
+    const { dependencies } = useDependencies()
     const workerRef = useRef<Worker | null>(null);
     const [compiledCode, setCompiledCode] = useState<string>('')
     const [iframeUrl, setIframeUrl] = useState<string|null>(null)
+    const [error, setError] = useState('')
+    
+    // 用字符串化版本作为稳定的依赖标识
+    const filesKey = useMemo(() => JSON.stringify(files), [files]);
+    const depsKey = useMemo(() => JSON.stringify(dependencies), [dependencies]);
+    
     //引入工作者线程
     useEffect(() => {
         if(!workerRef.current){
@@ -20,30 +27,49 @@ export default function Preview() {
                 { type: 'module' }
             );
             workerRef.current.onmessage = (event: MessageEvent) => {
-                if(event.data.type === 'success'){
-                    setCompiledCode(event.data.result);
-                }else{
-                    setError(event.data.message);
+                const { type, result, message } = event.data;
+                if(type === 'success'){
+                    setCompiledCode(result);
+                } else if(type === 'error' && message){
+                    setError(message);
                 }
+                // 忽略其他消息类型
             }
         }
     }, [])
-    useEffect(debounce(() => {
-        setError('');
-        if(workerRef.current){
-            workerRef.current.postMessage({ type: 'compile', files,dependencies });
-        }
-    }, 500), [files])
+    
+    // 使用 ref 存储最新值，避免 debounce 闭包问题
+    const filesRef = useRef(files);
+    const depsRef = useRef(dependencies);
+    filesRef.current = files;
+    depsRef.current = dependencies;
+    
+    // debounce 函数只创建一次
+    const debouncedCompile = useRef(
+        debounce(() => {
+            if(workerRef.current){
+                workerRef.current.postMessage({ 
+                    type: 'compile', 
+                    files: filesRef.current, 
+                    dependencies: depsRef.current 
+                });
+            }
+        }, 500)
+    ).current;
+    
+    // 当 files 或 dependencies 内容变化时触发编译（用字符串化版本比较）
+    useEffect(() => {
+        setError(''); // 清除错误移到这里，只在依赖变化时执行
+        debouncedCompile();
+    }, [filesKey, depsKey])
+    
     const getIframeUrl = () => {
         try {
             if (!compiledCode) {
                 return null;
             }
             const res = iframeRaw
-                .replace(
-                    '<script type="importmap"></script>',
-                    `<script type="importmap">${files[IMPORT_MAP_FILE_NAME]?.value || ''}</script>`
-                )
+            
                 .replace(
                     '<script type="module" id="appSrc"></script>',
                     `<script type="module" id="appSrc">${compiledCode}</script>`
@@ -85,7 +111,6 @@ export default function Preview() {
                     setError(event.data.message);
         }
     }
-        const [error, setError] = useState('')
     useEffect(() => {
         window.addEventListener('message', handleMessage)
         return () => {
