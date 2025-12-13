@@ -1,23 +1,23 @@
-// AI 模块业务服务
-// 封装 AI 聊天和代码补全的业务逻辑
+// AI 模块 API 服务层
+// 只负责纯 API 调用，不依赖 store
 
 import { api } from '@/utils/axios';
 import type { Message } from './type';
-import { useAiStore } from './store';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // 流式聊天请求配置
 export interface ChatStreamOptions {
     messages: Pick<Message, 'role' | 'content'>[];
-    //上下文
+    // 上下文
     context?: string;
-    //流式chunk的回调
+    // 流式 chunk 的回调
     onChunk: (content: string) => void;
-    //流式完成的回调
+    // 流式完成的回调
     onDone: () => void;
+    // 错误回调
     onError: (error: Error) => void;
-    //取消请求的信号
+    // 取消请求的信号
     signal?: AbortSignal;
 }
 
@@ -131,8 +131,7 @@ export async function streamChat(options: ChatStreamOptions): Promise<void> {
     }
 }
 
-
- //代码补全请求
+// 代码补全请求
 export async function getCompletion(params: {
     prefix: string;
     suffix: string;
@@ -148,110 +147,8 @@ export async function getCompletion(params: {
     throw new Error(response.data.error || '补全请求失败');
 }
 
-
- //发送消息并处理流式响应（业务逻辑封装）
-export async function sendMessageWithStream(
-    conversationId: string,
-    userMessage: string,
-    //上下文
-    context?: string,
-    //取消请求的信号
-    abortSignal?: AbortSignal
-): Promise<void> {
-    const store = useAiStore.getState();
-
-    // 添加用户消息
-    store.addMessage(conversationId, {
-        role: 'user',
-        content: userMessage,
-    });
-
-    // 获取当前会话
-    const conversation = store.conversations[conversationId];
-    if (!conversation) {
-        store.setError('会话不存在');
-        return;
-    }
-
-    // 开始流式响应
-    store.setStreaming(true);
-    store.resetStreamingContent();
-    store.setError(null);
-
-    // 准备发送的消息 这是为了转换格式  给了当前发送的消息+历史消息
-    const chatMessages = conversation.messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-    }));
-
-    // 先添加一个空的 assistant 消息占位 这是让流失输出结束后 放入消息历史的地方
-    store.addMessage(conversationId, {
-        role: 'assistant',
-        content: '',
-    });
-
-    try {
-        await streamChat({
-            
-            messages: chatMessages,
-            context,
-            signal: abortSignal,
-            //更新流式消息
-            onChunk: (chunk) => {
-                store.appendStreamingContent(chunk);
-            },
-            //流式完成 把完整消息内容更新进入该对话的历史消息
-            onDone: () => {
-               //finalContent：流式完成后的最终内容
-                const finalContent = useAiStore.getState().streamingContent;
-                //conv：当前会话
-                const conv = useAiStore.getState().conversations[conversationId];
-                if (conv && conv.messages.length > 0) {
-                    const lastMessage = conv.messages[conv.messages.length - 1];
-                    if (lastMessage.role === 'assistant') {
-                        useAiStore.getState().updateMessage(conversationId, lastMessage.id, finalContent);
-                    }
-                }
-                store.setStreaming(false);
-                store.resetStreamingContent();
-            },
-            //错误处理
-            onError: (err) => {
-                store.setError(err.message);
-                store.setStreaming(false);
-                store.resetStreamingContent();
-            },
-        });
-    } catch (err) {
-        store.setError(err instanceof Error ? err.message : '请求失败');
-        store.setStreaming(false);
-        store.resetStreamingContent();
-    }
-}
-
-
- //快捷发送消息（自动创建会话） 
-export async function sendMessage(
-    message: string,
-    context?: string,
-    abortSignal?: AbortSignal
-): Promise<string> {
-    const store = useAiStore.getState();
-
-    // 如果没有当前会话，创建一个
-    let conversationId = store.currentConversationId;
-    if (!conversationId) {
-        conversationId = store.createConversation();
-    }
-
-    await sendMessageWithStream(conversationId, message, context, abortSignal);
-    return conversationId;
-}
-
-// 导出服务对象
+// 导出服务对象（只包含纯 API 调用）
 export const aiService = {
     streamChat,
     getCompletion,
-    sendMessageWithStream,
-    sendMessage,
 };
