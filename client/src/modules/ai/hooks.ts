@@ -1,7 +1,7 @@
 // AI 模块自定义 Hooks
 // 封装 AI 聊天相关的 React 逻辑
 
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { useAiStore, aiSelectors } from './store';
 import { streamChat } from './services';
@@ -77,6 +77,7 @@ export function useAIChat() {
         await streamChat({
           messages: chatMessages,
           context,
+          //取消请求的信号
           signal: abortControllerRef.current.signal,
           onChunk: (chunk) => {
             appendStreamingContent(chunk);
@@ -141,14 +142,20 @@ export function useAIChat() {
 
  // 会话列表 Hook  用于侧边栏显示和管理会话列表
 export function useConversationList() {
-  // 获取排序后的会话列表
-  const conversations = useAiStore(aiSelectors.conversationList);
+  // 获取原始 conversations 对象
+  const conversationsMap = useAiStore(aiSelectors.conversations);
   // 当前选中的会话 ID
   const currentId = useAiStore((state) => state.currentConversationId);
   // 操作方法
   const setCurrentConversation = useAiStore((state) => state.setCurrentConversation);
   const deleteConversation = useAiStore((state) => state.deleteConversation);
   const createConversation = useAiStore((state) => state.createConversation);
+
+  // 在组件中计算排序后的列表（使用 useMemo 避免每次渲染都重新计算）
+  const conversations = useMemo(
+    () => Object.values(conversationsMap).sort((a, b) => b.updatedAt - a.updatedAt),
+    [conversationsMap]
+  );
 
   return {
     conversations,

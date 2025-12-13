@@ -1,7 +1,9 @@
-// AI 模块 API 服务层
+// AI 模块业务服务层
 // 只负责纯 API 调用，不依赖 store
+// API 接口从 @/api/ai 导入
 
-import { api } from '@/utils/axios';
+import { aiApi } from '@/api/ai/ai';
+import type { Completion } from '@/api/ai/types';
 import type { Message } from './type';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -131,20 +133,15 @@ export async function streamChat(options: ChatStreamOptions): Promise<void> {
     }
 }
 
-// 代码补全请求
-export async function getCompletion(params: {
-    prefix: string;
-    suffix: string;
-    language?: string;
-    filename?: string;
-}): Promise<string> {
-    const response = await api.post('/ai/completion', params);
+// 代码补全请求（使用封装的 aiApi）
+export async function getCompletion(params: Completion): Promise<string> {
+    const response = await aiApi.getCompletion(params);
 
-    if (response.data.success) {
-        return response.data.data.completion;
+    if (response.success) {
+        return response.data.completion;
     }
 
-    throw new Error(response.data.error || '补全请求失败');
+    throw new Error(response.error || '补全请求失败');
 }
 
 // 导出服务对象（只包含纯 API 调用）

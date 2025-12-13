@@ -1,8 +1,10 @@
 // Playground 模块 Hooks
 // UI 层通过这些 hooks 获取状态，禁止直接操作 store
 
+import { useEffect } from "react";
 import { usePlaygroundStore, playgroundSelectors } from "./store";
 import { useShallow } from "zustand/react/shallow";
+import type { Files } from "./types";
 
 // 主要的 Playground Hook - 提供完整的编辑器功能
 
@@ -134,4 +136,14 @@ export function useFileList() {
 
 export function useResetPlayground() {
   return usePlaygroundStore((state) => state.reset);
+}
+
+// 订阅 files 变化（副作用）- 用于同步到 URL hash 等场景
+export function useFilesSubscription(callback: (files: Files) => void) {
+  useEffect(() => {
+    const unsubscribe = usePlaygroundStore.subscribe((state) => {
+      callback(state.files);
+    });
+    return () => unsubscribe();
+  }, [callback]);
 }

@@ -120,10 +120,11 @@ function AppRoutes() {
   );
 }
 
+
 // 主应用组件
 function App() {
   return (
-    <GlobalConfigProvider>
+       <GlobalConfigProvider>
         <AuthInitializer>
           <BrowserRouter>
             <Toaster position="top-center" />
@@ -132,7 +133,10 @@ function App() {
             </div>
           </BrowserRouter>
         </AuthInitializer>
+        
+ 
     </GlobalConfigProvider>
+
   );
 }
 

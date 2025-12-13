@@ -37,7 +37,7 @@ export const useAiStore = create<AIStore>()(
               ...state.conversations,
               [id]: conversation,
             },
-            currentConversationId: id,
+           
           }));
 
           return id;
@@ -167,12 +167,13 @@ export const useAiStore = create<AIStore>()(
 
 // 注册到全局 store registry
 registerStore('ai', useAiStore);
+
 // 选择器
 export const aiSelectors = {
   currentConversation: (state: AIStore) =>
     state.currentConversationId ? state.conversations[state.currentConversationId] : null,
-  conversationList: (state: AIStore) =>
-    Object.values(state.conversations).sort((a, b) => b.updatedAt - a.updatedAt),
+  // 返回原始 conversations 对象，在组件中处理排序
+  conversations: (state: AIStore) => state.conversations,
   isStreaming: (state: AIStore) => state.isStreaming,
   streamingContent: (state: AIStore) => state.streamingContent,
   error: (state: AIStore) => state.error,

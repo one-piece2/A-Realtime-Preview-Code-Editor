@@ -2,7 +2,7 @@
 // 只包含业务逻辑，API 接口从 @/api/auth 导入
 
 import { authApi } from '@/api/auth/auth';
-import type { AuthResponse, User } from '@/api/auth/types';
+import type { AuthResponse, User, LoginRequest, RegisterRequest } from '@/api/auth/types';
 import {
   getToken,
   getUser,
@@ -29,6 +29,15 @@ export const storageService = {
   removeToken,
   removeUser,
 };
+
+// API 封装（供 store 调用）
+export async function loginApi(data: LoginRequest): Promise<AuthResponse> {
+  return authApi.login(data);
+}
+
+export async function registerApi(data: RegisterRequest): Promise<AuthResponse> {
+  return authApi.register(data);
+}
 
 // 业务逻辑服务
 
@@ -106,6 +115,10 @@ export async function validateAndRestoreAuth(): Promise<{
       error: '登录状态无效，请重新登录',
     };
   }
+}
+
+export  function loginWithGitHub(){
+  authApi.loginWithGitHub();
 }
 
 
