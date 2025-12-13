@@ -18,6 +18,7 @@ const app_service_1 = require("./app.service");
 const chat_module_1 = require("./chat/chat.module");
 const auth_module_1 = require("./auth/auth.module");
 const user_module_1 = require("./user/user.module");
+const ai_module_1 = require("./ai/ai.module");
 const ormcofig_1 = __importDefault(require("./ormcofig"));
 let AppModule = class AppModule {
 };
@@ -33,6 +34,7 @@ exports.AppModule = AppModule = __decorate([
             chat_module_1.ChatModule,
             auth_module_1.AuthModule,
             user_module_1.UserModule,
+            ai_module_1.AiModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
