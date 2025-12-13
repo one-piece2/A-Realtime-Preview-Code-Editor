@@ -5,7 +5,7 @@ import { ChatHeader } from './ChatHeader';
 import { ChatMessages } from './ChatMessages';
 import { ChatInput } from './ChatInput';
 import { ConversationList } from './ConversationList';
-import { useAIChat } from '@/modules/ai';
+import { useAIChat,useConversationList } from '@/modules/ai';
 import { cn } from '@/lib/utils';
 
 interface ChatSidebarProps {
@@ -17,7 +17,9 @@ interface ChatSidebarProps {
 
 export function ChatSidebar({ isOpen, onToggle, editorContext }: ChatSidebarProps) {
     const [showHistory, setShowHistory] = useState(false);
+    //conversation当前对话
     const { sendMessage, isStreaming, stopGeneration, conversation } = useAIChat();
+    const { conversations } = useConversationList();
 
     // 发送消息时带上编辑器上下文
     const handleSend = (content: string) => {
@@ -43,13 +45,17 @@ export function ChatSidebar({ isOpen, onToggle, editorContext }: ChatSidebarProp
     return (
         <div
             className={cn(
-                'h-full w-[380px] flex flex-col border-l transition-all duration-300',
+                'h-full w-full flex flex-col border-l',
                 'bg-background border-border'
             )}
         >
-            {/* 头部 */}
+            {/* 头部 - 标题显示当前对话序号 */}
             <ChatHeader
-                title={conversation?.title || 'AI 助手'}
+                title={
+                    conversation && conversations?.length
+                        ? `对话${conversations.findIndex(c => c.id === conversation.id) + 1}`
+                        : 'AI 助手'
+                }
                 onClose={onToggle}
                 onToggleHistory={() => setShowHistory(!showHistory)}
                 showHistory={showHistory}
@@ -59,14 +65,14 @@ export function ChatSidebar({ isOpen, onToggle, editorContext }: ChatSidebarProp
             {showHistory ? (
                 <ConversationList onSelect={() => setShowHistory(false)} />
             ) : (
-                <>
+                <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
                     <ChatMessages />
                     <ChatInput
                         onSend={handleSend}
                         onStop={stopGeneration}
                         isStreaming={isStreaming}
                     />
-                </>
+                </div>
             )}
         </div>
     );

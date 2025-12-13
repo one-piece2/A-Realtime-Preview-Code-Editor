@@ -40,7 +40,7 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
             </h3>
 
             {/* 操作按钮 */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 ">
                 {/* 新建对话 */}
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -52,7 +52,7 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
                             <Plus className="size-4" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent>新对话</TooltipContent>
+                    <TooltipContent className="z-9999">新对话</TooltipContent>
                 </Tooltip>
 
                 {/* 历史记录 */}
@@ -67,7 +67,7 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
                             <History className="size-4" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent>{showHistory ? '返回聊天' : '历史记录'}</TooltipContent>
+                    <TooltipContent className="z-9999">{showHistory ? '返回聊天' : '历史记录'}</TooltipContent>
                 </Tooltip>
 
                 {/* 更多操作 - 使用 DropdownMenu */}
@@ -112,7 +112,7 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
                             <X className="size-4" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent>关闭</TooltipContent>
+                    <TooltipContent className="z-9999">关闭</TooltipContent>
                 </Tooltip>
             </div>
         </div>

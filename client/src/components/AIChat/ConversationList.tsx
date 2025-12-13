@@ -44,7 +44,11 @@ export function ConversationList({ onSelect }: ConversationListProps) {
                         <MessageSquare className="size-4 shrink-0 text-muted-foreground" />
 
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">{conv.title}</p>
+                            <p className="text-sm font-medium truncate">
+                                {conv.messages.length > 0 
+                                    ? conv.messages[conv.messages.length - 1].content.slice(0, 30)+'...'
+                                    : '新对话'}
+                            </p>
                             <p className="text-xs text-muted-foreground">
                                 {conv.messages.length} 条消息 · {formatDate(conv.updatedAt)}
                             </p>
