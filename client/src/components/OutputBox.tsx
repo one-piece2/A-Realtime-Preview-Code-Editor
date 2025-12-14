@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTheme } from '@/core/config';
+import { useTranslation } from 'react-i18next';
 import copy from 'copy-to-clipboard';
 import RunCoder from './RunCoder';
 import {message} from 'antd';
@@ -11,6 +12,7 @@ interface OutputBoxProps {
 
 export default function OutputBox({ onClear, onRefresh }: OutputBoxProps) {
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   const [codeOutput, setCodeOutput] = useState<any[]>([]);
   const [CodeResult, setCodeResult] = useState<any>('');
@@ -21,7 +23,7 @@ export default function OutputBox({ onClear, onRefresh }: OutputBoxProps) {
   const handleCopy = () => {
     if (codeOutput.length === 0) return;
     copy(codeOutput.join('\n'));
-    messageApi.success('输出已复制。');
+    messageApi.success(t('output.copied'));
   };
 
   const handleClear = () => {
@@ -44,7 +46,7 @@ export default function OutputBox({ onClear, onRefresh }: OutputBoxProps) {
           ${isDark ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-100'}
       `}>
         <div className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-          Output
+          {t('output.title')}
         </div>
 
         {/* 控制按钮组 */}
@@ -60,21 +62,21 @@ export default function OutputBox({ onClear, onRefresh }: OutputBoxProps) {
             onClick={handleRefresh}
             className="px-2 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
-            Refresh
+            {t('output.refresh')}
           </button>
 
           <button
             onClick={handleCopy}
             className="px-2 py-1 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
           >
-            Copy
+            {t('output.copy')}
           </button>
 
           <button
             onClick={handleClear}
             className="px-2 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-700"
           >
-            Clear
+            {t('output.clear')}
           </button>
         </div>
       </div>
@@ -102,14 +104,14 @@ export default function OutputBox({ onClear, onRefresh }: OutputBoxProps) {
         {/* result */}
         {CodeResult !== undefined && CodeResult !== '' &&CodeResult !== 'undefined'&&CodeResult !== null&& (
           <div className="mt-3 text-blue-400 font-bold">
-            Result: {String(CodeResult)}
+            {t('output.result')}: {String(CodeResult)}
           </div>
         )}
 
         {/* 空状态 */}
         {!error && codeOutput.length === 0 && !CodeResult && (
           <div className="text-gray-400 text-center mt-10">
-            No output yet.
+            {t('output.noOutput')}
           </div>
         )}
       </div>

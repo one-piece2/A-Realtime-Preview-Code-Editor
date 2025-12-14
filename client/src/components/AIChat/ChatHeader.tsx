@@ -1,5 +1,6 @@
 // 头部组件（标题、操作按钮）
 import { X, History, Plus, Trash2, MoreVertical } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -20,6 +21,7 @@ interface ChatHeaderProps {
 }
 
 export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: ChatHeaderProps) {
+    const { t } = useTranslation();
     const { createConversation, currentId, deleteConversation } = useConversationList();
 
     const handleNewChat = () => {
@@ -52,7 +54,7 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
                             <Plus className="size-4" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent className="z-9999">新对话</TooltipContent>
+                    <TooltipContent className="z-9999">{t('ai.newChat')}</TooltipContent>
                 </Tooltip>
 
                 {/* 历史记录 */}
@@ -67,7 +69,7 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
                             <History className="size-4" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent className="z-9999">{showHistory ? '返回聊天' : '历史记录'}</TooltipContent>
+                    <TooltipContent className="z-9999">{showHistory ? t('ai.backToChat') : t('ai.history')}</TooltipContent>
                 </Tooltip>
 
                 {/* 更多操作 - 使用 DropdownMenu */}
@@ -80,11 +82,11 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={handleNewChat}>
                             <Plus className="size-4 mr-2" />
-                            新建对话
+                            {t('ai.newConversation')}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={onToggleHistory}>
                             <History className="size-4 mr-2" />
-                            {showHistory ? '返回聊天' : '历史记录'}
+                            {showHistory ? t('ai.backToChat') : t('ai.history')}
                         </DropdownMenuItem>
                         {currentId && (
                             <>
@@ -94,7 +96,7 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
                                     className="text-destructive focus:text-destructive"
                                 >
                                     <Trash2 className="size-4 mr-2" />
-                                    删除当前对话
+                                    {t('ai.deleteConversation')}
                                 </DropdownMenuItem>
                             </>
                         )}
@@ -112,7 +114,7 @@ export function ChatHeader({ title, onClose, onToggleHistory, showHistory }: Cha
                             <X className="size-4" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent className="z-9999">关闭</TooltipContent>
+                    <TooltipContent className="z-9999">{t('ai.close')}</TooltipContent>
                 </Tooltip>
             </div>
         </div>

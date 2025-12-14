@@ -1,10 +1,11 @@
 
 
 import type { HeaderProps } from "../types/types"
-import { Moon, Sun, Copy, Download, Settings, Home, LogOut, X, ChevronDown } from "lucide-react"
+import { Moon, Sun, Copy, Download, Settings, Home, LogOut, X, ChevronDown, Languages } from "lucide-react"
 import copy from "copy-to-clipboard"
 import { downloadFiles } from "../utils/loadandcompress"
-import { useTheme } from "@/core/config"
+import { useTheme, useLanguage } from "@/core/config"
+import { useTranslation } from "react-i18next"
 import { useFiles } from "@/modules/playground"
 import { useState, useEffect, useRef } from "react"
 import {  useNavigate } from "react-router-dom"
@@ -13,6 +14,8 @@ import { message } from "antd"
 export default function Header(props: HeaderProps) {
   const { word, photoUrl } = props
   const { theme, setTheme } = useTheme()
+  const { language, toggleLanguage } = useLanguage()
+  const { t } = useTranslation()
   const files = useFiles()
   // 注意：theme 只用于切换按钮的图标显示，样式使用 Tailwind 的 dark: 前缀
   const navigate = useNavigate()
@@ -50,18 +53,18 @@ export default function Header(props: HeaderProps) {
   const handleGoHome = () => {
     navigate("/")
     setIsMenuOpen(false)
-    messageApi.success("已回到首页")
+    messageApi.success(t('header.backToHome'))
   }
 
   // 处理设置
   const handleSettings = () => {
-    messageApi.info("设置功能即将上线")
+    messageApi.info(t('header.settingsComingSoon'))
     setIsMenuOpen(false)
   }
 
   // 处理退出登录
   const handleLogout = () => {
-    messageApi.success("已退出登录")
+    messageApi.success(t('header.loggedOut'))
     setIsMenuOpen(false)
   }
 
@@ -90,10 +93,10 @@ export default function Header(props: HeaderProps) {
       <div className="flex items-center gap-1">
         {/* 复制按钮 */}
         <button
-          title="复制当前代码"
+          title={t('header.copyCode')}
           onClick={() => {
             copy(window.location.href)
-            messageApi.success("分享链接已复制。")
+            messageApi.success(t('header.shareLinkCopied'))
           }}
           className="p-2.5 rounded-xl transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 active:scale-95"
         >
@@ -102,13 +105,13 @@ export default function Header(props: HeaderProps) {
 
         {/* 下载按钮 */}
         <button
-          title="下载当前代码"
+          title={t('header.downloadCode')}
           onClick={async () => {
             try {
               await downloadFiles(files)
-              messageApi.success("代码已下载。")
+              messageApi.success(t('header.codeDownloaded'))
             } catch (error) {
-              messageApi.error("下载失败，请稀后重试。")
+              messageApi.error(t('header.downloadFailed'))
             }
           }}
           className="p-2.5 rounded-xl transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 active:scale-95"
@@ -119,11 +122,22 @@ export default function Header(props: HeaderProps) {
         {/* 分隔线 */}
         <div className="w-px h-6 mx-2 bg-slate-200 dark:bg-slate-700" />
 
+        {/* 语言切换按钮 */}
+        <button
+          onClick={toggleLanguage}
+          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 active:scale-95"
+          aria-label={t('header.switchLanguage')}
+          title={t('header.switchLanguage')}
+        >
+          <Languages className="h-4 w-4" />
+          <span className="text-xs font-medium">{language === 'zh-CN' ? '中' : 'EN'}</span>
+        </button>
+
         {/* 主题切换按钮 */}
         <button
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
           className="p-2.5 rounded-xl transition-all duration-200 hover:bg-indigo-100 dark:hover:bg-amber-500/20 text-indigo-500 dark:text-amber-400 hover:text-indigo-600 dark:hover:text-amber-300 active:scale-95"
-          aria-label={theme === "light" ? "切换暗色主题" : "切换亮色主题"}
+          aria-label={t('header.switchTheme')}
         >
           {theme === "light" ? <Moon className="h-4.5 w-4.5" /> : <Sun className="h-4.5 w-4.5" />}
         </button>
@@ -162,7 +176,7 @@ export default function Header(props: HeaderProps) {
             >
               {/* 用户信息 */}
               <div className="px-4 py-3 mb-2 border-b border-slate-100 dark:border-slate-700/50">
-                <p className="font-medium text-slate-900 dark:text-white">用户名</p>
+                <p className="font-medium text-slate-900 dark:text-white">{t('header.username')}</p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">user@example.com</p>
               </div>
 
@@ -171,7 +185,7 @@ export default function Header(props: HeaderProps) {
                 onClick={handleGoHome}
               >
                 <Home className="h-4 w-4" />
-                回到首页
+                {t('header.goHome')}
               </button>
 
               <button
@@ -179,7 +193,7 @@ export default function Header(props: HeaderProps) {
                 onClick={handleSettings}
               >
                 <Settings className="h-4 w-4" />
-                设置
+                {t('header.settings')}
               </button>
 
               <div className="my-2 border-t border-slate-100 dark:border-slate-700/50" />
@@ -189,7 +203,7 @@ export default function Header(props: HeaderProps) {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <X className="h-4 w-4" />
-                关闭
+                {t('header.close')}
               </button>
 
               <button
@@ -200,7 +214,7 @@ export default function Header(props: HeaderProps) {
                 onClick={handleLogout}
               >
                 <LogOut className="h-4 w-4" />
-                退出登录
+                {t('header.logout')}
               </button>
             </div>
           )}

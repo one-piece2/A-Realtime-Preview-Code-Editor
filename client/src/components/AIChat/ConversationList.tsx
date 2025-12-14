@@ -1,5 +1,6 @@
 // 会话历史列表组件
 import { MessageSquare, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useConversationList } from '@/modules/ai';
@@ -10,6 +11,7 @@ interface ConversationListProps {
 }
 
 export function ConversationList({ onSelect }: ConversationListProps) {
+    const { t } = useTranslation();
     const { conversations, currentId, selectConversation, deleteConversation } = useConversationList();
 
     const handleSelect = (id: string) => {
@@ -21,7 +23,7 @@ export function ConversationList({ onSelect }: ConversationListProps) {
         return (
             <div className="flex-1 flex items-center justify-center p-8 text-center">
                 <p className="text-sm text-muted-foreground">
-                    暂无历史对话
+                    {t('ai.noHistory')}
                 </p>
             </div>
         );
@@ -47,10 +49,10 @@ export function ConversationList({ onSelect }: ConversationListProps) {
                             <p className="text-sm font-medium truncate">
                                 {conv.messages.length > 0 
                                     ? conv.messages[conv.messages.length - 1].content.slice(0, 30)+'...'
-                                    : '新对话'}
+                                    : t('ai.newChat')}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                                {conv.messages.length} 条消息 · {formatDate(conv.updatedAt)}
+                                {conv.messages.length} {t('ai.messages')} · {formatDate(conv.updatedAt, t)}
                             </p>
                         </div>
 
@@ -73,15 +75,15 @@ export function ConversationList({ onSelect }: ConversationListProps) {
 }
 
 // 格式化日期
-function formatDate(timestamp: number): string {
+function formatDate(timestamp: number, t: (key: string) => string): string {
     const date = new Date(timestamp);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
 
-    if (diff < 60000) return '刚刚';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)} 分钟前`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)} 小时前`;
-    if (diff < 604800000) return `${Math.floor(diff / 86400000)} 天前`;
+    if (diff < 60000) return t('ai.justNow');
+    if (diff < 3600000) return `${Math.floor(diff / 60000)} ${t('ai.minutesAgo')}`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)} ${t('ai.hoursAgo')}`;
+    if (diff < 604800000) return `${Math.floor(diff / 86400000)} ${t('ai.daysAgo')}`;
 
     return date.toLocaleDateString();
 }

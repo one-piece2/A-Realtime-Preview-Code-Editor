@@ -3,6 +3,7 @@
 import Client from "./Client"
 import type { Clienttype } from "../types/types"
 import { useTheme } from "@/core/config"
+import { useTranslation } from "react-i18next"
 import { Copy, LogOut, Users } from "lucide-react"
 
 export default function Slider({
@@ -15,6 +16,7 @@ export default function Slider({
   leaveRoom: () => void
 }) {
   const { theme } = useTheme()
+  const { t } = useTranslation()
   const isDark = theme === "dark"
 
   return (
@@ -40,7 +42,7 @@ export default function Slider({
           className={`flex items-center gap-2 mb-4 px-2 py-2 rounded-lg ${isDark ? "bg-slate-800/30" : "bg-slate-100"}`}
         >
           <Users className="w-4 h-4 text-emerald-500" />
-          <h3 className="font-semibold text-sm tracking-wide">Connected Users</h3>
+          <h3 className="font-semibold text-sm tracking-wide">{t('slider.connectedUsers')}</h3>
           <span
             className={`ml-auto text-xs font-medium px-2 py-0.5 rounded-full ${
               isDark ? "bg-emerald-500/20 text-emerald-400" : "bg-emerald-100 text-emerald-600"
@@ -73,7 +75,7 @@ export default function Slider({
           onClick={copyRoomId}
         >
           <Copy className="w-4 h-4" />
-          Copy Room ID
+          {t('slider.copyRoomId')}
         </button>
 
         <button
@@ -81,7 +83,7 @@ export default function Slider({
           onClick={leaveRoom}
         >
           <LogOut className="w-4 h-4" />
-          Leave Room
+          {t('slider.leaveRoom')}
         </button>
       </div>
     </div>

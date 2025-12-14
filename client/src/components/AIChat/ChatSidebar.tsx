@@ -1,5 +1,6 @@
 // 主侧边栏容器（可折叠）
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MessageSquare } from 'lucide-react';
 import { ChatHeader } from './ChatHeader';
 import { ChatMessages } from './ChatMessages';
@@ -16,6 +17,7 @@ interface ChatSidebarProps {
 }
 
 export function ChatSidebar({ isOpen, onToggle, editorContext }: ChatSidebarProps) {
+    const { t } = useTranslation();
     const [showHistory, setShowHistory] = useState(false);
     //conversation当前对话
     const { sendMessage, isStreaming, stopGeneration, conversation } = useAIChat();
@@ -53,8 +55,8 @@ export function ChatSidebar({ isOpen, onToggle, editorContext }: ChatSidebarProp
             <ChatHeader
                 title={
                     conversation && conversations?.length
-                        ? `对话${conversations.findIndex(c => c.id === conversation.id) + 1}`
-                        : 'AI 助手'
+                        ? `${t('ai.conversation')}${conversations.findIndex(c => c.id === conversation.id) + 1}`
+                        : t('ai.assistant')
                 }
                 onClose={onToggle}
                 onToggleHistory={() => setShowHistory(!showHistory)}

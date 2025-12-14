@@ -1,7 +1,9 @@
 import { useState } from "react"
-import { useTheme } from "@/core/config"
+import { useTheme, useLanguage } from "@/core/config"
+import { useAuth } from "@/modules/auth"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { Moon, Sun, Github, Code2, Users, Zap, Sparkles, Terminal, Eye, LogOut, Settings, User } from "lucide-react"
+import { Moon, Sun, Github, Code2, Users, Zap, Sparkles, Terminal, Eye, LogOut, Settings, User, Languages } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -13,10 +15,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useAuth } from "@/modules/auth"
 
 export default function Dashboard() {
   const { theme, toggleTheme } = useTheme()
+  const { language, toggleLanguage } = useLanguage()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeButton, setActiveButton] = useState<string>("")
   const { user, logout } = useAuth()
@@ -96,9 +99,9 @@ export default function Dashboard() {
               >
                 <DropdownMenuLabel className={isDark ? "text-gray-300" : "text-gray-700"}>
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">{user?.username || "用户"}</p>
+                    <p className="text-sm font-medium">{user?.username || t('user.profile')}</p>
                     <p className={`text-xs ${isDark ? "text-gray-500" : "text-gray-400"}`}>
-                      {user?.email || "未设置邮箱"}
+                      {user?.email || t('user.noEmail')}
                     </p>
                   </div>
                 </DropdownMenuLabel>
@@ -108,14 +111,14 @@ export default function Dashboard() {
                   onClick={() => navigate("/profile")}
                 >
                   <User className="mr-2 h-4 w-4" />
-                  <span>个人资料</span>
+                  <span>{t('user.profile')}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   className={`cursor-pointer ${isDark ? "text-gray-300 focus:bg-white/10 focus:text-white" : "text-gray-700 focus:bg-gray-100"}`}
                   onClick={() => navigate("/settings")}
                 >
                   <Settings className="mr-2 h-4 w-4" />
-                  <span>设置</span>
+                  <span>{t('user.settings')}</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className={isDark ? "bg-white/10" : "bg-gray-200"} />
                 <DropdownMenuItem 
@@ -123,10 +126,24 @@ export default function Dashboard() {
                   onClick={handleLogout}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>退出登录</span>
+                  <span>{t('user.logout')}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <button
+              onClick={toggleLanguage}
+              className={`h-9 px-3 flex items-center justify-center gap-1.5 rounded-lg transition-all duration-200 ${
+                isDark
+                  ? "bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white"
+                  : "bg-black/5 hover:bg-black/10 text-gray-600 hover:text-gray-900"
+              }`}
+              aria-label={t('header.switchLanguage')}
+              title={t('header.switchLanguage')}
+            >
+              <Languages className="h-4 w-4" />
+              <span className="text-xs font-medium">{language === 'zh-CN' ? '中' : 'EN'}</span>
+            </button>
 
             <button
               onClick={toggleTheme}
@@ -135,7 +152,7 @@ export default function Dashboard() {
                   ? "bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white"
                   : "bg-black/5 hover:bg-black/10 text-gray-600 hover:text-gray-900"
               }`}
-              aria-label={theme === "light" ? "切换暗色主题" : "切换亮色主题"}
+              aria-label={theme === "light" ? t('header.switchTheme') : t('header.switchTheme')}
             >
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </button>
@@ -158,7 +175,7 @@ export default function Dashboard() {
                   isDark ? "text-gray-500" : "text-gray-400"
                 }`}
               >
-                Editor Options
+                {t('dashboard.editorOptions')}
               </h2>
               <div className="space-y-2">
                 <button
@@ -172,7 +189,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <Terminal className="h-5 w-5" />
-                  <span>Code Editor</span>
+                  <span>{t('dashboard.codeEditor')}</span>
                 </button>
                 <button
                   onClick={handleEditorWithFriendsClick}
@@ -185,21 +202,21 @@ export default function Dashboard() {
                   }`}
                 >
                   <Users className="h-5 w-5" />
-                  <span>Editor with Friends</span>
+                  <span>{t('dashboard.editorWithFriends')}</span>
                 </button>
               </div>
             </div>
 
             {/* Quick Stats */}
             <div className={`rounded-xl p-4 ${isDark ? "bg-white/5" : "bg-gray-50"}`}>
-              <p className={`text-xs font-medium mb-3 ${isDark ? "text-gray-500" : "text-gray-400"}`}>Quick Stats</p>
+              <p className={`text-xs font-medium mb-3 ${isDark ? "text-gray-500" : "text-gray-400"}`}>{t('dashboard.quickStats')}</p>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>Projects</span>
+                  <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>{t('dashboard.projects')}</span>
                   <span className={`text-sm font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>12</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>Collaborators</span>
+                  <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>{t('dashboard.collaborators')}</span>
                   <span className={`text-sm font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>5</span>
                 </div>
               </div>
@@ -218,14 +235,13 @@ export default function Dashboard() {
                 }`}
               >
                 <Sparkles className="h-3 w-3" />
-                Welcome back
+                {t('dashboard.welcomeBack')}
               </div>
               <h1 className={`text-3xl md:text-4xl font-bold mb-3 tracking-tight ${isDark ? "text-white" : "text-gray-900"}`}>
-                Code Editor Dashboard
+                {t('dashboard.title')}
               </h1>
               <p className={`text-base md:text-lg max-w-2xl mx-auto leading-relaxed ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                Choose an editor option from the left panel to get started. Create amazing code with our powerful
-                editors or collaborate with friends in real-time.
+                {t('dashboard.subtitle')}
               </p>
             </div>
 
@@ -246,11 +262,11 @@ export default function Dashboard() {
                   >
                     <Zap className={`h-5 w-5 ${isDark ? "text-emerald-400" : "text-emerald-600"}`} />
                   </div>
-                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Real-time Editing</CardTitle>
+                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>{t('features.realTimeEditing')}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
-                    Experience lightning-fast code editing with instant feedback and auto-save functionality.
+                    {t('features.realTimeEditingDesc')}
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -270,11 +286,11 @@ export default function Dashboard() {
                   >
                     <Users className={`h-5 w-5 ${isDark ? "text-cyan-400" : "text-cyan-600"}`} />
                   </div>
-                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Collaboration</CardTitle>
+                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>{t('features.collaboration')}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
-                    Work together with your team in real-time with live cursors and instant sync.
+                    {t('features.collaborationDesc')}
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -294,11 +310,11 @@ export default function Dashboard() {
                   >
                     <Code2 className={`h-5 w-5 ${isDark ? "text-amber-400" : "text-amber-600"}`} />
                   </div>
-                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Syntax Highlighting</CardTitle>
+                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>{t('features.syntaxHighlighting')}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
-                    Support for multiple programming languages with beautiful syntax highlighting.
+                    {t('features.syntaxHighlightingDesc')}
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -318,11 +334,11 @@ export default function Dashboard() {
                   >
                     <Eye className={`h-5 w-5 ${isDark ? "text-rose-400" : "text-rose-600"}`} />
                   </div>
-                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>Instant Preview</CardTitle>
+                  <CardTitle className={isDark ? "text-white" : "text-gray-900"}>{t('features.instantPreview')}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <CardDescription className={isDark ? "text-gray-400" : "text-gray-600"}>
-                    See your changes come to life instantly with our built-in preview functionality.
+                    {t('features.instantPreviewDesc')}
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -339,17 +355,17 @@ export default function Dashboard() {
               }`}
             >
               <h3 className={`text-xl font-semibold mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
-                Ready to start coding?
+                {t('dashboard.readyToStart')}
               </h3>
               <p className={`mb-4 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                Select an editor from the sidebar to begin your coding journey.
+                {t('dashboard.selectEditor')}
               </p>
               <Button
                 onClick={handleCodeEditorClick}
                 className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white shadow-lg shadow-emerald-500/25 h-11 px-6"
               >
                 <Terminal className="h-4 w-4 mr-2" />
-                Open Code Editor
+                {t('dashboard.openCodeEditor')}
               </Button>
             </div>
           </div>

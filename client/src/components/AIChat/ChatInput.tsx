@@ -1,5 +1,6 @@
 // 消息输入组件
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Send, Square, Paperclip, Code } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -12,6 +13,7 @@ interface ChatInputProps {
 }
 
 export function ChatInput({ onSend, onStop, isStreaming, disabled }: ChatInputProps) {
+    const { t } = useTranslation();
     const [input, setInput] = useState('');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -48,7 +50,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }: ChatInputPr
                     variant="ghost"
                     size="icon-sm"
                     className="shrink-0"
-                    title="上传文件"
+                    title={t('ai.uploadFile')}
                 >
                     <Paperclip className="size-5" />
                 </Button>
@@ -58,7 +60,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }: ChatInputPr
                     variant="ghost"
                     size="icon-sm"
                     className="shrink-0"
-                    title="添加代码上下文"
+                    title={t('ai.addCodeContext')}
                 >
                     <Code className="size-5" />
                 </Button>
@@ -69,7 +71,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }: ChatInputPr
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="输入消息... (Shift+Enter 换行)"
+                    placeholder={t('ai.inputPlaceholder')}
                     disabled={isStreaming || disabled}
                     rows={1}
                     className={cn(
@@ -87,7 +89,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }: ChatInputPr
                         size="icon-sm"
                         onClick={onStop}
                         className="shrink-0"
-                        title="停止生成"
+                        title={t('ai.stopGeneration')}
                     >
                         <Square className="size-5" />
                     </Button>
@@ -97,7 +99,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }: ChatInputPr
                         onClick={handleSend}
                         disabled={!input.trim() || disabled}
                         className="shrink-0"
-                        title="发送"
+                        title={t('ai.send')}
                     >
                         <Send className="size-5" />
                     </Button>
@@ -105,7 +107,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }: ChatInputPr
             </div>
 
             <p className="text-xs mt-2 text-center text-muted-foreground">
-                AI 可能会犯错，请核实重要信息
+                {t('ai.aiDisclaimer')}
             </p>
         </div>
     );

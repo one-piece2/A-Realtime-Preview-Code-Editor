@@ -1,7 +1,7 @@
-
- //全局配置 Context - 仅用于全局配置项 不放业务逻辑
+//全局配置 Context - 仅用于全局配置项 不放业务逻辑
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import i18n from '@/core/i18n';
 
 export type Theme = 'light' | 'dark';
 export type Language = 'zh-CN' | 'en-US';
@@ -23,6 +23,7 @@ export interface GlobalConfigContextType {
   setLanguage: (language: Language) => void;
   //切换主题
   toggleTheme: () => void;
+  toggleLanguage: () => void;
 }
 
 
@@ -69,9 +70,10 @@ export function GlobalConfigProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('theme', config.theme);
   }, [config.theme]);
 
-  // 语言变化时更新 localStorage
+  // 语言变化时更新 localStorage 和 i18n
   useEffect(() => {
     localStorage.setItem('language', config.language);
+    i18n.changeLanguage(config.language);
   }, [config.language]);
 
   const setTheme = (theme: Theme) => {
@@ -89,8 +91,15 @@ export function GlobalConfigProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const toggleLanguage = () => {
+    setConfig(prev => ({
+      ...prev,
+      language: prev.language === 'zh-CN' ? 'en-US' : 'zh-CN',
+    }));
+  };
+
   return (
-    <GlobalConfigContext.Provider value={{ config, setTheme, setLanguage, toggleTheme }}>
+    <GlobalConfigContext.Provider value={{ config, setTheme, setLanguage, toggleTheme, toggleLanguage }}>
       {children}
     </GlobalConfigContext.Provider>
   );
@@ -112,6 +121,6 @@ export function useTheme() {
 }
 
 export function useLanguage() {
-  const { config, setLanguage } = useGlobalConfig();
-  return { language: config.language, setLanguage };
+  const { config, setLanguage, toggleLanguage } = useGlobalConfig();
+  return { language: config.language, setLanguage, toggleLanguage };
 }
