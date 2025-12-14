@@ -6,8 +6,8 @@ export async function chatStream(messages: Message[], context: string) {
     const response = await api.post('/ai/chat/stream', { messages, context });
     return response.data;
 }
-export async function getCompletion(completion:Completion){
-       const response = await api.post('/ai/completion',completion);
+export async function getCompletion(completion: Completion, signal?: AbortSignal) {
+       const response = await api.post('/ai/completion', completion, { signal });
        return response.data;
 }
 

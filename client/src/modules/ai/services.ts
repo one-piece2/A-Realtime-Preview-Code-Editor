@@ -134,8 +134,8 @@ export async function streamChat(options: ChatStreamOptions): Promise<void> {
 }
 
 // 代码补全请求（使用封装的 aiApi）
-export async function getCompletion(params: Completion): Promise<string> {
-    const response = await aiApi.getCompletion(params);
+export async function getCompletion(params: Completion, signal?: AbortSignal): Promise<string> {
+    const response = await aiApi.getCompletion(params, signal);
 
     if (response.success) {
         return response.data.completion;
