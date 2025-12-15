@@ -13,9 +13,9 @@ interface SocketIOProviderOptions {
   socket: Socket; // 已建立连接的 socket.io 客户端
 }
 
-/**
- * 使用现有 socket.io 连接将 Yjs 文档同步到服务器的轻量 Provider
- */
+
+ //使用现有 socket.io 连接将 Yjs 文档同步到服务器的Provider
+ 
 export class SocketIOProvider {
   public readonly awareness: Awareness; // 暴露 awareness，方便 UI 绑定光标/选区等协同状态
   private readonly doc: Y.Doc; // 缓存文档实例，便于后续读写
@@ -35,7 +35,7 @@ export class SocketIOProvider {
       update,
     });
   };
-
+//处理从服务器返回的缺失更新
   private readonly handleSyncMessage = (payload: {
     roomId: string;
     update?: ArrayBuffer | Uint8Array | number[];
@@ -74,7 +74,8 @@ export class SocketIOProvider {
     this.doc = options.doc;
     this.roomId = options.roomId;
     this.socket = options.socket;
-    this.awareness = new Awareness(this.doc); // 预创建 awareness，后续可用于光标同步
+
+    this.awareness = new Awareness(this.doc); 
     //update事件自带两个参数：update和origin
     this.doc.on('update', this.handleDocUpdate); // 监听本地文档变更并上报给服务器
     this.socket.on(ACTIONS.Y_SYNC, this.handleSyncMessage); // 处理服务器返回的缺失更新
@@ -99,12 +100,13 @@ export class SocketIOProvider {
         });
       }
     });
+
+
     this.requestInitialSync(); // 构造完成后立即请求一次状态同步
   }
-
-  /**
-   * 主动向服务器请求当前房间的最新文档状态
-   */
+  
+  
+   //主动向服务器请求当前房间的最新文档状态
   private requestInitialSync() {
     const stateVector = Y.encodeStateVector(this.doc); // 将当前文档状态编码
     this.socket.emit(ACTIONS.Y_SYNC, {
@@ -113,9 +115,9 @@ export class SocketIOProvider {
     });
   }
 
-  /**
-   * 释放事件监听，防止内存泄漏
-   */
+  
+   // 释放事件监听，防止内存泄漏
+   
   destroy() {
     if (this.destroyed) {
       return;
@@ -128,9 +130,8 @@ export class SocketIOProvider {
     this.awareness.destroy();
   }
 
-  /**
-   * 将不同类型的二进制数据统一转换成 Uint8Array
-   */
+  
+ //将不同类型的二进制数据统一转换成 Uint8Array
   private toUint8Array(
     data: ArrayBuffer | Uint8Array | number[] | Buffer,
   ): Uint8Array {

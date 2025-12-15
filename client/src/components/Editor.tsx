@@ -25,6 +25,7 @@ interface Props {
 export default function Editor(props: Props) {
   const ataRef = useRef<((code: string) => void) | null>(null)
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
+  //存储所有客户端的光标位置 要渲染
   const [cursors, setCursors] = useState<Record<string, any>>({});
   const bindingRef = useRef<MonacoBinding | null>(null)
   const providerRef = useRef<SocketIOProvider | null>(null)
@@ -96,8 +97,10 @@ export default function Editor(props: Props) {
     if (!model) {
       return;
     }
+    //在ydoc中创建Text类型（同一个name可共享）
     const yText = ydoc.getText('monaco');
 
+    //绑定Text类型和MonacoEditor以及provider.awareness
     const binding = new MonacoBinding(
       yText,
       model,
@@ -123,7 +126,7 @@ export default function Editor(props: Props) {
 
     const awareness = provider.awareness;
 
-    // 生成稳定的颜色（基于 clientID）
+    // 生成稳定的颜色（基于 clientID） 这个clientID是Yjs的 clientID  不是服务器的那个clientID
     const generateColor = (clientId: number) => {
       const hue = (clientId * 137.508) % 360; // 使用黄金角度确保颜色分布均匀
       return `hsl(${hue}, 70%, 50%)`;
@@ -238,6 +241,7 @@ export default function Editor(props: Props) {
 
       rafId = requestAnimationFrame(() => {
         try {
+          //获取所有客户端的状态
           const states = awareness.getStates();
           const newCursors: Record<string, any> = {};
 
@@ -296,6 +300,58 @@ export default function Editor(props: Props) {
               return;
             }
 
+            // 计算选区范围（如果有）
+            let selection = null;
+            if (state.cursor.anchor !== undefined && state.cursor.head !== undefined && 
+                state.cursor.anchor !== state.cursor.head) {
+              const anchorOffset = Math.max(0, Math.min(maxLen, state.cursor.anchor));
+              const headOffset = Math.max(0, Math.min(maxLen, state.cursor.head));
+              const startOffset = Math.min(anchorOffset, headOffset);
+              const endOffset = Math.max(anchorOffset, headOffset);
+              
+              try {
+                const startPos = model.getPositionAt(startOffset);
+                const endPos = model.getPositionAt(endOffset);
+                
+                // 计算选区覆盖的所有行
+                const selectionRanges: Array<{ top: number; left: number; width: number; height: number }> = [];
+                
+                for (let lineNum = startPos.lineNumber; lineNum <= endPos.lineNumber; lineNum++) {
+                  const lineStartCol = lineNum === startPos.lineNumber ? startPos.column : 1;
+                  const lineEndCol = lineNum === endPos.lineNumber ? endPos.column : model.getLineMaxColumn(lineNum);
+                  
+                  const lineStartPos = { lineNumber: lineNum, column: lineStartCol };
+                  const lineEndPos = { lineNumber: lineNum, column: lineEndCol };
+                  
+                  const startLayout = editorInstance.getScrolledVisiblePosition(lineStartPos);
+                  const endLayout = editorInstance.getScrolledVisiblePosition(lineEndPos);
+                  
+                  if (startLayout && endLayout) {
+                    const rangeTop = startLayout.top;
+                    const rangeLeft = startLayout.left;
+                    const rangeWidth = Math.max(endLayout.left - startLayout.left, 4); // 最小宽度 4px
+                    const rangeHeight = startLayout.height || lineHeight;
+                    
+                    // 检查是否在可见区域
+                    if (rangeTop >= -50 && rangeTop <= editorLayout.height + 50) {
+                      selectionRanges.push({
+                        top: rangeTop,
+                        left: rangeLeft,
+                        width: rangeWidth,
+                        height: rangeHeight,
+                      });
+                    }
+                  }
+                }
+                
+                if (selectionRanges.length > 0) {
+                  selection = selectionRanges;
+                }
+              } catch (error) {
+                // 选区计算失败，忽略
+              }
+            }
+
             newCursors[String(clientId)] = {
               name: state.user.name || 'Anonymous',
               avatarUrl: state.user.avatarUrl || '/image.png',
@@ -304,6 +360,7 @@ export default function Editor(props: Props) {
               left,
               lineHeight,
               clientId: String(clientId),
+              selection, // 选区范围数组
             };
           });
 
@@ -313,7 +370,7 @@ export default function Editor(props: Props) {
         }
       });
     };
-
+    //监听远端用户状态变化
     awareness.on('change', handleChange);
     
     // 监听滚动和布局变化
@@ -417,43 +474,61 @@ export default function Editor(props: Props) {
       {/* 远端光标容器 */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-[999] overflow-hidden">
         {Object.entries(cursors).map(([clientId, cursor]: [string, any]) => (
-          <div
-            key={clientId}
-            className="absolute flex items-start pointer-events-none transition-all duration-75 ease-out"
-            style={{
-              top: `${cursor.top}px`,
-              left: `${cursor.left}px`,
-              color: cursor.color,
-            }}
-          >
-            {/* 光标线 */}
+          <div key={clientId}>
+            {/* 选区高亮 */}
+            {cursor.selection && cursor.selection.map((range: any, index: number) => (
+              <div
+                key={`${clientId}-selection-${index}`}
+                className="absolute pointer-events-none"
+                style={{
+                  top: `${range.top}px`,
+                  left: `${range.left}px`,
+                  width: `${range.width}px`,
+                  height: `${range.height}px`,
+                  backgroundColor: cursor.color,
+                  opacity: 0.55,
+                  borderRadius: '2px',
+                }}
+              />
+            ))}
+            {/* 光标和用户标签 */}
             <div
-              className="w-0.5 bg-current animate-pulse"
+              className="absolute flex items-start pointer-events-none transition-all duration-75 ease-out"
               style={{
-                height: `${cursor.lineHeight}px`,
-                boxShadow: `0 0 4px ${cursor.color}`,
-              }}
-            />
-            {/* 用户标签 */}
-            <div 
-              className="flex items-center gap-1.5 px-2 py-1.5 ml-1 -mt-0.5 rounded-lg shadow-lg backdrop-blur-sm border border-white/20"
-              style={{
-                backgroundColor: cursor.color,
+                top: `${cursor.top}px`,
+                left: `${cursor.left}px`,
+                color: cursor.color,
               }}
             >
-              {cursor.avatarUrl && (
-                <img
-                  src={cursor.avatarUrl}
-                  alt={cursor.name || 'User'}
-                  className="w-4 h-4 rounded-full object-cover border border-white/30"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-              )}
-              <span className="text-white text-xs font-semibold whitespace-nowrap leading-none">
-                {cursor.name || 'Anonymous'}
-              </span>
+              {/* 光标线 */}
+              <div
+                className="w-0.5 bg-current animate-pulse"
+                style={{
+                  height: `${cursor.lineHeight}px`,
+                  boxShadow: `0 0 4px ${cursor.color}`,
+                }}
+              />
+              {/* 用户标签 */}
+              <div 
+                className="flex items-center gap-1.5 px-2 py-1.5 ml-1 -mt-0.5 rounded-lg shadow-lg backdrop-blur-sm border border-white/20"
+                style={{
+                  backgroundColor: cursor.color,
+                }}
+              >
+                {cursor.avatarUrl && (
+                  <img
+                    src={cursor.avatarUrl}
+                    alt={cursor.name || 'User'}
+                    className="w-4 h-4 rounded-full object-cover border border-white/30"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                )}
+                <span className="text-white text-xs font-semibold whitespace-nowrap leading-none">
+                  {cursor.name || 'Anonymous'}
+                </span>
+              </div>
             </div>
           </div>
         ))}

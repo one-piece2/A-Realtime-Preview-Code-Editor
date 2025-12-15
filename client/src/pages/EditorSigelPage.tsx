@@ -27,6 +27,9 @@ const { roomId } = useParams();
 const [clients, setClients] = useState<Clienttype[]>([]);
 const [avatarUrl, setAvatarUrl] = useState<string>('');
 const awarenessUsersRef = useRef<Map<number, { name: string; avatarUrl: string; color: string }>>(new Map());
+  const socketRef = useRef<Socket | null>(null);
+
+const codeRef = useRef<string>('');
   useEffect(() => {
   
     let active = true;
@@ -46,9 +49,7 @@ const awarenessUsersRef = useRef<Map<number, { name: string; avatarUrl: string; 
     }
   }, []);
 
-  const socketRef = useRef<Socket | null>(null);
 
-const codeRef = useRef<string>('');
 useEffect(() => {
   
   

@@ -42,27 +42,22 @@ interface YAwarenessPayload {
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // 用于存储用户ID和Socket实例的映射
   private userSocketMap: Record<string, string> = {};
-  // 用于存储已连接过的socket ID，防止重复处理
-  // private connectedClients: Set<string> = new Set();
+
+
   //这是服务器端的socket实例
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly yDocService: YjsDocumentService) {} // 通过依赖注入获取 Yjs 服务，用于管理房间内的协同文档
+  constructor(private readonly yDocService: YjsDocumentService) {} 
 
   handleConnection(client: Socket) {
     // 防止同一个客户端连接事件被处理多次
-    // if (this.connectedClients.has(client.id)) {
-    //   console.log('Socket already connected:', client.id);
-    //   return;
-    // }
-    // this.connectedClients.add(client.id);
     if (Object.values(this.userSocketMap).includes(client.id)) {
       console.log('重复连接，忽略:', client.id);
       return;
     }
     console.log('客户端连接成功:', client.id);
-    // console.log('当前连接客户端数:', this.connectedClients.size);
+   
 
   }
   getAllConnectedClients(roomId: string) {
