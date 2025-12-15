@@ -5,6 +5,7 @@ import {
   Awareness,
   encodeAwarenessUpdate,
   applyAwarenessUpdate,
+  removeAwarenessStates,
 } from 'y-protocols/awareness'; // 引入 Awareness 以及编码/应用工具，用于光标、选区等同步
 
 interface SocketIOProviderOptions {
@@ -101,6 +102,8 @@ export class SocketIOProvider {
       }
     });
 
+    // 监听用户断开连接事件，清理幽灵光标
+    this.socket.on(ACTIONS.DISCONNECTED, this.handleUserDisconnected);
 
     this.requestInitialSync(); // 构造完成后立即请求一次状态同步
   }
@@ -127,11 +130,37 @@ export class SocketIOProvider {
     this.socket.off(ACTIONS.Y_SYNC, this.handleSyncMessage);
     this.socket.off(ACTIONS.Y_UPDATE, this.handleUpdateMessage);
     this.socket.off(ACTIONS.Y_AWARENESS, this.handleAwarenessMessage);
+    this.socket.off(ACTIONS.DISCONNECTED, this.handleUserDisconnected);
     this.awareness.destroy();
   }
 
   
- //将不同类型的二进制数据统一转换成 Uint8Array
+ // 处理用户断开连接，清理幽灵光标
+  private readonly handleUserDisconnected = (payload: { socketId: string; username: string }) => {
+    if (this.destroyed) return;
+    
+    // 遍历所有 awareness 状态，找到并移除断开连接用户的状态
+    const states = this.awareness.getStates();
+    const clientsToRemove: number[] = [];
+    
+    states.forEach((state, clientId) => {
+      // 跳过本地用户
+      if (clientId === this.awareness.clientID) return;
+      
+      // 检查用户名是否匹配
+      if (state.user?.name === payload.username) {
+        clientsToRemove.push(clientId);
+      }
+    });
+    
+    // 移除断开连接用户的 awareness 状态
+    if (clientsToRemove.length > 0) {
+      removeAwarenessStates(this.awareness, clientsToRemove, this);
+      console.log(`[SocketIOProvider] 清理幽灵光标: ${payload.username}, clientIds:`, clientsToRemove);
+    }
+  };
+
+  //将不同类型的二进制数据统一转换成 Uint8Array
   private toUint8Array(
     data: ArrayBuffer | Uint8Array | number[] | Buffer,
   ): Uint8Array {
