@@ -1,20 +1,14 @@
-// 聊天消息列表组件
-import { useEffect, useRef } from 'react';
+
+import {  useRef } from 'react';
 import { Bot, Loader2 } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Virtuoso, type VirtuosoHandle } from 'react-virtuoso';
 import { useCurrentMessages, useAIChat } from '@/modules/ai';
 import { ChatMessage } from './ChatMessage';
 
 export function ChatMessages() {
     const messages = useCurrentMessages();
     const { isStreaming, error } = useAIChat();
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    // 自动滚动到底部
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, isStreaming]);
-
+    const virtuosoRef = useRef<VirtuosoHandle>(null);
     // 空状态
     if (messages.length === 0) {
         return (
@@ -30,30 +24,66 @@ export function ChatMessages() {
         );
     }
 
+    // 计算总项数：消息 + 可选的流式提示 + 可选的错误提示
+    const extraItemCount = (isStreaming ? 1 : 0) + (error ? 1 : 0);
+    const totalCount = messages.length + extraItemCount;
+
     return (
-        <ScrollArea className="flex-1 h-full">
-            <div className="p-4 space-y-4">
-                {messages.map((message) => (
-                    <ChatMessage key={message.id} message={message} />
-                ))}
+        <Virtuoso
+            ref={virtuosoRef}
+            className="flex-1 h-full"
+            // 列表总项数：消息数 + 额外状态项（流式提示/错误提示）
+            totalCount={totalCount}
+            // 预渲染200px的额外内容，避免快速滚动时出现白屏
+            overscan={200}
+            // 监听是否滚动到底部，用于智能自动滚动
+            // atBottomStateChange={handleAtBottomStateChange}
+            // 距离底部100px内视为即为在底部
+            atBottomThreshold={100}
+            // 新内容添加时自动平滑滚动到底部
+            followOutput="smooth"
+            // 渲染每一项的回调函数，index 为当前项索引
+            itemContent={(index) => {
+                // 渲染消息
+                if (index < messages.length) {
+                    return (
+                        <div className="px-4 py-2">
+                            <ChatMessage message={messages[index]} />
+                        </div>
+                    );
+                }
 
-                {/* 流式加载提示 */}
-                {isStreaming && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Loader2 className="size-4 animate-spin" />
-                        <span>AI 正在思考...</span>
-                    </div>
-                )}
+                // 渲染流式加载提示
+                const streamingIndex = messages.length;
+                if (isStreaming && index === streamingIndex) {
+                    return (
+                        <div className="px-4 py-2">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Loader2 className="size-4 animate-spin" />
+                                <span>AI 正在思考...</span>
+                            </div>
+                        </div>
+                    );
+                }
 
-                {/* 错误提示 */}
-                {error && (
-                    <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
-                        错误: {error}
-                    </div>
-                )}
+                // 渲染错误提示
+                if (error) {
+                    return (
+                        <div className="px-4 py-2">
+                            <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+                                错误: {error}
+                            </div>
+                        </div>
+                    );
+                }
 
-                <div ref={messagesEndRef} />
-            </div>
-        </ScrollArea>
+                return null;
+            }}
+            // 自定义组件：Header/Footer 用于添加列表顶部和底部的间距
+            components={{
+                Header: () => <div className="h-2" />,
+                Footer: () => <div className="h-2" />,
+            }}
+        />
     );
 }
