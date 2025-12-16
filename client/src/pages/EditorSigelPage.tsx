@@ -1,18 +1,17 @@
 
 import Editor from '@/components/Editor';
 import Slider from '@/components/Slider';
-import { type Clienttype } from '@/types/types';
 import HeaderLC from '@/components/Header';
 import LeetCode from '@/components/LeetCode';
 import OutputBox from '@/components/OutputBox';
 import { Allotment } from "allotment";
 import 'allotment/dist/style.css';
 import { useTheme } from '@/core/config';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate ,useLocation,useParams, Navigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useLocation, useParams, Navigate } from 'react-router-dom';
 import copy from 'copy-to-clipboard'
 import { message } from 'antd'
-import { initSocket, } from '@/api/socket';
+import { initSocket } from '@/api/socket';
 import type { Socket } from 'socket.io-client';
 import { ACTIONS } from '@/action';
 import getDogAvatarUrl from '@/utils/dogAvataUrl';
@@ -24,9 +23,7 @@ export default function EditorPage() {
   const navigate = useNavigate();
   const location = useLocation();
 const { roomId } = useParams();
-const [clients, setClients] = useState<Clienttype[]>([]);
 const [avatarUrl, setAvatarUrl] = useState<string>('');
-const awarenessUsersRef = useRef<Map<number, { name: string; avatarUrl: string; color: string }>>(new Map());
   const socketRef = useRef<Socket | null>(null);
 
 const codeRef = useRef<string>('');
@@ -106,7 +103,7 @@ useEffect(() => {
         console.log('socket connected');
       });
 
-      socketRef.current.on(ACTIONS.JOINED, ({ clients, username, socketId }) => {
+      socketRef.current.on(ACTIONS.JOINED, ({ username }) => {
        // 只有当加入的用户不是自己时，才显示提示
        if(username !== location.state?.username){
          messageApi.open({
@@ -114,33 +111,13 @@ useEffect(() => {
                 content: `${username} joined the room`,
             });
        }
-       // 合并 awareness 用户信息到客户端列表
-       const enrichedClients = clients.map((client: Clienttype) => {
-         // 从 awareness 中查找匹配的用户信息
-         for (const [_, userInfo] of awarenessUsersRef.current) {
-           if (userInfo.name === client.username) {
-             return {
-               ...client,
-               avatarUrl: userInfo.avatarUrl,
-               color: userInfo.color,
-             };
-           }
-         }
-         return client;
-       });
-       setClients(enrichedClients);
-       //已迁移至yjs
-      //  socketRef.current?.emit(ACTIONS.SYNC_CODE, {
-      //    code: codeRef.current,
-      //    socketId,
-      //  });
+       // 用户列表现在由 collaboration store 管理，不再需要手动维护
       });
 
       // 监听DISCONNECTED事件
       socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
         console.log('DISCONNECTED', socketId, username);
-        //@ts-ignore
-        setClients((prev) => prev.filter((client) => client.socketId !== socketId));
+        // 用户列表现在由 collaboration store 管理
         messageApi.open({
           type: 'info',
           content: `${username} left the room`,
@@ -198,24 +175,6 @@ useEffect(() => {
     language: 'javascript'
   }
 
-  // 使用 useCallback 包装 onUsersChange，避免每次渲染创建新函数
-  const handleUsersChange = useCallback((usersMap: Map<number, { name: string; avatarUrl: string; color: string }>) => {
-    awarenessUsersRef.current = usersMap;
-    setClients((prevClients) => {
-      return prevClients.map((client) => {
-        for (const [_, userInfo] of usersMap) {
-          if (userInfo.name === client.username) {
-            return {
-              ...client,
-              avatarUrl: userInfo.avatarUrl,
-              color: userInfo.color,
-            };
-          }
-        }
-        return client;
-      });
-    });
-  }, []);
 
   // const onChange = (value: string | undefined) => {
   //   setLeetCodes(value)
@@ -233,7 +192,7 @@ useEffect(() => {
       {contextHolder}
       {/* Slider组件 - 设置与主内容相同的高度和背景色 */}
       <div className="h-full shrink-0 relative z-10">
-        <Slider clients={clients} copyRoomId={copyRoomId} leaveRoom={leaveRoom} />
+        <Slider copyRoomId={copyRoomId} leaveRoom={leaveRoom} />
       </div>
       {/* 主内容区域 */}
       <div className="flex-1 flex flex-col h-full min-h-0">
@@ -258,7 +217,6 @@ useEffect(() => {
                   username={location.state?.username}
                   avatarUrl={avatarUrl}
                   onchange={(code) => { codeRef.current = code; }}
-                  onUsersChange={handleUsersChange}
                 />
               </Allotment.Pane>
             </Allotment>

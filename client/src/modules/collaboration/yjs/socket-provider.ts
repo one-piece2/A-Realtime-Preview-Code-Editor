@@ -1,6 +1,6 @@
 import * as Y from 'yjs';
 import type { Socket } from 'socket.io-client';
-import { ACTIONS } from '../action';
+import { ACTIONS } from '../../../action';
 import {
   Awareness,
   encodeAwarenessUpdate,

@@ -4,9 +4,10 @@ interface ClientProps {
   username: string;
   avatarUrl?: string;
   color?: string;
+  isOnline?: boolean;
 }
 
-const Client = ({ username, avatarUrl, color }: ClientProps) => {
+const Client = ({ username, avatarUrl, color, isOnline }: ClientProps) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   
@@ -50,7 +51,12 @@ const Client = ({ username, avatarUrl, color }: ClientProps) => {
           )}
         </div>
         {/* 在线状态指示器 */}
-        <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 shadow-sm"></div>
+        <div 
+          className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900 shadow-sm ${
+            isOnline === false ? 'bg-gray-400' : 'bg-emerald-500'
+          }`}
+          title={isOnline === false ? '离线' : '在线'}
+        />
       </div>
       {/* 用户名 */}
       <span 

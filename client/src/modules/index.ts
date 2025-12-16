@@ -7,3 +7,6 @@ export * from './auth';
 
 // Playground 模块
 export * from './playground';
+
+// Collaboration 模块
+export * from './collaboration';

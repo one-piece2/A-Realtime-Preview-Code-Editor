@@ -1,23 +1,25 @@
-
-
 import Client from "./Client"
-import type { Clienttype } from "../types/types"
 import { useTheme } from "@/core/config"
 import { useTranslation } from "react-i18next"
 import { Copy, LogOut, Users } from "lucide-react"
+import { useCollaborators, useConnectionStatus } from "@/modules/collaboration"
 
-export default function Slider({
-  clients,
-  copyRoomId,
-  leaveRoom,
-}: {
-  clients: Clienttype[]
+interface SliderProps {
   copyRoomId: () => void
   leaveRoom: () => void
-}) {
+}
+
+export default function Slider({ copyRoomId, leaveRoom }: SliderProps) {
   const { theme } = useTheme()
   const { t } = useTranslation()
   const isDark = theme === "dark"
+  
+  // 直接从 collaboration store 获取协作者
+  const collaborators = useCollaborators()
+  const connectionStatus = useConnectionStatus()
+  
+  // 将 Map 转换为数组用于渲染
+  const collaboratorsList = Array.from(collaborators.values())
 
   return (
     <div
@@ -43,22 +45,32 @@ export default function Slider({
         >
           <Users className="w-4 h-4 text-emerald-500" />
           <h3 className="font-semibold text-sm tracking-wide">{t('slider.connectedUsers')}</h3>
+          {/* 连接状态指示器 */}
+          <div 
+            className={`w-2 h-2 rounded-full ${
+              connectionStatus === 'online' ? 'bg-emerald-500' :
+              connectionStatus === 'offline' ? 'bg-red-500' :
+              'bg-yellow-500 animate-pulse'
+            }`}
+            title={connectionStatus === 'online' ? '已连接' : connectionStatus === 'offline' ? '离线' : '同步中'}
+          />
           <span
             className={`ml-auto text-xs font-medium px-2 py-0.5 rounded-full ${
               isDark ? "bg-emerald-500/20 text-emerald-400" : "bg-emerald-100 text-emerald-600"
             }`}
           >
-            {clients.length}
+            {collaboratorsList.length}
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          {clients.map((client) => (
+          {collaboratorsList.map((user) => (
             <Client 
-              key={client.socketid + client.username} 
-              username={client.username}
-              avatarUrl={client.avatarUrl}
-              color={client.color}
+              key={user.awarenessId ?? user.name} 
+              username={user.name}
+              avatarUrl={user.avatarUrl}
+              color={user.color}
+              isOnline={connectionStatus === 'online'}
             />
           ))}
         </div>
