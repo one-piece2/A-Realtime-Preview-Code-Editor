@@ -7,6 +7,7 @@ import { ChatModule } from './chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { AiModule } from './ai/ai.module';
+import { RoomModule } from './room/room.module';
 import config from './ormcofig';
 
 @Module({
@@ -22,6 +23,7 @@ import config from './ormcofig';
     AuthModule,
     UserModule,
     AiModule,
+    RoomModule,
   ],
   controllers: [AppController],
   // ChatGateway 与 YjsDocumentService 已在 ChatModule 中提供，这里只需要 AppService

@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  OneToMany
 } from 'typeorm';
-
+import { RoomMember } from '../../room/entities/room-member.entity';
+import { Room } from '../../room/entities/room.entitiey';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -44,4 +46,12 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // 关系: 用户加入的房间 作为成员的记录
+  @OneToMany(() => RoomMember, (member) => member.user)
+  roomMembers: RoomMember[];
+
+  // 关系: 用户拥有的房间
+  @OneToMany(() => Room, (room) => room.owner)
+  ownedRooms: Room[];
 }
