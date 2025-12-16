@@ -27,6 +27,8 @@ export default function Editor(props: Props) {
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
   //存储所有客户端的光标位置 要渲染
   const [cursors, setCursors] = useState<Record<string, any>>({});
+  // 连接状态
+  const [connectionStatus, setConnectionStatus] = useState<'online' | 'offline' | 'syncing'>('syncing');
   const bindingRef = useRef<MonacoBinding | null>(null)
   const providerRef = useRef<SocketIOProvider | null>(null)
   const { setLeetCodes } = useLeetCodes()
@@ -78,10 +80,70 @@ export default function Editor(props: Props) {
       doc: ydoc,
       roomId,
       socket,
+      enablePersistence: true, // 启用本地持久化
     });
     providerRef.current = provider;
 
+    // 本地离线标记（浏览器级别的离线状态）
+    let browserOffline = !navigator.onLine;
+
+    // 状态更新函数
+    const updateStatus = () => {
+      // 优先检查浏览器离线状态
+      if (browserOffline) {
+        setConnectionStatus('offline');
+        return;
+      }
+      //这里是在读取provider实例身上定义的get方法来获取connected的状态 ：  get connected()
+      if (!provider.connected || !socket.connected) {
+        setConnectionStatus('offline');
+        //同上理
+      } else if (!provider.synced) {
+        setConnectionStatus('syncing');
+      } else {
+        setConnectionStatus('online');
+      }
+    };
+
+    // 监听 socket 连接/断开事件，实时更新状态
+    const handleConnect = () => {
+      console.log('[Editor] Socket connected');
+      updateStatus();
+    };
+    const handleDisconnect = () => {
+      console.log('[Editor] Socket disconnected');
+      setConnectionStatus('offline');
+    };
+
+    // 监听浏览器在线/离线事件
+    const handleOnline = () => {
+      console.log('[Editor] Browser online');
+      browserOffline = false;
+      updateStatus();
+    };
+    const handleOffline = () => {
+      console.log('[Editor] Browser offline');
+      browserOffline = true;
+      setConnectionStatus('offline');
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // 初始状态
+    updateStatus();
+
+    // 轮询作为兜底（主要用于检测 synced 状态变化）
+    const interval = setInterval(updateStatus, 1000);
+
     return () => {
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      clearInterval(interval);
       provider.destroy();
       providerRef.current = null;
     };
@@ -370,7 +432,7 @@ export default function Editor(props: Props) {
         }
       });
     };
-    //监听远端用户状态变化
+    //监听远端用户状态变化  
     awareness.on('change', handleChange);
     
     // 监听滚动和布局变化
@@ -449,6 +511,22 @@ export default function Editor(props: Props) {
 
   return (
     <div style={{ position: 'relative', height: '100%', width: '100%' }}>
+      {/* 连接状态指示器 */}
+      <div className="absolute top-2 right-2 flex items-center gap-2 z-[1000] bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border shadow-sm">
+        <div 
+          className={`w-2 h-2 rounded-full ${
+            connectionStatus === 'online' ? 'bg-green-500' :
+            connectionStatus === 'offline' ? 'bg-red-500' :
+            'bg-yellow-500 animate-pulse'
+          }`}
+        />
+        <span className="text-xs text-muted-foreground font-medium">
+          {connectionStatus === 'online' && '已同步'}
+          {connectionStatus === 'offline' && '离线编辑中'}
+          {connectionStatus === 'syncing' && '同步中...'}
+        </span>
+      </div>
+
       <div style={{ position: 'relative', height: '100%', width: '100%' }}>
         <MonacoEditor
           height='100%'
