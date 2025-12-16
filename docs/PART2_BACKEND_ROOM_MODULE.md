@@ -473,6 +473,7 @@ export class RoomService {
    * 通过 roomId (用户可见的) 获取成员
    */
   async getMemberByRoomId(roomId: string, userId: string): Promise<RoomMember | null> {
+
     const room = await this.roomRepository.findOne({
       where: { roomId, status: 'active' },
     });

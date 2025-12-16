@@ -22,10 +22,6 @@ export class RoomMember {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-
-
-
-
     // 用户角色
     @Column({
         type: 'enum',

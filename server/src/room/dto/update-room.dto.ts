@@ -1,10 +1,10 @@
-import { IsString, IsBoolean, IsOptional, MaxLength, MinLength } from 'class-validator';
+import { IsString, IsBoolean, IsOptional, MaxLength } from 'class-validator';
 
-export class CreateRoomDto {
+export class UpdateRoomDto {
   @IsString()
-  @MinLength(1)
+  @IsOptional()
   @MaxLength(255)
-  name: string;
+  name?: string;
 
   @IsString()
   @IsOptional()
