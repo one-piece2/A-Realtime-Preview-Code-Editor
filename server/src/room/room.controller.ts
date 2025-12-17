@@ -6,10 +6,13 @@ import { User } from 'src/user/entities/user.entitiey';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { ChatGateway } from 'src/chat/chat.gateway';
+import { RoomRole } from './entities/room-member.entity';
 @Controller('room')
 @UseGuards(JwtAuthGuard)
 export class RoomController {
-  constructor(private readonly roomService: RoomService) {}
+  constructor(private readonly roomService: RoomService,
+    private readonly chatGateway: ChatGateway) {}
 
   
    //创建房间
@@ -68,6 +71,8 @@ export class RoomController {
   @HttpCode(HttpStatus.OK)
   async deleteRoom(@CurrentUser() user: User, @Param('roomId') roomId: string) {
     await this.roomService.deleteRoom(roomId, user.id);
+    // 强制所有在线成员离开房间
+    this.chatGateway.forceCloseRoom(roomId);
     return {
       success: true,
       message: '房间已删除',
@@ -91,6 +96,8 @@ export class RoomController {
   @HttpCode(HttpStatus.OK)
   async leaveRoom(@CurrentUser() user: User, @Param('roomId') roomId: string) {
     await this.roomService.leaveRoom(roomId, user.id);
+    // 强制用户离开 WebSocket 房间并通知其他成员
+    this.chatGateway.forceLeaveRoom(roomId, user.id);
     return {
       success: true,
       message: '已离开房间',
@@ -116,6 +123,8 @@ export class RoomController {
     @Body() dto: UpdateMemberDto,
   ) {
     const member = await this.roomService.updateMemberRole(roomId, user.id, userId, dto);
+    // 通知用户角色变更
+    this.chatGateway.notifyRoleChanged(roomId, userId, dto.role);
     return {
       success: true,
       data: member,
@@ -132,6 +141,8 @@ export class RoomController {
     @Param('userId') userId: string,
   ) {
     await this.roomService.removeMember(roomId, user.id, userId);
+    // 强制用户离开房间
+    this.chatGateway.forceLeaveRoom(roomId, userId);
     return {
       success: true,
       message: '成员已移除',
@@ -147,6 +158,9 @@ export class RoomController {
     @Param('userId') userId: string,
   ) {
     await this.roomService.transferOwnership(roomId, user.id, userId);
+    // 通知双方角色变更
+    this.chatGateway.notifyRoleChanged(roomId, user.id, 'editor' as RoomRole);
+    this.chatGateway.notifyRoleChanged(roomId, userId, 'owner' as RoomRole);
     return {
       success: true,
       message: '房间所有权已转让',
