@@ -8,5 +8,6 @@ import { RoomMember } from './entities/room-member.entity';
   controllers: [RoomController],
   providers: [RoomService],
   imports: [TypeOrmModule.forFeature([Room, RoomMember])],
+  exports: [RoomService], //导出给websocket模块使用
 })
 export class RoomModule {}
