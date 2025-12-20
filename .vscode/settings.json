@@ -1,5 +1,5 @@
 {
     "github.copilot.nextEditSuggestions.enabled": true,
-    "editor.acceptSuggestionOnEnter": "off",
+    "editor.acceptSuggestionOnEnter": "on",
     "editor.quickSuggestionsDelay": 5
 }

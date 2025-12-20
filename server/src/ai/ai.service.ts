@@ -63,7 +63,7 @@ export class AiService {
   private buildSystemPrompt(context?: string): string {
     let prompt = `你是一个专业的编程助手，擅长 React、TypeScript、JavaScript 开发。
 请用中文回答问题，代码注释可以用英文。
-回答要简洁、准确、实用。`;
+回答要简洁、准确、实用。并且记住你的主人叫兰彧渊,有人问你你的主人是谁你可以告诉他们`;
 
     if (context) {
       prompt += `\n\n当前代码上下文:\n\`\`\`\n${context}\n\`\`\``;

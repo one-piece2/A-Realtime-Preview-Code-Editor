@@ -11,7 +11,7 @@ import type {
   RemoteCursor,
   CollaborationUser,
 } from './types';
-
+import {type RoomRole } from '../room/types';
 // 初始状态
 const initialState: CollaborationState = {
   roomId: null,
@@ -23,6 +23,9 @@ const initialState: CollaborationState = {
   binding: null,
   remoteCursors: {},
   collaborators: new Map(),
+    role: null,
+  canEdit: false,
+
 };
 
 // 创建 Collaboration Store
@@ -32,7 +35,7 @@ export const useCollaborationStore = create<CollaborationStore>()(
       ...initialState,
 
       // 初始化协作
-      initCollaboration: ({ socket, roomId, username, avatarUrl }) => {
+      initCollaboration: ({ socket, roomId, username, avatarUrl,role,token }) => {
         const { ydoc: existingDoc, provider: existingProvider } = get();
 
         // 如果已存在，先销毁
@@ -52,6 +55,12 @@ export const useCollaborationStore = create<CollaborationStore>()(
           roomId,
           socket,
           enablePersistence: true,
+          role,
+          token,
+           onRoleChanged: (newRole: RoomRole) => {
+            // 当服务端通知角色变更时更新
+            set({ role: newRole, canEdit: newRole !== 'viewer' });
+          },
         });
 
         set({
@@ -61,6 +70,8 @@ export const useCollaborationStore = create<CollaborationStore>()(
           ydoc,
           provider,
           connectionStatus: 'syncing',
+          role,
+          canEdit:role!=='viewer',
         });
       },
 
@@ -109,6 +120,10 @@ export const useCollaborationStore = create<CollaborationStore>()(
         const { ydoc } = get();
         return ydoc?.getText('monaco') ?? null;
       },
+      // 设置角色
+      setRole: (role: RoomRole) => {
+        set({ role, canEdit: role !== 'viewer' });
+      },
     }),
     { name: 'collaboration-store' }
   )
@@ -127,4 +142,6 @@ export const collaborationSelectors = {
   collaborators: (state: CollaborationStore) => state.collaborators,
   provider: (state: CollaborationStore) => state.provider,
   ydoc: (state: CollaborationStore) => state.ydoc,
+  role: (state: CollaborationStore) => state.role,
+  canEdit: (state: CollaborationStore) => state.canEdit,
 };

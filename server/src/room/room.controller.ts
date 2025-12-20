@@ -96,7 +96,7 @@ export class RoomController {
   @HttpCode(HttpStatus.OK)
   async leaveRoom(@CurrentUser() user: User, @Param('roomId') roomId: string) {
     await this.roomService.leaveRoom(roomId, user.id);
-    // 强制用户离开 WebSocket 房间并通知其他成员
+    //强制用户离开 WebSocket 房间并通知其他成员
     this.chatGateway.forceLeaveRoom(roomId, user.id);
     return {
       success: true,

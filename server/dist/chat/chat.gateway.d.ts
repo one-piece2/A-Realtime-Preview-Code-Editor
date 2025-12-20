@@ -1,8 +1,12 @@
 import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { YjsDocumentService } from './yjs-document.service';
+import { RoomRole } from 'src/room/entities/room-member.entity';
+import { RoomService } from 'src/room/room.service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { AuthService } from 'src/auth/auth.service';
 interface JoinPayload {
-    username: string;
     roomId: string;
     initialCode?: string;
 }
@@ -18,22 +22,43 @@ interface YAwarenessPayload {
     roomId: string;
     update: ArrayBuffer | Uint8Array | number[];
 }
+interface AuthenticatedSocket extends Socket {
+    data: {
+        user: {
+            id: string;
+            email: string;
+            username: string;
+            githubAvatar?: string;
+        };
+        roomId?: string;
+        role?: RoomRole;
+    };
+}
 export declare class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly yDocService;
+    private readonly roomService;
+    private readonly jwtService;
+    private readonly configService;
+    private readonly authService;
     private userSocketMap;
+    private socketUserMap;
     server: Server;
-    constructor(yDocService: YjsDocumentService);
-    handleConnection(client: Socket): void;
-    getAllConnectedClients(roomId: string): {
-        socketId: string;
-        username: string;
-    }[];
-    handleDisconnect(client: Socket): void;
-    handleJoin(client: Socket, payload: JoinPayload): void;
-    handleLeave(client: Socket, payload: any): void;
-    handleYSync(client: Socket, payload: YSyncPayload): void;
-    handleYUpdate(client: Socket, payload: YUpdatePayload): void;
-    handleYAwareness(client: Socket, payload: YAwarenessPayload): void;
+    constructor(yDocService: YjsDocumentService, roomService: RoomService, jwtService: JwtService, configService: ConfigService, authService: AuthService);
+    handleConnection(client: AuthenticatedSocket): Promise<void>;
+    handleDisconnect(client: AuthenticatedSocket): void;
+    handleJoin(client: AuthenticatedSocket, payload: JoinPayload): Promise<void>;
+    handleLeave(client: AuthenticatedSocket, payload: {
+        roomId: string;
+    }): void;
+    handleYSync(client: AuthenticatedSocket, payload: YSyncPayload): void;
+    handleYUpdate(client: AuthenticatedSocket, payload: YUpdatePayload): void;
+    handleYAwareness(client: AuthenticatedSocket, payload: YAwarenessPayload): void;
+    notifyRoleChanged(roomId: string, userId: string, newRole: RoomRole): void;
+    forceLeaveRoom(roomId: string, userId: string): void;
+    forceCloseRoom(roomId: string): void;
     private toUint8Array;
+    private emitError;
+    private getOnlineClientsInRoom;
+    private validateRoomAccess;
 }
 export {};

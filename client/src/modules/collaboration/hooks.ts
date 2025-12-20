@@ -1,11 +1,14 @@
 // Collaboration 模块 Hooks
 // UI 层通过这些 hooks 获取协作状态和操作
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { Socket } from 'socket.io-client';
 import type { editor } from 'monaco-editor';
 import { MonacoBinding } from 'y-monaco';
 import { useCollaborationStore, collaborationSelectors } from './store';
+import { getAuthenticatedSocket, disconnectSocket } from '@/api/socket';
+import { useRoomStore, roomSelectors } from '../room/store';
+import { getAccessToken } from './services';
 import {
   initLocalUserState,
   updateLocalCursorPosition,
@@ -14,6 +17,7 @@ import {
   createDebounce,
 } from './services';
 import type { CollaborationUser } from './types';
+import type { RoomRole } from '../room/types';
 
 // 主要的协作 Hook - 初始化和管理协作会话 可以在ui中手动调用这些东西
 export function useCollaboration() {
@@ -29,34 +33,52 @@ export function useCollaboration() {
   );
 }
 
-
+// 创建带认证的 Socket 连接（使用单例模式）
+export function useAuthenticatedSocket() {
+  const socket = useMemo(() => getAuthenticatedSocket(), []);
+  return socket;
+}
 //初始化协作会话的 Hook 一层封装
-export function useInitCollaboration(params: {
-  socket: Socket | null;
-  roomId: string | undefined;
-  username: string | undefined;
-  avatarUrl: string | undefined;
-}) {
-  const { socket, roomId, username, avatarUrl } = params;
-  const initCollaboration = useCollaborationStore((state) => state.initCollaboration);
-  const destroyCollaboration = useCollaborationStore((state) => state.destroyCollaboration);
-
+export function useInitCollaboration(
+   roomId: string | null,
+  options: {
+    username: string;
+    avatarUrl: string;
+  }
+) {
+  const socket = useAuthenticatedSocket();
+  const initCollaboration = useCollaborationStore((s) => s.initCollaboration);
+  const destroyCollaboration = useCollaborationStore((s) => s.destroyCollaboration);
+    // 从 Room Store 获取角色
+  const myRole = useRoomStore(roomSelectors.myRole);
+ 
   useEffect(() => {
     if (!socket || !roomId) {
       return;
     }
+    const token = getAccessToken();
+    if (!token) {
+      console.error('未找到 access token');
+      return;
+    }
+    // 连接 socket
+    socket.connect();
 
+       // 初始化协作
     initCollaboration({
       socket,
       roomId,
-      username: username ?? 'Anonymous',
-      avatarUrl: avatarUrl ?? '/image.png',
+      username: options.username,
+      avatarUrl: options.avatarUrl,
+      role: myRole as RoomRole ,
+      token,
     });
 
     return () => {
       destroyCollaboration();
+      disconnectSocket()
     };
-  }, [socket, roomId, username, avatarUrl, initCollaboration, destroyCollaboration]);
+  }, [socket, roomId, options.username, options.avatarUrl, myRole, initCollaboration, destroyCollaboration]);
 }
 
 // 连接状态 Hook
@@ -124,6 +146,14 @@ export function useConnectionStatus() {
   return connectionStatus;
 }
 
+// 编辑权限 Hook
+export function useCanEdit(): boolean {
+  const collabCanEdit = useCollaborationStore(collaborationSelectors.canEdit);
+  const roomCanEdit = useRoomStore(roomSelectors.canEdit);
+  
+  // 两个 store 都认为可以编辑才返回 true
+  return collabCanEdit && roomCanEdit;
+}
 
  //Monaco 编辑器绑定 Hook 返回绑定实例
 export function useMonacoBinding(

@@ -6,7 +6,7 @@
 import type { editor } from 'monaco-editor';
 import type { Awareness } from 'y-protocols/awareness';
 import type { RemoteCursor, SelectionRange } from './types';
-
+import { getToken } from '@/utils/mannegerToken'
 // 生成基于 clientID 的稳定颜色
 export function generateUserColor(clientId: number): string {
   const hue = (clientId * 137.508) % 360; // 使用黄金角度确保颜色分布均匀
@@ -262,4 +262,8 @@ export function clearDebounce(timer: NodeJS.Timeout | null) {
   if (timer) {
     clearTimeout(timer);
   }
+}
+
+export function getAccessToken(){
+    return getToken()
 }

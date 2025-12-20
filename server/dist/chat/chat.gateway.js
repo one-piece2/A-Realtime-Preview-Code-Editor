@@ -14,83 +14,175 @@ const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const action_1 = require("../action");
 const yjs_document_service_1 = require("./yjs-document.service");
+const room_service_1 = require("../room/room.service");
+const jwt_1 = require("@nestjs/jwt");
+const config_1 = require("@nestjs/config");
+const auth_service_1 = require("../auth/auth.service");
 let ChatGateway = class ChatGateway {
     yDocService;
+    roomService;
+    jwtService;
+    configService;
+    authService;
     userSocketMap = {};
+    socketUserMap = {};
     server;
-    constructor(yDocService) {
+    constructor(yDocService, roomService, jwtService, configService, authService) {
         this.yDocService = yDocService;
+        this.roomService = roomService;
+        this.jwtService = jwtService;
+        this.configService = configService;
+        this.authService = authService;
     }
-    handleConnection(client) {
-        if (Object.values(this.userSocketMap).includes(client.id)) {
-            console.log('重复连接，忽略:', client.id);
-            return;
+    async handleConnection(client) {
+        try {
+            const token = client.handshake.auth?.token ||
+                client.handshake.headers?.authorization?.split(' ')[1];
+            if (!token) {
+                this.emitError(client, 'UNAUTHORIZED', '未提供认证令牌');
+                client.disconnect();
+                return;
+            }
+            let payload;
+            try {
+                payload = this.jwtService.verify(token, {
+                    secret: this.configService.get('JWT_SECRET'),
+                });
+            }
+            catch (error) {
+                this.emitError(client, 'TOKEN_INVALID', '认证令牌无效或已过期');
+                client.disconnect();
+                return;
+            }
+            const user = await this.authService.validateUser(payload);
+            if (!user) {
+                this.emitError(client, 'USER_NOT_FOUND', '用户不存在');
+                client.disconnect();
+                return;
+            }
+            client.data.user = {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                githubAvatar: user.githubAvatar,
+            };
+            const oldSocketId = this.socketUserMap[user.id];
+            if (oldSocketId && oldSocketId !== client.id) {
+                const oldSocket = this.server.sockets.sockets.get(oldSocketId);
+                if (oldSocket) {
+                    this.emitError(oldSocket, 'DUPLICATE_LOGIN', '您已在其他地方登录');
+                    oldSocket.disconnect(true);
+                }
+                delete this.userSocketMap[oldSocketId];
+                delete this.socketUserMap[user.id];
+            }
+            this.userSocketMap[client.id] = user.id;
+            this.socketUserMap[user.id] = client.id;
+            console.log(`[ChatGateway] 用户 ${user.username} (${user.id}) 已连接`);
         }
-        console.log('客户端连接成功:', client.id);
-    }
-    getAllConnectedClients(roomId) {
-        const adapter = this.server.sockets.adapter;
-        const room = adapter.rooms.get(roomId);
-        const ids = room ? Array.from(room) : [];
-        return ids.map((socketId) => ({
-            socketId,
-            username: this.userSocketMap[socketId],
-        }));
+        catch (error) {
+            console.error('[ChatGateway] 连接处理错误:', error);
+            this.emitError(client, 'CONNECTION_ERROR', '连接失败');
+            client.disconnect();
+        }
     }
     handleDisconnect(client) {
-        const rooms = [...client.rooms];
-        const username = this.userSocketMap[client.id];
-        rooms.forEach((roomId) => {
-            this.server.in(roomId).emit(action_1.ACTIONS.DISCONNECTED, {
+        const userId = this.userSocketMap[client.id];
+        const roomId = client.data.roomId;
+        if (roomId) {
+            client.to(roomId).emit(action_1.ACTIONS.MEMBER_LEFT, {
+                userId,
+                username: client.data.user?.username,
                 socketId: client.id,
-                username,
             });
-        });
-        delete this.userSocketMap[client.id];
-        rooms.forEach((roomId) => {
             client.leave(roomId);
             this.yDocService.unregisterClient(roomId, client.id);
-        });
+        }
+        if (userId) {
+            delete this.socketUserMap[userId];
+        }
+        delete this.userSocketMap[client.id];
+        console.log(`[ChatGateway] 用户断开连接: ${client.id}`);
     }
-    handleJoin(client, payload) {
-        const { username, roomId, initialCode } = payload;
-        for (const [oldSocketId, oldUsername] of Object.entries(this.userSocketMap)) {
-            if (oldUsername === username && oldSocketId !== client.id) {
-                console.log("踢掉旧连接:", oldSocketId);
-                this.server.sockets.sockets.get(oldSocketId)?.disconnect(true);
-                delete this.userSocketMap[oldSocketId];
+    async handleJoin(client, payload) {
+        const user = client.data.user;
+        const { roomId, initialCode } = payload;
+        if (!user) {
+            this.emitError(client, 'UNAUTHORIZED', '请先登录');
+            return;
+        }
+        try {
+            const member = await this.roomService.getMemberByRoomId(roomId, user.id);
+            if (!member) {
+                this.emitError(client, 'NOT_MEMBER', '您不是该房间成员，请先加入房间');
+                return;
             }
+            if (client.data.roomId && client.data.roomId !== roomId) {
+                const oldRoomId = client.data.roomId;
+                client.to(oldRoomId).emit(action_1.ACTIONS.MEMBER_LEFT, {
+                    userId: user.id,
+                    username: user.username,
+                    socketId: client.id,
+                });
+                client.leave(oldRoomId);
+                this.yDocService.unregisterClient(oldRoomId, client.id);
+            }
+            client.data.roomId = roomId;
+            client.data.role = member.role;
+            this.yDocService.registerClient(roomId, client.id);
+            if (initialCode) {
+                this.yDocService.initDocIfEmpty(roomId, initialCode);
+            }
+            client.join(roomId);
+            const clients = this.getOnlineClientsInRoom(roomId);
+            this.server.to(roomId).emit(action_1.ACTIONS.JOINED, {
+                clients,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    avatarUrl: user.githubAvatar,
+                },
+                role: member.role,
+                socketId: client.id,
+            });
+            console.log(`[ChatGateway] 用户 ${user.username} 加入房间 ${roomId}, 角色: ${member.role}`);
         }
-        this.userSocketMap[client.id] = username;
-        this.yDocService.registerClient(roomId, client.id);
-        if (initialCode) {
-            this.yDocService.initDocIfEmpty(roomId, initialCode);
+        catch (error) {
+            console.error('[ChatGateway] 加入房间失败:', error);
+            this.emitError(client, 'JOIN_FAILED', '加入房间失败');
         }
-        client.join(roomId);
-        const clients = this.getAllConnectedClients(roomId);
-        this.server.to(roomId).emit(action_1.ACTIONS.JOINED, {
-            clients,
-            username,
-            socketId: client.id,
-        });
     }
     handleLeave(client, payload) {
         const { roomId } = payload;
-        const username = this.userSocketMap[client.id];
-        console.log(`用户 ${username} 请求离开房间 ${roomId}`);
-        delete this.userSocketMap[client.id];
+        const user = client.data.user;
+        if (!user) {
+            this.emitError(client, 'UNAUTHORIZED', '请先登录');
+            return;
+        }
+        if (!roomId) {
+            this.emitError(client, 'INVALID_ROOM', '房间 ID 无效');
+            return;
+        }
+        if (client.data.roomId !== roomId) {
+            this.emitError(client, 'NOT_IN_ROOM', '您不在该房间中');
+            return;
+        }
+        client.to(roomId).emit(action_1.ACTIONS.MEMBER_LEFT, {
+            userId: user.id,
+            username: user.username,
+            socketId: client.id,
+        });
         client.leave(roomId);
         this.yDocService.unregisterClient(roomId, client.id);
-        const allConernedClients = this.getAllConnectedClients(roomId);
-        this.server.to(roomId).emit(action_1.ACTIONS.DISCONNECTED, {
-            socketId: client.id,
-            username,
-            allConernedClients
-        });
-        console.log(`已通知房间 ${roomId} 中的其他客户端，${username} 已离开`);
+        client.data.roomId = undefined;
+        client.data.role = undefined;
+        console.log(`[ChatGateway] 用户 ${user?.username} 离开房间 ${roomId}`);
     }
     handleYSync(client, payload) {
         const { roomId, stateVector } = payload;
+        if (!this.validateRoomAccess(client, roomId)) {
+            return;
+        }
         this.yDocService.registerClient(roomId, client.id);
         const vector = stateVector ? this.toUint8Array(stateVector) : undefined;
         const update = this.yDocService.getStateAsUpdate(roomId, vector);
@@ -98,10 +190,18 @@ let ChatGateway = class ChatGateway {
             roomId,
             update,
             stateVector: this.yDocService.getStateVector(roomId),
+            role: client.data.role,
         });
     }
     handleYUpdate(client, payload) {
         const { roomId, update } = payload;
+        if (!this.validateRoomAccess(client, roomId)) {
+            return;
+        }
+        if (client.data.role === 'viewer') {
+            this.emitError(client, 'NO_EDIT_PERMISSION', '只读用户无法编辑');
+            return;
+        }
         const normalizedUpdate = this.toUint8Array(update);
         this.yDocService.applyUpdate(roomId, normalizedUpdate);
         client.to(roomId).emit(action_1.ACTIONS.Y_UPDATE, {
@@ -111,11 +211,73 @@ let ChatGateway = class ChatGateway {
     }
     handleYAwareness(client, payload) {
         const { roomId, update } = payload;
+        if (!this.validateRoomAccess(client, roomId)) {
+            return;
+        }
         const normalizedUpdate = this.toUint8Array(update);
         client.to(roomId).emit(action_1.ACTIONS.Y_AWARENESS, {
             roomId,
             update: normalizedUpdate,
         });
+    }
+    notifyRoleChanged(roomId, userId, newRole) {
+        const socketId = this.socketUserMap[userId];
+        if (!socketId)
+            return;
+        const socket = this.server.sockets.sockets.get(socketId);
+        if (!socket || socket.data.roomId !== roomId)
+            return;
+        socket.data.role = newRole;
+        socket.emit(action_1.ACTIONS.ROLE_CHANGED, {
+            roomId,
+            role: newRole,
+        });
+        this.server.to(roomId).emit(action_1.ACTIONS.ROOM_UPDATED, {
+            type: 'member_role_changed',
+            userId,
+            newRole,
+        });
+    }
+    forceLeaveRoom(roomId, userId) {
+        const socketId = this.socketUserMap[userId];
+        if (!socketId)
+            return;
+        const socket = this.server.sockets.sockets.get(socketId);
+        if (!socket || socket.data.roomId !== roomId)
+            return;
+        socket.emit(action_1.ACTIONS.MEMBER_REMOVED, {
+            roomId,
+            message: '您已被移出房间',
+        });
+        socket.leave(roomId);
+        this.yDocService.unregisterClient(roomId, socketId);
+        socket.data.roomId = undefined;
+        socket.data.role = undefined;
+        this.server.to(roomId).emit(action_1.ACTIONS.ROOM_UPDATED, {
+            type: 'member_removed',
+            userId,
+        });
+    }
+    forceCloseRoom(roomId) {
+        const adapter = this.server.sockets.adapter;
+        const room = adapter.rooms.get(roomId);
+        if (!room)
+            return;
+        const socketIds = Array.from(room);
+        this.server.to(roomId).emit(action_1.ACTIONS.ROOM_UPDATED, {
+            type: 'room_deleted',
+            roomId,
+            message: '房间已被删除',
+        });
+        for (const socketId of socketIds) {
+            const socket = this.server.sockets.sockets.get(socketId);
+            if (socket) {
+                socket.leave(roomId);
+                this.yDocService.unregisterClient(roomId, socketId);
+                socket.data.roomId = undefined;
+                socket.data.role = undefined;
+            }
+        }
     }
     toUint8Array(data) {
         if (data instanceof Uint8Array) {
@@ -129,6 +291,35 @@ let ChatGateway = class ChatGateway {
         }
         return new Uint8Array(data);
     }
+    emitError(client, code, message) {
+        client.emit(action_1.ACTIONS.ERROR, { code, message });
+    }
+    getOnlineClientsInRoom(roomId) {
+        const adapter = this.server.sockets.adapter;
+        const room = adapter.rooms.get(roomId);
+        const socketIds = room ? Array.from(room) : [];
+        return socketIds.map((socketId) => {
+            const socket = this.server.sockets.sockets.get(socketId);
+            return {
+                socketId,
+                userId: socket?.data.user?.id,
+                username: socket?.data.user?.username,
+                avatarUrl: socket?.data.user?.githubAvatar,
+                role: socket?.data.role,
+            };
+        });
+    }
+    validateRoomAccess(client, roomId) {
+        if (!client.data.user) {
+            this.emitError(client, 'UNAUTHORIZED', '请先登录');
+            return false;
+        }
+        if (client.data.roomId !== roomId) {
+            this.emitError(client, 'NOT_IN_ROOM', '您不在该房间内');
+            return false;
+        }
+        return true;
+    }
 };
 exports.ChatGateway = ChatGateway;
 __decorate([
@@ -138,31 +329,31 @@ __decorate([
 __decorate([
     (0, websockets_1.SubscribeMessage)(action_1.ACTIONS.JOIN),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "handleJoin", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)(action_1.ACTIONS.LEAVE),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "handleLeave", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)(action_1.ACTIONS.Y_SYNC),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "handleYSync", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)(action_1.ACTIONS.Y_UPDATE),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "handleYUpdate", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)(action_1.ACTIONS.Y_AWARENESS),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], ChatGateway.prototype, "handleYAwareness", null);
 exports.ChatGateway = ChatGateway = __decorate([
@@ -175,6 +366,10 @@ exports.ChatGateway = ChatGateway = __decorate([
             methods: ['GET', 'POST'],
         },
     }),
-    __metadata("design:paramtypes", [yjs_document_service_1.YjsDocumentService])
+    __metadata("design:paramtypes", [yjs_document_service_1.YjsDocumentService,
+        room_service_1.RoomService,
+        jwt_1.JwtService,
+        config_1.ConfigService,
+        auth_service_1.AuthService])
 ], ChatGateway);
 //# sourceMappingURL=chat.gateway.js.map
