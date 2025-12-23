@@ -135,7 +135,7 @@ let ChatGateway = class ChatGateway {
             }
             client.join(roomId);
             const clients = this.getOnlineClientsInRoom(roomId);
-            this.server.to(roomId).emit(action_1.ACTIONS.JOINED, {
+            client.emit(action_1.ACTIONS.JOINED, {
                 clients,
                 user: {
                     id: user.id,
@@ -144,6 +144,13 @@ let ChatGateway = class ChatGateway {
                 },
                 role: member.role,
                 socketId: client.id,
+            });
+            client.to(roomId).emit(action_1.ACTIONS.MEMBER_JOINED, {
+                userId: user.id,
+                username: user.username,
+                avatarUrl: user.githubAvatar,
+                socketId: client.id,
+                role: member.role,
             });
             console.log(`[ChatGateway] 用户 ${user.username} 加入房间 ${roomId}, 角色: ${member.role}`);
         }

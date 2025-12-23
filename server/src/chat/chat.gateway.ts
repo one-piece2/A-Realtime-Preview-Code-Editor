@@ -233,8 +233,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       //  获取房间内所有在线用户
       const clients = this.getOnlineClientsInRoom(roomId);
 
-      //  通知所有人 (包括自己)
-      this.server.to(roomId).emit(ACTIONS.JOINED, {
+      //  通知自己加入成功
+      client.emit(ACTIONS.JOINED, {
         clients,
         user: {
           id: user.id,
@@ -243,6 +243,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         },
         role: member.role,
         socketId: client.id,
+      });
+
+      // 通知房间内其他成员有新人加入
+      client.to(roomId).emit(ACTIONS.MEMBER_JOINED, {
+        userId: user.id,
+        username: user.username,
+        avatarUrl: user.githubAvatar,
+        socketId: client.id,
+        role: member.role,
       });
 
       console.log(`[ChatGateway] 用户 ${user.username} 加入房间 ${roomId}, 角色: ${member.role}`);

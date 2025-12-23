@@ -9,6 +9,7 @@ import {
 } from 'y-protocols/awareness'; // 引入 Awareness 以及编码/应用工具，用于光标、选区等同步
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { type RoomRole } from '@/modules/room/types';
+
 interface SocketIOProviderOptions {
   doc: Y.Doc; // 需要同步的 Y.Doc 实例
   roomId: string; // 房间标识，用于区分不同协同会话
@@ -25,9 +26,9 @@ interface SocketIOProviderOptions {
 
 export class SocketIOProvider {
   public readonly awareness: Awareness; // 暴露 awareness，方便 UI 绑定光标/选区等协同状态
+  public readonly socket: Socket; // 暴露 socket，允许外部监听自定义事件
   private readonly doc: Y.Doc; // 缓存文档实例，便于后续读写
   private readonly roomId: string; // 当前协同房间 ID
-  private readonly socket: Socket; // socket.io 实例
   private destroyed = false; // 标记是否已销毁，避免重复操作
   //本地持久化实例
   private persistence: IndexeddbPersistence | null = null;
@@ -114,6 +115,7 @@ export class SocketIOProvider {
     this.role = options.role
     this.onRoleChanged = options.onRoleChanged
     this.onError = options.onError
+   
     this.awareness = new Awareness(this.doc);
     //初始化本地持久化
     if (options.enablePersistence !== false) {
@@ -170,7 +172,7 @@ export class SocketIOProvider {
     // 用户事件
     this.socket.on(ACTIONS.JOINED, this.handleJoined); // 加入房间成功后再请求同步
     this.socket.on(ACTIONS.DISCONNECTED, this.handleUserDisconnected);   // 监听用户断开连接事件，清理幽灵光标
-    this.socket.on(ACTIONS.MEMBER_LEFT, this.handleUserDisconnected);
+    this.socket.on(ACTIONS.MEMBER_LEFT, this.handleMemberLeft); // 成员离开时清理光标
 
     // 新增: 权限事件
     this.socket.on(ACTIONS.ROLE_CHANGED, this.handleRoleChanged);
@@ -253,7 +255,7 @@ export class SocketIOProvider {
     this.socket.off(ACTIONS.Y_AWARENESS, this.handleAwarenessMessage);
     this.socket.off(ACTIONS.JOINED, this.handleJoined);
     this.socket.off(ACTIONS.DISCONNECTED, this.handleUserDisconnected);
-    this.socket.off(ACTIONS.MEMBER_LEFT, this.handleUserDisconnected);
+    this.socket.off(ACTIONS.MEMBER_LEFT, this.handleMemberLeft);
     this.socket.off(ACTIONS.ROLE_CHANGED, this.handleRoleChanged);
     this.socket.off(ACTIONS.MEMBER_REMOVED, this.handleMemberRemoved);
     this.socket.off(ACTIONS.ERROR, this.handleError);
@@ -308,6 +310,14 @@ export class SocketIOProvider {
     // 加入成功后再请求同步和发送离线更新
     this.flushPendingUpdates();
     this.requestInitialSync();
+  };
+
+  // 成员离开时清理光标（由 useMemberSync hook 监听 MEMBER_LEFT 事件）
+  private handleMemberLeft = (payload: { userId: string; username: string; socketId: string }) => {
+    if (this.destroyed) return;
+    console.log('[SocketIOProvider] 成员离开，清理光标:', payload.username);
+    // 只负责清理幽灵光标，成员列表同步由 useMemberSync 处理
+    this.handleUserDisconnected(payload);
   };
 
   //连接成功处理

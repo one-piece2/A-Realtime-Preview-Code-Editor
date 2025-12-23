@@ -205,6 +205,22 @@ export const useRoomStore = create<RoomStore>()(
         set({ members });
       },
 
+      // 添加成员（实时同步用）
+      addMember: (member: RoomMember) => {
+        set((state) => {
+          const exists = state.members.some((m) => m.userId === member.userId);
+          if (exists) return state;
+          return { members: [...state.members, member] };
+        });
+      },
+
+      // 移除成员（实时同步用）
+      removeMemberById: (userId: string) => {
+        set((state) => ({
+          members: state.members.filter((m) => m.userId !== userId),
+        }));
+      },
+
       // 更新我的角色
       updateMyRole: (role: RoomRole) => {
         set({ myRole: role });

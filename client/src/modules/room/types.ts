@@ -80,6 +80,8 @@ export interface RoomActions {
   leaveRoom: (roomId: string) => Promise<void>;
   updateMemberRole: (roomId: string, userId: string, role: 'editor' | 'viewer') => Promise<void>;
   removeMember: (roomId: string, userId: string) => Promise<void>;
+  addMember: (member: RoomMember) => void;
+  removeMemberById: (userId: string) => void;
   
   // 我的房间
   fetchMyRooms: () => Promise<void>;
