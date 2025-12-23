@@ -1,6 +1,6 @@
 // Collaboration 模块 Hooks
 // UI 层通过这些 hooks 获取协作状态和操作
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { Socket } from 'socket.io-client';
 import type { editor } from 'monaco-editor';
@@ -9,6 +9,7 @@ import { useCollaborationStore, collaborationSelectors } from './store';
 import { getAuthenticatedSocket, disconnectSocket } from '@/api/socket';
 import { useRoomStore, roomSelectors } from '../room/store';
 import { getAccessToken } from './services';
+import { ACTIONS } from '@/action';
 import {
   initLocalUserState,
   updateLocalCursorPosition,
@@ -75,8 +76,13 @@ export function useInitCollaboration(
     });
 
     return () => {
+      // 先通知服务器离开房间
+      if (socket?.connected && roomId) {
+        socket.emit(ACTIONS.LEAVE, { roomId });
+      }
+      // 然后销毁协作和断开连接
       destroyCollaboration();
-      disconnectSocket()
+      disconnectSocket();
     };
   }, [socket, roomId, options.username, options.avatarUrl, myRole, initCollaboration, destroyCollaboration]);
 }
@@ -153,6 +159,11 @@ export function useCanEdit(): boolean {
   
   // 两个 store 都认为可以编辑才返回 true
   return collabCanEdit && roomCanEdit;
+}
+
+// 获取当前用户角色 Hook
+export function useCollaborationRole() {
+  return useCollaborationStore(collaborationSelectors.role);
 }
 
  //Monaco 编辑器绑定 Hook 返回绑定实例

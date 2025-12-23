@@ -168,6 +168,7 @@ export class SocketIOProvider {
     this.socket.on(ACTIONS.Y_AWARENESS, this.handleAwarenessMessage); // 处理其他客户端的光标/选区等协同状态
 
     // 用户事件
+    this.socket.on(ACTIONS.JOINED, this.handleJoined); // 加入房间成功后再请求同步
     this.socket.on(ACTIONS.DISCONNECTED, this.handleUserDisconnected);   // 监听用户断开连接事件，清理幽灵光标
     this.socket.on(ACTIONS.MEMBER_LEFT, this.handleUserDisconnected);
 
@@ -250,8 +251,9 @@ export class SocketIOProvider {
     this.socket.off(ACTIONS.Y_SYNC, this.handleSyncMessage);
     this.socket.off(ACTIONS.Y_UPDATE, this.handleUpdateMessage);
     this.socket.off(ACTIONS.Y_AWARENESS, this.handleAwarenessMessage);
+    this.socket.off(ACTIONS.JOINED, this.handleJoined);
     this.socket.off(ACTIONS.DISCONNECTED, this.handleUserDisconnected);
-        this.socket.off(ACTIONS.MEMBER_LEFT, this.handleUserDisconnected);
+    this.socket.off(ACTIONS.MEMBER_LEFT, this.handleUserDisconnected);
     this.socket.off(ACTIONS.ROLE_CHANGED, this.handleRoleChanged);
     this.socket.off(ACTIONS.MEMBER_REMOVED, this.handleMemberRemoved);
     this.socket.off(ACTIONS.ERROR, this.handleError);
@@ -293,17 +295,32 @@ export class SocketIOProvider {
     }
   };
 
+  // 加入房间成功后的处理
+  private handleJoined = (payload: { role: RoomRole; socketId: string }) => {
+    console.log('[SocketIOProvider] 加入房间成功, 角色:', payload.role);
+    
+    // 更新角色
+    if (payload.role && payload.role !== this.role) {
+      this.role = payload.role;
+      this.onRoleChanged?.(payload.role);
+    }
+    
+    // 加入成功后再请求同步和发送离线更新
+    this.flushPendingUpdates();
+    this.requestInitialSync();
+  };
+
   //连接成功处理
   private handleConnect = () => {
     console.log('[SocketIOProvider] Socket 已连接');
     //设置连接状态
     this._connected = true;
-    this.joinRoom();
-    // 重连后发送离线期间累积的更新
-    this.flushPendingUpdates();
-
-    // 请求服务器最新状态
-    this.requestInitialSync();
+    
+    // 延迟加入房间，等待服务器完成连接处理（handleConnection 是异步的）
+    // Y_SYNC 等操作会在收到 JOINED 事件后执行
+    setTimeout(() => {
+      this.joinRoom();
+    }, 100);
   };
   // 断开连接处理
   private handleDisconnect = () => {

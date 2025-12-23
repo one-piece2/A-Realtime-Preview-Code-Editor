@@ -22,8 +22,11 @@ export function useRoomActions() {
   const deleteRoom = useRoomStore((s) => s.deleteRoom);
   const joinRoom = useRoomStore((s) => s.joinRoom);
   const leaveRoom = useRoomStore((s) => s.leaveRoom);
+  const isLoading = useRoomStore(roomSelectors.isLoading);
+  const error = useRoomStore(roomSelectors.error);
+  const clearError = useRoomStore((s) => s.clearError);
 
-  return { createRoom, fetchRoom, updateRoom, deleteRoom, joinRoom, leaveRoom };
+  return { createRoom, fetchRoom, updateRoom, deleteRoom, joinRoom, leaveRoom, isLoading, error, clearError };
 }
 
 // 成员管理 Hook

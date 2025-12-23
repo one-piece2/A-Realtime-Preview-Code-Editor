@@ -11,7 +11,6 @@ import { GlobalConfigProvider } from "@/core/config";
 import { useAuthInitializer,useAuthError } from "@/modules/auth";
 
 // 页面组件
-import Home from "@/pages/home";
 import EditorSigelPage from "@/pages/EditorSigelPage";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -19,22 +18,12 @@ import NotFound from "@/pages/NotFound";
 import Dashboard from "@/pages/Dashboard";
 import EditorFilesPage from "@/pages/EditorFilesPage";
 import AuthCallback from "@/pages/AuthCallback";
+import { RoomsPage } from "@/pages/RoomsPage";
+import { CreateRoomPage } from "@/pages/CreateRoomPage";
 
 // 路由守卫
 import { ProtectedRoute } from "@/components/Control-Router/ProtectedRoute";
 import { PublicRoute } from "@/components/Control-Router/PublicRoute";
-import { useLocation, Navigate } from "react-router-dom";
-
-// 单独的路由守卫组件
-function ProtectedRoute2({ children }: { children: React.ReactNode }) {
-  const location = useLocation();
-  const username = (location.state as any)?.username ?? localStorage.getItem("username");
-  if (!username) {
-    toast.error("请先登录或加入房间");
-    return <Navigate to="/" replace />;
-  }
-  return children;
-}
 
 // // 主题应用组件 - 使用新的 useTheme hook
 // function ThemeApplier({ children }: { children: React.ReactNode }) {
@@ -101,16 +90,16 @@ function AppRoutes() {
 
       {/* 受保护的路由 */}
       <Route element={<ProtectedRoute />}>
+        {/* 首页/仪表板 */}
         <Route path="/" element={<Dashboard />} />
-        <Route path="/home" element={<Home />} />
-        <Route
-          path="/editor/:roomId"
-          element={
-            <ProtectedRoute2>
-              <EditorSigelPage />
-            </ProtectedRoute2>
-          }
-        />
+        
+        {/* 房间管理路由 */}
+        <Route path="/rooms" element={<RoomsPage />} />
+        <Route path="/rooms/create" element={<CreateRoomPage />} />
+        <Route path="/room/:roomId" element={<EditorSigelPage />} />
+        
+        {/* 其他编辑器路由 */}
+        {/* <Route path="/editor/:roomId" element={<EditorSigelPage />} /> */}
         <Route path="/editor/files" element={<EditorFilesPage />} />
       </Route>
 

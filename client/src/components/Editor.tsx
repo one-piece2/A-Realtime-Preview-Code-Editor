@@ -3,11 +3,8 @@ import { editor } from "monaco-editor";
 import { type EditorFile } from '../types/types';
 import { createATA } from '../utils/ata';
 import { useEffect, useRef, useState } from 'react';
-import { type Socket } from 'socket.io-client';
 import { useLeetCodes } from '@/modules/playground';
 import {
-  useInitCollaboration,
-  useConnectionStatus,
   useMonacoBinding,
   useLocalUserState,
   useRemoteCursors,
@@ -18,29 +15,14 @@ interface Props {
   file: EditorFile
   onchange?: (code: string) => void
   options?: editor.IStandaloneEditorConstructionOptions,
-  socketRef?: React.MutableRefObject<Socket | null>,
-  roomId?: string,
-  username?: string,
-  avatarUrl?: string,
 }
 
 export default function Editor(props: Props) {
   const ataRef = useRef<((code: string) => void) | null>(null)
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
   const { setLeetCodes } = useLeetCodes()
-  const { file, options, socketRef, roomId, onchange, username, avatarUrl } = props;
+  const { file, options, onchange } = props;
   const [editorReady, setEditorReady] = useState(false)
-
-  // 初始化协作（使用封装好的 hook）
-  useInitCollaboration({
-    socket: socketRef?.current ?? null,
-    roomId,
-    username,
-    avatarUrl,
-  });
-
-  // 连接状态
-  const connectionStatus = useConnectionStatus();
 
   // Monaco 绑定
   useMonacoBinding(editorRef.current, editorReady);
@@ -50,7 +32,6 @@ export default function Editor(props: Props) {
 
   // 远端光标
   const remoteCursors = useRemoteCursors(editorRef.current, editorReady, editor.EditorOption);
-
 
   // Yjs 内容同步
   useYjsContentSync(onchange, setLeetCodes);
@@ -89,43 +70,25 @@ export default function Editor(props: Props) {
 
   return (
     <div style={{ position: 'relative', height: '100%', width: '100%' }}>
-      {/* 连接状态指示器 */}
-      <div className="absolute top-2 right-2 flex items-center gap-2 z-[1000] bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border shadow-sm">
-        <div 
-          className={`w-2 h-2 rounded-full ${
-            connectionStatus === 'online' ? 'bg-green-500' :
-            connectionStatus === 'offline' ? 'bg-red-500' :
-            'bg-yellow-500 animate-pulse'
-          }`}
-        />
-        <span className="text-xs text-muted-foreground font-medium">
-          {connectionStatus === 'online' && '已同步'}
-          {connectionStatus === 'offline' && '离线编辑中'}
-          {connectionStatus === 'syncing' && '同步中...'}
-        </span>
-      </div>
-
-      <div style={{ position: 'relative', height: '100%', width: '100%' }}>
-        <MonacoEditor
-          height='100%'
-          path={file.name}
-          language={file.language}
-          onMount={handleEditorMount}
-          defaultValue={''}
-          options={{
-            fontSize: 14,
-            scrollBeyondLastLine: false,
-            minimap: {
-              enabled: false,
-            },
-            scrollbar: {
-              verticalScrollbarSize: 6,
-              horizontalScrollbarSize: 6,
-            },
-            ...options
-          }}
-        />
-      </div>
+      <MonacoEditor
+        height='100%'
+        path={file.name}
+        language={file.language}
+        onMount={handleEditorMount}
+        defaultValue={''}
+        options={{
+          fontSize: 14,
+          scrollBeyondLastLine: false,
+          minimap: {
+            enabled: false,
+          },
+          scrollbar: {
+            verticalScrollbarSize: 6,
+            horizontalScrollbarSize: 6,
+          },
+          ...options
+        }}
+      />
 
       {/* 远端光标容器 */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-[999] overflow-hidden">

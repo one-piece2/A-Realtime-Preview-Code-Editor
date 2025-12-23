@@ -12,8 +12,10 @@ export const getAuthenticatedSocket = (): Socket | null => {
   const token = getToken();
   if (!token) return null;
 
-  // 如果已有实例且连接正常，直接返回
-  if (socketInstance && !socketInstance.disconnected) {
+  // 如果已有实例，更新 token 并返回
+  if (socketInstance) {
+    // 更新 auth token（重要：确保 token 始终是最新的）
+    socketInstance.auth = { token };
     return socketInstance;
   }
 
@@ -43,8 +45,3 @@ export const disconnectSocket = () => {
 // 获取当前 Socket 实例 不创建新的
 export const getCurrentSocket = (): Socket | null => socketInstance;
 
-// 兼容旧的 initSocket（已废弃，建议使用 getAuthenticatedSocket）
-/** @deprecated 使用 getAuthenticatedSocket 代替 */
-export const initSocket = async (): Promise<Socket | null> => {
-  return getAuthenticatedSocket();
-};

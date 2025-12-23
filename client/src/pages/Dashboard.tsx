@@ -31,7 +31,7 @@ export default function Dashboard() {
 
   const handleEditorWithFriendsClick = () => {
     setActiveButton("editorWithFriends")
-    navigate("/home")
+    navigate("/rooms")
   }
 
   const handleLogout = () => {
