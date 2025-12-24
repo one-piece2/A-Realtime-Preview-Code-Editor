@@ -40,6 +40,7 @@ export function useMemberSync() {
   const addMember = useRoomStore((s) => s.addMember);
   const removeMemberById = useRoomStore((s) => s.removeMemberById);
   const updateMyRole = useRoomStore((s) => s.updateMyRole);
+  const updateMemberRoleById = useRoomStore((s) => s.updateMemberRoleById);
   const provider = useCollaborationStore((s) => s.provider);
   const currentRoom = useRoomStore(roomSelectors.currentRoom);
   const { user } = useAuth();
@@ -99,21 +100,36 @@ export function useMemberSync() {
       toast.error(payload.message || '你已被移出房间');
       setTimeout(() => {
         navigate('/rooms');
-      }, 1500);
+      }, 1000);
+    };
+
+    // 房间更新处理（用于第三者同步）
+    const handleRoomUpdated = (payload: { 
+      type: string; 
+      userId?: string; 
+      newRole?: RoomRole;
+    }) => {
+      // 角色变更事件 - 所有人都会收到，用于同步成员列表
+      if (payload.type === 'member_role_changed' && payload.userId && payload.newRole) {
+        // 更新成员列表中的角色（包括第三者）
+        updateMemberRoleById(payload.userId, payload.newRole);
+      }
     };
 
     socket.on(ACTIONS.MEMBER_JOINED, handleMemberJoined);
     socket.on(ACTIONS.MEMBER_LEFT, handleMemberLeft);
     socket.on(ACTIONS.ROLE_CHANGED, handleRoleChanged);
+    socket.on(ACTIONS.ROOM_UPDATED, handleRoomUpdated);
     socket.on(ACTIONS.MEMBER_REMOVED, handleMemberRemoved);
 
     return () => {
       socket.off(ACTIONS.MEMBER_JOINED, handleMemberJoined);
       socket.off(ACTIONS.MEMBER_LEFT, handleMemberLeft);
       socket.off(ACTIONS.ROLE_CHANGED, handleRoleChanged);
+      socket.off(ACTIONS.ROOM_UPDATED, handleRoomUpdated);
       socket.off(ACTIONS.MEMBER_REMOVED, handleMemberRemoved);
     };
-  }, [provider, currentRoom, addMember, removeMemberById, updateMyRole, user, navigate]);
+  }, [provider, currentRoom, addMember, removeMemberById, updateMyRole, updateMemberRoleById, user, navigate]);
 }
 
 export function useMemberActions() {

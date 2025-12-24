@@ -232,6 +232,15 @@ export const useRoomStore = create<RoomStore>()(
         }));
       },
 
+      // 更新指定成员的角色（用于第三者同步）
+      updateMemberRoleById: (userId: string, role: RoomRole) => {
+        set((state) => ({
+          members: state.members.map((m) =>
+            m.userId === userId ? { ...m, role } : m
+          ),
+        }));
+      },
+
       // 清除错误
       clearError: () => {
         set({ error: null });

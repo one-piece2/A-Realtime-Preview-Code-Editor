@@ -91,6 +91,7 @@ export interface RoomActions {
   setCurrentRoom: (room: Room | null, role: RoomRole | null) => void;
   setMembers: (members: RoomMember[]) => void;
   updateMyRole: (role: RoomRole, userId?: string) => void;
+  updateMemberRoleById: (userId: string, role: RoomRole) => void;
   clearError: () => void;
   reset: () => void;
 }
