@@ -237,7 +237,8 @@ let ChatGateway = class ChatGateway {
         socket.data.role = newRole;
         socket.emit(action_1.ACTIONS.ROLE_CHANGED, {
             roomId,
-            role: newRole,
+            userId,
+            newRole,
         });
         this.server.to(roomId).emit(action_1.ACTIONS.ROOM_UPDATED, {
             type: 'member_role_changed',

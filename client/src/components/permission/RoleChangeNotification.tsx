@@ -31,7 +31,7 @@ export function RoleChangeNotification() {
       // 5秒后自动隐藏
       const timer = setTimeout(() => {
         setNotification(null);
-      }, 5000);
+      }, 3000);
 
       setPrevRole(role);
       return () => clearTimeout(timer);

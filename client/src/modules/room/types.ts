@@ -82,6 +82,7 @@ export interface RoomActions {
   removeMember: (roomId: string, userId: string) => Promise<void>;
   addMember: (member: RoomMember) => void;
   removeMemberById: (userId: string) => void;
+
   
   // 我的房间
   fetchMyRooms: () => Promise<void>;
@@ -89,7 +90,7 @@ export interface RoomActions {
   // 状态管理
   setCurrentRoom: (room: Room | null, role: RoomRole | null) => void;
   setMembers: (members: RoomMember[]) => void;
-  updateMyRole: (role: RoomRole) => void;
+  updateMyRole: (role: RoomRole, userId?: string) => void;
   clearError: () => void;
   reset: () => void;
 }

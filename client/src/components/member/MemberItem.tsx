@@ -12,6 +12,7 @@ import type { RoomMember } from '@/modules/room/types';
 
 interface MemberItemProps {
   member: RoomMember;
+  collaboratorAvatar?: string | null;
   canManage: boolean;
   onRoleChange: (role: 'editor' | 'viewer') => void;
   onRemove: () => void;
@@ -25,6 +26,7 @@ const roleConfig = {
 
 export function MemberItem({
   member,
+  collaboratorAvatar,
   canManage,
   onRoleChange,
   onRemove,
@@ -37,7 +39,7 @@ export function MemberItem({
       <div className="flex items-center gap-3">
         <Avatar className="h-8 w-8">
           <AvatarImage
-            src={member.user.githubAvatar || undefined}
+            src={collaboratorAvatar || member.user.githubAvatar || undefined}
             alt={member.user.username}
           />
           <AvatarFallback>

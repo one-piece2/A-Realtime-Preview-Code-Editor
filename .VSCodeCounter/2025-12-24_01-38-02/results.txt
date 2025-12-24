@@ -1,0 +1,104 @@
+Date : 2025-12-24 01:38:02
+Directory : c:\Users\Lenovo\Desktop\React——Editor\server
+Total : 53 files,  14175 codes, 354 comments, 704 blanks, all 15233 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          5 |     11,437 |          0 |          5 |     11,442 |
+| TypeScript         |         40 |      1,733 |        353 |        388 |      2,474 |
+| Markdown           |          6 |        948 |          0 |        309 |      1,257 |
+| JavaScript         |          1 |         32 |          1 |          1 |         34 |
+| JSON with Comments |          1 |         25 |          0 |          1 |         26 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                       | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                          |         53 |     14,175 |        354 |        704 |     15,233 |
+| . (Files)                                                                                  |          7 |     11,486 |          1 |          6 |     11,493 |
+| src                                                                                        |         44 |      2,659 |        353 |        692 |      3,704 |
+| src (Files)                                                                                |          6 |        111 |         14 |         18 |        143 |
+| src\ai                                                                                     |          4 |        152 |         13 |         35 |        200 |
+| src\ai (Files)                                                                             |          3 |        117 |         10 |         26 |        153 |
+| src\ai\dto                                                                                 |          1 |         35 |          3 |          9 |         47 |
+| src\auth                                                                                   |         16 |      1,276 |        102 |        382 |      1,760 |
+| src\auth (Files)                                                                           |          3 |        234 |         70 |         53 |        357 |
+| src\auth\decorators                                                                        |          2 |         11 |         20 |          5 |         36 |
+| src\auth\filters                                                                           |          1 |          0 |          0 |          1 |          1 |
+| src\auth\guards                                                                            |          2 |         20 |          5 |          6 |         31 |
+| src\auth\leads                                                                             |          5 |        947 |          0 |        309 |      1,256 |
+| src\auth\strategies                                                                        |          3 |         64 |          7 |          8 |         79 |
+| src\chat                                                                                   |          3 |        433 |        113 |         81 |        627 |
+| src\dto                                                                                    |          2 |         21 |          0 |          8 |         29 |
+| src\room                                                                                   |          9 |        524 |         95 |        141 |        760 |
+| src\room (Files)                                                                           |          3 |        390 |         70 |         96 |        556 |
+| src\room\dto                                                                               |          4 |         45 |          1 |          8 |         54 |
+| src\room\entities                                                                          |          2 |         89 |         24 |         37 |        150 |
+| src\user                                                                                   |          4 |        142 |         16 |         27 |        185 |
+| src\user (Files)                                                                           |          3 |        102 |         10 |         15 |        127 |
+| src\user\entities                                                                          |          1 |         40 |          6 |         12 |         58 |
+| test                                                                                       |          2 |         30 |          0 |          6 |         36 |
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                   | language           | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\Users\Lenovo\Desktop\React——Editor\server\README.md                                     | Markdown           |          1 |          0 |          0 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\eslint.config.mjs                             | JavaScript         |         32 |          1 |          1 |         34 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\nest-cli.json                                 | JSON               |          8 |          0 |          1 |          9 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\package-lock.json                             | JSON               |     11,321 |          0 |          1 |     11,322 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\package.json                                  | JSON               |         95 |          0 |          1 |         96 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\action.ts                                 | TypeScript         |         18 |          3 |          3 |         24 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\ai\ai.controller.ts                       | TypeScript         |         43 |          4 |          8 |         55 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\ai\ai.module.ts                           | TypeScript         |          8 |          0 |          2 |         10 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\ai\ai.service.ts                          | TypeScript         |         66 |          6 |         16 |         88 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\ai\dto\chat.dto.ts                        | TypeScript         |         35 |          3 |          9 |         47 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\app.controller.ts                         | TypeScript         |         10 |          0 |          3 |         13 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\app.module.ts                             | TypeScript         |         28 |          3 |          2 |         33 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\app.service.ts                            | TypeScript         |          7 |          0 |          2 |          9 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\auth.controller.ts                   | TypeScript         |         71 |         47 |         23 |        141 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\auth.module.ts                       | TypeScript         |         37 |          2 |          4 |         43 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\auth.service.ts                      | TypeScript         |        126 |         21 |         26 |        173 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\decorators\current-user.decorator.ts | TypeScript         |          8 |          9 |          2 |         19 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\decorators\public.decorator.ts       | TypeScript         |          3 |         11 |          3 |         17 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\filters\oauth-exception.filter.ts    | TypeScript         |          0 |          0 |          1 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\guards\jwt-auth.guard.ts             | TypeScript         |         20 |          5 |          5 |         30 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\guards\oauth.guard.ts                | TypeScript         |          0 |          0 |          1 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\leads\GITHUB_LOGIN_FLOW.md           | Markdown           |        177 |          0 |         68 |        245 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\leads\GITHUB_两次调用详解.md               | Markdown           |        193 |          0 |         56 |        249 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\leads\LOGIN_LOCAL_FLOW.md            | Markdown           |        302 |          0 |         88 |        390 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\leads\全局JWT_Guard使用说明.md             | Markdown           |        176 |          0 |         58 |        234 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\leads\策略检查报告.md                      | Markdown           |         99 |          0 |         39 |        138 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\strategies\github.strategy.ts        | TypeScript         |         20 |          4 |          2 |         26 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\strategies\jwt.strategy.ts           | TypeScript         |         27 |          2 |          2 |         31 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\auth\strategies\local.startegy.ts         | TypeScript         |         17 |          1 |          4 |         22 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\chat\chat.gateway.ts                      | TypeScript         |        359 |         97 |         74 |        530 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\chat\chat.module.ts                       | TypeScript         |         12 |          0 |          1 |         13 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\chat\yjs-document.service.ts              | TypeScript         |         62 |         16 |          6 |         84 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\dto\login.user.dto.ts                     | TypeScript         |          8 |          0 |          3 |         11 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\dto\register.user.dto.ts                  | TypeScript         |         13 |          0 |          5 |         18 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\main.ts                                   | TypeScript         |         32 |          5 |          5 |         42 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\ormcofig.ts                               | TypeScript         |         16 |          3 |          3 |         22 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\dto\create-room.dto.ts               | TypeScript         |         17 |          0 |          4 |         21 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\dto\join-room.dto.ts                 | TypeScript         |          6 |          0 |          0 |          6 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\dto\update-member.dto.ts             | TypeScript         |          5 |          1 |          0 |          6 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\dto\update-room.dto.ts               | TypeScript         |         17 |          0 |          4 |         21 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\entities\room-member.entity.ts       | TypeScript         |         44 |         10 |         12 |         66 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\entities\room.entitiey.ts            | TypeScript         |         45 |         14 |         25 |         84 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\room.controller.ts                   | TypeScript         |        135 |         17 |         19 |        171 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\room.module.ts                       | TypeScript         |         14 |          0 |          1 |         15 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\room\room.service.ts                      | TypeScript         |        241 |         53 |         76 |        370 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\user\entities\user.entitiey.ts            | TypeScript         |         40 |          6 |         12 |         58 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\user\user.controller.ts                   | TypeScript         |         15 |          0 |          3 |         18 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\user\user.module.ts                       | TypeScript         |         12 |          1 |          2 |         15 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\src\user\user.service.ts                      | TypeScript         |         75 |          9 |         10 |         94 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\test\app.e2e-spec.ts                          | TypeScript         |         21 |          0 |          5 |         26 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\test\jest-e2e.json                            | JSON               |          9 |          0 |          1 |         10 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\tsconfig.build.json                           | JSON               |          4 |          0 |          1 |          5 |
+| c:\Users\Lenovo\Desktop\React——Editor\server\tsconfig.json                                 | JSON with Comments |         25 |          0 |          1 |         26 |
+| Total                                                                                      |                    |     14,175 |        354 |        704 |     15,233 |
++--------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

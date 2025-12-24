@@ -403,7 +403,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // 通知该用户
     socket.emit(ACTIONS.ROLE_CHANGED, {
       roomId,
-      role: newRole,
+      userId,
+      newRole,
     });
 
     // 通知房间内所有人 (更新成员列表)

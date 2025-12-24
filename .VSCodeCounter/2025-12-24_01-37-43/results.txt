@@ -1,0 +1,221 @@
+Date : 2025-12-24 01:37:43
+Directory : c:\Users\Lenovo\Desktop\React——Editor\client
+Total : 141 files,  39583 codes, 1170 comments, 1682 blanks, all 42435 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          8 |     28,849 |          4 |         10 |     28,863 |
+| TypeScript JSX     |         62 |      6,115 |        420 |        749 |      7,284 |
+| TypeScript         |         58 |      3,936 |        738 |        795 |      5,469 |
+| Markdown           |          1 |        327 |          0 |         84 |        411 |
+| CSS                |          4 |        274 |          8 |         38 |        320 |
+| HTML               |          3 |         33 |          0 |          3 |         36 |
+| JSON with Comments |          2 |         25 |          0 |          1 |         26 |
+| JavaScript         |          1 |         22 |          0 |          2 |         24 |
+| XML                |          2 |          2 |          0 |          0 |          2 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                   |        141 |     39,583 |      1,170 |      1,682 |     42,435 |
+| . (Files)                                                                                           |         10 |      9,794 |          6 |         15 |      9,815 |
+| code-start                                                                                          |          7 |     19,159 |          0 |         13 |     19,172 |
+| code-start\react-ts                                                                                 |          7 |     19,159 |          0 |         13 |     19,172 |
+| code-start\react-ts (Files)                                                                         |          3 |     19,125 |          0 |          3 |     19,128 |
+| code-start\react-ts\public                                                                          |          1 |          1 |          0 |          0 |          1 |
+| code-start\react-ts\src                                                                             |          3 |         33 |          0 |         10 |         43 |
+| public                                                                                              |          1 |          1 |          0 |          0 |          1 |
+| src                                                                                                 |        123 |     10,629 |      1,164 |      1,654 |     13,447 |
+| src (Files)                                                                                         |          5 |        311 |         34 |         62 |        407 |
+| src\api                                                                                             |          7 |        239 |         48 |         58 |        345 |
+| src\api (Files)                                                                                     |          1 |         30 |          8 |         10 |         48 |
+| src\api\ai                                                                                          |          2 |         24 |          0 |          6 |         30 |
+| src\api\auth                                                                                        |          2 |         53 |          8 |         11 |         72 |
+| src\api\room                                                                                        |          2 |        132 |         32 |         31 |        195 |
+| src\assets                                                                                          |          1 |          1 |          0 |          0 |          1 |
+| src\components                                                                                      |         45 |      4,358 |        295 |        507 |      5,160 |
+| src\components (Files)                                                                              |         12 |      1,384 |         89 |        166 |      1,639 |
+| src\components\AIChat                                                                               |          7 |        634 |         58 |         63 |        755 |
+| src\components\CoderEditor                                                                          |          3 |        305 |         68 |         48 |        421 |
+| src\components\Control-Router                                                                       |          2 |         37 |          5 |         13 |         55 |
+| src\components\FileTree                                                                             |          1 |        676 |         56 |         66 |        798 |
+| src\components\member                                                                               |          2 |        126 |          4 |         13 |        143 |
+| src\components\permission                                                                           |          3 |        116 |          5 |         22 |        143 |
+| src\components\room                                                                                 |          3 |        315 |         10 |         25 |        350 |
+| src\components\ui                                                                                   |         12 |        765 |          0 |         91 |        856 |
+| src\core                                                                                            |          8 |        397 |         57 |         75 |        529 |
+| src\core (Files)                                                                                    |          1 |          2 |          5 |          3 |         10 |
+| src\core\config                                                                                     |          2 |        102 |          9 |         28 |        139 |
+| src\core\i18n                                                                                       |          3 |        233 |         19 |         22 |        274 |
+| src\core\i18n (Files)                                                                               |          1 |         19 |          1 |          4 |         24 |
+| src\core\i18n\locales                                                                               |          2 |        214 |         18 |         18 |        250 |
+| src\core\store                                                                                      |          2 |         60 |         24 |         22 |        106 |
+| src\lib                                                                                             |          1 |          5 |          0 |          2 |          7 |
+| src\modules                                                                                         |         27 |      2,972 |        433 |        621 |      4,026 |
+| src\modules (Files)                                                                                 |          1 |          3 |          6 |          4 |         13 |
+| src\modules\ai                                                                                      |          5 |        434 |        105 |         87 |        626 |
+| src\modules\auth                                                                                    |          5 |        394 |         48 |         79 |        521 |
+| src\modules\collaboration                                                                           |          7 |      1,322 |        152 |        288 |      1,762 |
+| src\modules\collaboration (Files)                                                                   |          6 |      1,031 |        100 |        232 |      1,363 |
+| src\modules\collaboration\yjs                                                                       |          1 |        291 |         52 |         56 |        399 |
+| src\modules\playground                                                                              |          5 |        358 |         56 |         89 |        503 |
+| src\modules\room                                                                                    |          4 |        461 |         66 |         74 |        601 |
+| src\pages                                                                                           |         12 |      1,679 |        129 |        201 |      2,009 |
+| src\template                                                                                        |          4 |         85 |          0 |         13 |         98 |
+| src\types                                                                                           |          2 |         48 |          1 |          7 |         56 |
+| src\types (Files)                                                                                   |          1 |         41 |          1 |          7 |         49 |
+| src\types\users                                                                                     |          1 |          7 |          0 |          0 |          7 |
+| src\utils                                                                                           |         11 |        534 |        167 |        108 |        809 |
++-----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                            | language           | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\Users\Lenovo\Desktop\React——Editor\client\code-start\react-ts\package-lock.json                  | JSON               |     19,094 |          0 |          1 |     19,095 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\code-start\react-ts\package.json                       | JSON               |         23 |          0 |          1 |         24 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\code-start\react-ts\public\index.html                  | HTML               |          1 |          0 |          0 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\code-start\react-ts\src\App.tsx                        | TypeScript JSX     |         10 |          0 |          3 |         13 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\code-start\react-ts\src\index.tsx                      | TypeScript JSX     |          9 |          0 |          4 |         13 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\code-start\react-ts\src\style.css                      | CSS                |         14 |          0 |          3 |         17 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\code-start\react-ts\tsconfig.json                      | JSON with Comments |          8 |          0 |          1 |          9 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\components.json                                        | JSON               |         22 |          0 |          1 |         23 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\eslint.config.js                                       | JavaScript         |         22 |          0 |          2 |         24 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\index.html                                             | HTML               |         13 |          0 |          2 |         15 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\package-lock.json                                      | JSON               |      9,570 |          0 |          1 |      9,571 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\package.json                                           | JSON               |         85 |          0 |          1 |         86 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\public\vite.svg                                        | XML                |          1 |          0 |          0 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\App.css                                            | CSS                |          0 |          0 |          1 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\App.tsx                                            | TypeScript JSX     |         84 |         23 |         26 |        133 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\action.ts                                          | TypeScript         |         17 |          3 |          3 |         23 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\api\ai\ai.ts                                       | TypeScript         |         14 |          0 |          5 |         19 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\api\ai\types.ts                                    | TypeScript         |         10 |          0 |          1 |         11 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\api\auth\auth.ts                                   | TypeScript         |         32 |          8 |          8 |         48 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\api\auth\types.ts                                  | TypeScript         |         21 |          0 |          3 |         24 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\api\room\api.ts                                    | TypeScript         |         71 |         18 |         17 |        106 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\api\room\types.ts                                  | TypeScript         |         61 |         14 |         14 |         89 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\api\socket.ts                                      | TypeScript         |         30 |          8 |         10 |         48 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\assets\react.svg                                   | XML                |          1 |          0 |          0 |          1 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\AIChat\ChatHeader.tsx                   | TypeScript JSX     |        106 |          7 |         10 |        123 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\AIChat\ChatInput.tsx                    | TypeScript JSX     |         96 |          8 |         11 |        115 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\AIChat\ChatMessage.tsx                  | TypeScript JSX     |        152 |         15 |         10 |        177 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\AIChat\ChatMessages.tsx                 | TypeScript JSX     |         69 |         13 |          8 |         90 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\AIChat\ChatSidebar.tsx                  | TypeScript JSX     |         67 |          8 |          7 |         82 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\AIChat\CodeBlock.tsx                    | TypeScript JSX     |         67 |          5 |          6 |         78 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\AIChat\ConversationList.tsx             | TypeScript JSX     |         77 |          2 |         11 |         90 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\Client.tsx                              | TypeScript JSX     |         63 |          5 |          6 |         74 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\CoderEditor\Editor.tsx                  | TypeScript JSX     |        161 |         24 |         17 |        202 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\CoderEditor\index.tsx                   | TypeScript JSX     |         18 |          8 |          2 |         28 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\CoderEditor\inlineCompletionProvider.ts | TypeScript         |        126 |         36 |         29 |        191 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\Control-Router\ProtectedRoute.tsx       | TypeScript JSX     |         19 |          3 |          6 |         28 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\Control-Router\PublicRoute.tsx          | TypeScript JSX     |         18 |          2 |          7 |         27 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\Editor.tsx                              | TypeScript JSX     |        133 |          9 |         15 |        157 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\FileListItem.tsx                        | TypeScript JSX     |         71 |          0 |          8 |         79 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\FileNameList.tsx                        | TypeScript JSX     |         51 |          0 |          4 |         55 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\FileTree\FileTree.tsx                   | TypeScript JSX     |        676 |         56 |         66 |        798 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\Header.tsx                              | TypeScript JSX     |        185 |         17 |         26 |        228 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\LeetCode.tsx                            | TypeScript JSX     |        331 |         11 |         26 |        368 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\Message.tsx                             | TypeScript JSX     |         24 |          0 |          5 |         29 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\OutputBox.tsx                           | TypeScript JSX     |         97 |          7 |         17 |        121 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\RunCoder.tsx                            | TypeScript JSX     |         72 |          4 |         14 |         90 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\Slider.tsx                              | TypeScript JSX     |         88 |          6 |         10 |        104 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\Terminal.tsx                            | TypeScript JSX     |        250 |         30 |         34 |        314 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ifarm.html                              | HTML               |         19 |          0 |          1 |         20 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\member\MemberItem.tsx                   | TypeScript JSX     |         88 |          3 |          8 |         99 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\member\MemberList.tsx                   | TypeScript JSX     |         38 |          1 |          5 |         44 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\permission\PermissionGuard.tsx          | TypeScript JSX     |         45 |          2 |          7 |         54 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\permission\ReadOnlyBanner.tsx           | TypeScript JSX     |         14 |          0 |          4 |         18 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\permission\RoleChangeNotification.tsx   | TypeScript JSX     |         57 |          3 |         11 |         71 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\room\CreateRoomForm.tsx                 | TypeScript JSX     |        158 |          7 |         12 |        177 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\room\JoinRoomDialog.tsx                 | TypeScript JSX     |        101 |          2 |          8 |        111 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\room\RoomCard.tsx                       | TypeScript JSX     |         56 |          1 |          5 |         62 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\avatar.tsx                           | TypeScript JSX     |         46 |          0 |          6 |         52 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\badge.tsx                            | TypeScript JSX     |         31 |          0 |          6 |         37 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\button.tsx                           | TypeScript JSX     |         55 |          0 |          6 |         61 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\card.tsx                             | TypeScript JSX     |         83 |          0 |         10 |         93 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\dialog.tsx                           | TypeScript JSX     |        108 |          0 |         14 |        122 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\dropdown-menu.tsx                    | TypeScript JSX     |        238 |          0 |         18 |        256 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\input.tsx                            | TypeScript JSX     |         21 |          0 |          6 |         27 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\label.tsx                            | TypeScript JSX     |         19 |          0 |          4 |         23 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\scroll-area.tsx                      | TypeScript JSX     |         52 |          0 |          5 |         57 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\separator.tsx                        | TypeScript JSX     |         23 |          0 |          4 |         27 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\sonner.tsx                           | TypeScript JSX     |         35 |          0 |          4 |         39 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\components\ui\tooltip.tsx                          | TypeScript JSX     |         54 |          0 |          8 |         62 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\core\config\GlobalConfigContext.tsx                | TypeScript JSX     |         91 |          9 |         27 |        127 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\core\config\index.ts                               | TypeScript         |         11 |          0 |          1 |         12 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\core\i18n\index.ts                                 | TypeScript         |         19 |          1 |          4 |         24 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\core\i18n\locales\en-US.ts                         | TypeScript         |        107 |          9 |          9 |        125 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\core\i18n\locales\zh-CN.ts                         | TypeScript         |        107 |          9 |          9 |        125 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\core\index.ts                                      | TypeScript         |          2 |          5 |          3 |         10 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\core\store\index.ts                                | TypeScript         |         11 |          4 |          3 |         18 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\core\store\registry.ts                             | TypeScript         |         49 |         20 |         19 |         88 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\index.css                                          | CSS                |        203 |          8 |         26 |        237 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\lib\utils.ts                                       | TypeScript         |          5 |          0 |          2 |          7 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\main.tsx                                           | TypeScript JSX     |          7 |          0 |          6 |         13 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\ai\hooks.ts                                | TypeScript         |        139 |         37 |         20 |        196 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\ai\index.ts                                | TypeScript         |         12 |          4 |          3 |         19 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\ai\services.ts                             | TypeScript         |        100 |         27 |         25 |        152 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\ai\store.ts                                | TypeScript         |        140 |         18 |         23 |        181 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\ai\type.ts                                 | TypeScript         |         43 |         19 |         16 |         78 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\auth\hooks.ts                              | TypeScript         |         84 |         14 |         21 |        119 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\auth\index.ts                              | TypeScript         |         23 |          7 |          5 |         35 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\auth\services.ts                           | TypeScript         |         98 |         10 |         17 |        125 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\auth\store.ts                              | TypeScript         |        147 |         10 |         22 |        179 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\auth\types.ts                              | TypeScript         |         42 |          7 |         14 |         63 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\collaboration\README.md                    | Markdown           |        327 |          0 |         84 |        411 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\collaboration\hooks.ts                     | TypeScript         |        283 |         35 |         64 |        382 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\collaboration\index.ts                     | TypeScript         |         31 |          7 |          5 |         43 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\collaboration\services.ts                  | TypeScript         |        207 |         21 |         42 |        270 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\collaboration\store.ts                     | TypeScript         |        113 |         17 |         18 |        148 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\collaboration\types.ts                     | TypeScript         |         70 |         20 |         19 |        109 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\collaboration\yjs\socket-provider.ts       | TypeScript         |        291 |         52 |         56 |        399 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\index.ts                                   | TypeScript         |          3 |          6 |          4 |         13 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\playground\hooks.ts                        | TypeScript         |        112 |         13 |         25 |        150 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\playground\index.ts                        | TypeScript         |         23 |          7 |          5 |         35 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\playground\services.ts                     | TypeScript         |         67 |         12 |         16 |         95 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\playground\store.ts                        | TypeScript         |        125 |         15 |         31 |        171 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\playground\types.ts                        | TypeScript         |         31 |          9 |         12 |         52 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\room\hooks.ts                              | TypeScript         |        100 |         11 |         21 |        132 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\room\service.ts                            | TypeScript         |         82 |         13 |         20 |        115 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\room\store.ts                              | TypeScript         |        211 |         26 |         20 |        257 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\modules\room\types.ts                              | TypeScript         |         68 |         16 |         13 |         97 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\AuthCallback.tsx                             | TypeScript JSX     |         67 |          6 |         14 |         87 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\CreateRoomPage.tsx                           | TypeScript JSX     |         23 |          2 |          3 |         28 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\Dashboard.tsx                                | TypeScript JSX     |        350 |          8 |         18 |        376 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\EditorFilesPage.tsx                          | TypeScript JSX     |         81 |         11 |         12 |        104 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\EditorSigelPage.tsx                          | TypeScript JSX     |        142 |         36 |         24 |        202 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\Login.tsx                                    | TypeScript JSX     |        205 |          7 |         25 |        237 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\NotFound.tsx                                 | TypeScript JSX     |         52 |          2 |         11 |         65 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\Preview.tsx                                  | TypeScript JSX     |        109 |         19 |         13 |        141 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\Register.tsx                                 | TypeScript JSX     |        267 |          5 |         29 |        301 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\RoomEditorPage.tsx                           | TypeScript JSX     |        113 |         19 |         18 |        150 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\RoomsPage.tsx                                | TypeScript JSX     |         91 |          3 |          7 |        101 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\pages\home.tsx                                     | TypeScript JSX     |        179 |         11 |         27 |        217 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\template\App.css                                   | CSS                |         57 |          0 |          8 |         65 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\template\App.tsx                                   | TypeScript JSX     |         14 |          0 |          3 |         17 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\template\import-map.json                           | JSON               |          6 |          0 |          0 |          6 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\template\main.tsx                                  | TypeScript JSX     |          8 |          0 |          2 |         10 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\types\types.ts                                     | TypeScript         |         41 |          1 |          7 |         49 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\types\users\type.ts                                | TypeScript         |          7 |          0 |          0 |          7 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\ata.ts                                       | TypeScript         |         16 |          0 |          2 |         18 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\axios.ts                                     | TypeScript         |        103 |         26 |         20 |        149 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\babelPlug.ts                                 | TypeScript         |         78 |         16 |          8 |        102 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\codeWorker.ts                                | TypeScript         |         52 |          8 |         15 |         75 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\compiler.ts                                  | TypeScript         |         43 |          2 |          3 |         48 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\dogAvataUrl.ts                               | TypeScript         |          8 |          0 |          0 |          8 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\files.ts                                     | TypeScript         |         43 |         45 |          9 |         97 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\filetree.ts                                  | TypeScript         |         86 |         33 |         21 |        140 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\judgeLangyage.ts                             | TypeScript         |          8 |          1 |          0 |          9 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\loadandcompress.ts                           | TypeScript         |         24 |         11 |          6 |         41 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\src\utils\mannegerToken.ts                             | TypeScript         |         73 |         25 |         24 |        122 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\tsconfig.app.json                                      | JSON               |         27 |          2 |          2 |         31 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\tsconfig.json                                          | JSON with Comments |         17 |          0 |          0 |         17 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\tsconfig.node.json                                     | JSON               |         22 |          2 |          3 |         27 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\vite-env.d.ts                                          | TypeScript         |          0 |          1 |          1 |          2 |
+| c:\Users\Lenovo\Desktop\React——Editor\client\vite.config.ts                                         | TypeScript         |         16 |          1 |          2 |         19 |
+| Total                                                                                               |                    |     39,583 |      1,170 |      1,682 |     42,435 |
++-----------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

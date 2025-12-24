@@ -222,8 +222,14 @@ export const useRoomStore = create<RoomStore>()(
       },
 
       // 更新我的角色
-      updateMyRole: (role: RoomRole) => {
-        set({ myRole: role });
+      updateMyRole: (role: RoomRole, userId?: string) => {
+        set((state) => ({
+          myRole: role,
+          // 如果提供了 userId，同时更新成员列表中该用户的角色
+          members: userId 
+            ? state.members.map((m) => m.userId === userId ? { ...m, role } : m)
+            : state.members,
+        }));
       },
 
       // 清除错误

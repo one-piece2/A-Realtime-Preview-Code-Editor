@@ -84,7 +84,9 @@ export function useInitCollaboration(
       destroyCollaboration();
       disconnectSocket();
     };
-  }, [socket, roomId, options.username, options.avatarUrl, myRole, initCollaboration, destroyCollaboration]);
+    // 注意：myRole 不应该在依赖数组中，因为角色变更不应该导致重新初始化连接
+    // 角色信息已经在初始化时传递，后续通过 ROLE_CHANGED 事件同步
+  }, [socket, roomId, options.username, options.avatarUrl, initCollaboration, destroyCollaboration]);
 }
 
 // 连接状态 Hook

@@ -113,7 +113,7 @@ export default function EditorPage() {
       {/* 顶部栏 */}
       <header className="h-14 border-b flex items-center justify-between px-4 bg-background shrink-0">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/rooms')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             返回
           </Button>
@@ -189,7 +189,7 @@ export default function EditorPage() {
         </main>
 
         {/* 侧边栏 - 成员列表 */}
-        <aside className="w-64 border-l overflow-hidden hidden lg:block">
+        <aside className="w-74 border-l overflow-hidden hidden lg:block">
           <MemberList />
         </aside>
       </div>

@@ -1,10 +1,12 @@
 import { useEffect, useCallback } from 'react';
 import { useRoomStore, roomSelectors } from './store';
 import { useCollaborationStore } from '@/modules/collaboration/store';
+import { useAuth } from '@/modules/auth';
 import { ACTIONS } from '@/action';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { getRoleDisplayName } from './service';
 import type { RoomRole, RoomMember } from './types';
-
 
 // 获取当前房间信息
 export function useCurrentRoom() {
@@ -15,8 +17,8 @@ export function useCurrentRoom() {
   const isOwner = useRoomStore(roomSelectors.isOwner);
 
   return { currentRoom, myRole, members, canEdit, isOwner };
-  
 }
+
 // 房间操作 Hook
 export function useRoomActions() {
   const createRoom = useRoomStore((s) => s.createRoom);
@@ -37,8 +39,11 @@ export function useRoomActions() {
 export function useMemberSync() {
   const addMember = useRoomStore((s) => s.addMember);
   const removeMemberById = useRoomStore((s) => s.removeMemberById);
+  const updateMyRole = useRoomStore((s) => s.updateMyRole);
   const provider = useCollaborationStore((s) => s.provider);
   const currentRoom = useRoomStore(roomSelectors.currentRoom);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!provider || !currentRoom) return;
@@ -78,14 +83,37 @@ export function useMemberSync() {
       removeMemberById(payload.userId);
     };
 
+    // 角色变更处理
+    const handleRoleChanged = (payload: { roomId: string; userId: string; newRole: RoomRole }) => {
+      if (payload.roomId !== currentRoom.roomId) return;
+      // 只有当角色变更是针对当前用户时才更新
+      if (payload.userId !== user?.id) return;
+      toast.info(`你的角色已变更为 ${getRoleDisplayName(payload.newRole)}`);
+      // 同时更新 myRole 和成员列表中的角色
+      updateMyRole(payload.newRole, payload.userId);
+    };
+
+    // 被移除处理
+    const handleMemberRemoved = (payload: { roomId: string; message: string }) => {
+      if (payload.roomId !== currentRoom.roomId) return;
+      toast.error(payload.message || '你已被移出房间');
+      setTimeout(() => {
+        navigate('/rooms');
+      }, 1500);
+    };
+
     socket.on(ACTIONS.MEMBER_JOINED, handleMemberJoined);
     socket.on(ACTIONS.MEMBER_LEFT, handleMemberLeft);
+    socket.on(ACTIONS.ROLE_CHANGED, handleRoleChanged);
+    socket.on(ACTIONS.MEMBER_REMOVED, handleMemberRemoved);
 
     return () => {
       socket.off(ACTIONS.MEMBER_JOINED, handleMemberJoined);
       socket.off(ACTIONS.MEMBER_LEFT, handleMemberLeft);
+      socket.off(ACTIONS.ROLE_CHANGED, handleRoleChanged);
+      socket.off(ACTIONS.MEMBER_REMOVED, handleMemberRemoved);
     };
-  }, [provider, currentRoom, addMember, removeMemberById]);
+  }, [provider, currentRoom, addMember, removeMemberById, updateMyRole, user, navigate]);
 }
 
 export function useMemberActions() {
