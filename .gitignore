@@ -106,7 +106,19 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# AI Guide files
+AI-GUAIDE
 
-./AI-GUAIDE
+# Environment files (specific paths)
+client/.env
+client/.env.local
+client/.env.development.local
+client/.env.test.local
+client/.env.production.local
+server/.env
+server/.env.local
+server/.env.development.local
+server/.env.test.local
+server/.env.production.local
 
 
